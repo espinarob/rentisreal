@@ -1,0 +1,4 @@
+#Mon Jan 21 22:31:48 SGT 2019
+base.0=C\:\\Users\\ACER\\Desktop\\RentisReal\\RentisReal\\android\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\0
+path.0=classes.dex
+renamed.0=classes.dex
