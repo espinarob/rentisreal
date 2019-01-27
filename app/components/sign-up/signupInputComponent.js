@@ -148,18 +148,7 @@ const signupInputWrapperStyle = StyleSheet.create({
 
 export default class SignUpInputComponent extends Component{
 
-	onSignup = async() =>{
-		for(accountIndex=0;accountIndex<this.props.Accounts.length;accountIndex++){
-			let currentAccount = this.props.Accounts[accountIndex];
-			if(currentAccount.email == this.state.email){
-				this.setState({errorMessage:'Email is already taken!'});
-				return;
-			}
-			else if(currentAccount.username == this.state.username){
-				this.setState({errorMessage:'Username is already taken!'});
-				return;
-			}
-		}
+	onSignup = () =>{
 
 		if(this.state.termsFlag == false){
 			this.setState({errorMessage:'Please agree to terms of service!'});
@@ -187,10 +176,16 @@ export default class SignUpInputComponent extends Component{
 				email: this.state.email
 			}
 			this.props.doProcessRegistration(toRegisterAccount);
-			this.props.doChangeRegisterFlag(false);
-		}	
+		}
 	}
 
+	verifySignUpError = ()=>{
+		if(this.props.errorMsg.length!=0){
+			return this.props.errorMsg;
+		}
+		else
+			return this.state.errorMessage;
+	}
 
 	tenantCheckBox = () =>{
 		this.setState({
@@ -266,7 +261,7 @@ export default class SignUpInputComponent extends Component{
 
     			<View style={signupInputWrapperStyle.errorSection}>
 					<Text style= {{fontSize:12,fontWeight:'bold',paddingTop:5,paddingLeft: '24%'}}>
-						{this.state.errorMessage}
+						{this.verifySignUpError()}
 					</Text>
     			</View>
 

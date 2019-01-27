@@ -4,12 +4,7 @@ import OwnersProperty from "../owner/content/ownersProperty.js";
 import UpdateDetails  from "../commons/updateDetails.js";
 import Constants from "../../Constants.js";
 import ForMoreBody from "../commons/forMore.js";
-
-const ownersBodyWrapperStyle = StyleSheet.create({
-	mainWrapper: {
-		flex:105
-	}
-});
+import PropertyLists from "../commons/propertyLists.js"; 
 
 export default class OwnersBody extends Component{
 
@@ -19,7 +14,10 @@ export default class OwnersBody extends Component{
 			return <React.Fragment>
 				   	<OwnersProperty
 				   		doAddPropertyOwner = {this.props.doAddPropertyOwner}
-				   		AccountDetails     = {this.props.AccountDetails}/>
+				   		doViewMyProperty   = {this.props.doViewMyProperty}
+				   		doDeleteProperty   = {this.props.doDeleteProperty}
+				   		doUpdateProperty   = {this.props.doUpdateProperty}
+				   		addPropertyErrMSG  = {this.props.addPropertyErrMSG}/>
 				   </React.Fragment>
 		}
 		else if(this.props.performOperation == Constants.OWNER_ACTIONS.MY_ACCOUNT){
@@ -31,18 +29,24 @@ export default class OwnersBody extends Component{
 		}
 		else if( this.props.performOperation == Constants.OWNER_ACTIONS.MORE){
 			return <React.Fragment>
-				   	<ForMoreBody doChangeLoginFlag = {this.props.doChangeLoginFlag}
-				   				 doChangeLogoutFlag = {this.props.doChangeLogoutFlag}/>
+				   	<ForMoreBody doChangeLoginFlag  = {this.props.doChangeLoginFlag}
+				   				 doChangeLogoutFlag = {this.props.doChangeLogoutFlag}
+				   				 doGetMyAccount     = {this.props.doGetMyAccount}/>
 				   </React.Fragment>
 
 		}
 		else if( this.props.performOperation == Constants.OWNER_ACTIONS.MY_HOME){
+			return <React.Fragment>
+				   	<PropertyLists
+				   		Properties= {this.props.Properties}
+				   		doGetMyAccount = {this.props.doGetMyAccount}/>
+				   </React.Fragment>
 		}
 	}
 
 	render() {
     	return (
-    		<View style={ownersBodyWrapperStyle.mainWrapper}>
+    		<View style={{flex:115}}>
     			{this.viewBodyDisplay()}
     		</View>
     	);

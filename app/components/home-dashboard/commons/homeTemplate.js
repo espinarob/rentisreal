@@ -21,13 +21,13 @@ export default class HomeTemplate extends Component{
 
     state = {
         AccountDetails : null,
-        ID             : null,
+        role           : '',
         ownerOperation : Constants.OWNER_ACTIONS.MY_HOME,
         tenantOperation: Constants.TENANT_ACTIONS.MY_HOME
     }
 
     componentDidMount(){
-        this.initializeLogin(); 
+        this.initializeLogin();
     }
 
     setOwnerOperation = (operation)=>{
@@ -42,18 +42,15 @@ export default class HomeTemplate extends Component{
         try{
             let usernameLocal  = await AsyncStorage.getItem(Constants.USER_NAME_KEY);
             let passwordLocal  = await AsyncStorage.getItem(Constants.PASS_WORD_KEY);
+            let role           = await AsyncStorage.getItem(Constants.ACCOUNT_ROLE);
             if( String(usernameLocal) == 'null' || String(passwordLocal) == 'null'){
                 this.props.doChangeLoginFlag(false);
                 throw new Error('Not Found in Local!!');
             }
             else{
-                let AccountDetails = this.searchAccountDetails(usernameLocal,passwordLocal);
-                if(AccountDetails === null){
-                    throw new Error('Not Found in Cloud!!');
-                }
-                else{
-                    this.setState({AccountDetails});
-                }
+                let AccountDetails = 'not_null';
+                this.setState({role:String(role)});
+                this.setState({AccountDetails});
             }
             
         }
@@ -62,47 +59,31 @@ export default class HomeTemplate extends Component{
         }
     }
 
-    searchAccountDetails = (username,password) =>{
-        for(index=0;index<this.props.Accounts.length;index++){
-            let currentAccount = this.props.Accounts[index];
-            if(currentAccount.username == username 
-                && currentAccount.password == password){
-                this.setState({ID:this.props.IDs[index]});
-                return currentAccount;
-            }
-        }
-        return null;
-    }
-
     contentDisplay = () =>{
-        if(this.state.AccountDetails === null){
+        if(this.props.doesDataLoad == 'true'){
             return <View style={{flex:120}} > 
-                    <Text style={{position:'relative',top:200,left:'29%'}}>No Internet Connection :(</Text>
-                   </View> 
-           /* return  <React.Fragment>
-                        <OwnersBody
-                            performOperation   = {this.state.ownerOperation}
-                            doChangeLoginFlag  = {this.props.doChangeLoginFlag}
-                            doChangeLogoutFlag = {this.props.doChangeLogoutFlag}
-                            doProcessUpdate    = {this.props.doProcessUpdate}/>
-                        <OwnersTabs 
-                            doOperate= {this.setOwnerOperation} />
-                    </React.Fragment>;    */    
+                    <Text style={{position:'relative',top:250,left:'29%'}}>    Loading Data...</Text>
+                   </View>
         }
-        else if(this.state.AccountDetails.role == 'tenant'){
+        else if(this.state.role == 'tenant'){
             return  <React.Fragment>
                         <TenantsBody 
                             performOperation = {this.state.tenantOperation}
                             doChangeLoginFlag  = {this.props.doChangeLoginFlag}
                             doChangeLogoutFlag = {this.props.doChangeLogoutFlag}
                             doProcessUpdate    = {this.props.doProcessUpdate}
-                            AccountDetails     = {this.state.AccountDetails}/>
+                            Properties         = {this.props.Properties}
+                            doGetMyAccount     = {this.props.doGetMyAccount}
+                            doSendARequest     = {this.props.doSendARequest}
+                            doViewMyRequests   = {this.props.doViewMyRequests}
+                            doDeleteARequest   = {this.props.doDeleteARequest}
+                            requestPropertyMSG = {this.props.requestPropertyMSG}/>
                         <TenantsTabs
                             doOperate= {this.setTenantOperation}/>
                     </React.Fragment>;
                     
         }
-        else if(this.state.AccountDetails.role == 'owner'){            
+        else if(this.state.role == 'owner'){            
             return  <React.Fragment>
                         <OwnersBody
                             performOperation   = {this.state.ownerOperation}
@@ -110,48 +91,28 @@ export default class HomeTemplate extends Component{
                             doChangeLogoutFlag = {this.props.doChangeLogoutFlag}
                             doProcessUpdate    = {this.props.doProcessUpdate}
                             doAddPropertyOwner = {this.props.doAddPropertyOwner}
-                            AccountDetails     = {this.state.AccountDetails}/>
+                            Properties         = {this.props.Properties}
+                            doGetMyAccount     = {this.props.doGetMyAccount}
+                            doViewMyProperty   = {this.props.doViewMyProperty}
+                            doDeleteProperty   = {this.props.doDeleteProperty}
+                            doUpdateProperty   = {this.props.doUpdateProperty}
+                            addPropertyErrMSG  = {this.props.addPropertyErrMSG}/>
+                            
                         <OwnersTabs 
                             doOperate= {this.setOwnerOperation} />
                     </React.Fragment>;
         }
-    }
-    headerDisplay = () =>{
-        if(this.state.tenantOperation != Constants.TENANT_ACTIONS.MY_HOME){
-            return <View style={{backgroundColor:'#758caf',flex:12}}>
-                        <FooterTab>
-                            <Button
-                                style={{backgroundColor:'#758caf'}}
-                                onPress={()=> console.log('back') }>
-                                <Icon
-                                    name="ios-home"/>
-                            </Button>
-                        </FooterTab>
-                    </View>
-        }
-        else if(this.state.ownerOperation != Constants.OWNER_ACTIONS.MY_HOME){
-
-            return <View style={{backgroundColor:'#758caf',flex:12}}>
-                        <FooterTab>
-                            <Button
-                                style={{backgroundColor:'#758caf'}}
-                                onPress = {() => this.setState({ownerOperation:Constants.TENANT_ACTIONS.MY_HOME}) }>
-                                <Icon
-                                    name="ios-home"/>
-                            </Button>
-                        </FooterTab>
-                    </View>
-        }
         else{
-            return <HeaderComponent/>
+            return <View style={{flex:120}} > 
+                    <Text style={{position:'relative',top:200,left:150}}>No Account...</Text>
+                   </View>
         }
     }
 	render() {
     	return (
-    		<View style={homeWrapperStyle.mainWrapper}>
-                {this.headerDisplay()}
+            <View style={homeWrapperStyle.mainWrapper}>
                 {this.contentDisplay()}
-    		</View>
+            </View>
     	);
 	}
 }

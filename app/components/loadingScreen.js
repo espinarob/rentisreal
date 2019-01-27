@@ -14,7 +14,7 @@ export default class LoadingScreen extends Component{
       return (
         <View style={loadingScreenWrapperStyle.mainWrapper}>
           <Spinner style={{ position:'relative',top: 200}} color='#435572'/>
-         <Text style={{ position:'relative',top: 230,left: '40%'}}> Loading... </Text>
+         <Text style={{ position:'relative',top: 230,left: 150}}> Loading... </Text>
          <Text style={{ position:'relative',top: 235,left: '30%'}}> {this.props.ConsoleMessage} </Text>
         </View>
       );

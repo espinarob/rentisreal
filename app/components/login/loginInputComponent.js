@@ -96,45 +96,21 @@ export default class LoginInputComponent extends Component{
 			errorMessage: ''
 	}
 
-	onLogin = async () =>{
+	onLogin = () =>{
 		let found = false;
 		if(this.state.username == '' || this.state.password == '' ){
 			this.setState({errorMessage:'Please input password or username!'});
 		}
-		else if(this.props.Accounts.length === 0){
-			this.setState({errorMessage:'No Accounts Detected!'});
-		} 
-		else{
-			let index = -1;
-			for(index=0;index<this.props.Accounts.length;index++){
-				let currentAccount = this.props.Accounts[index];
-				if(currentAccount.username == this.state.username 
-					&& currentAccount.password == this.state.password){
-					found = true;
-					break;
-				}
-			}
+		else this.props.doProcessLogin(this.state.username,this.state.password);
+	}
 
-			if(found){
-				try{
-					await AsyncStorage.setItem(Constants.API_KEY,String(this.props.IDs[index]));
-					await AsyncStorage.setItem(Constants.USER_NAME_KEY,String(this.state.username));
-					await AsyncStorage.setItem(Constants.PASS_WORD_KEY,String(this.state.password));
-					await AsyncStorage.setItem(Constants.ACCOUNT_INDEX,String(index));
-				}
-				catch(error){
-					console.log('Failed to save data!');
-					return;
-				}
-				await setTimeout(()=>console.log('Logging in!'),2000);
-					this.setState({errorMessage:'Successfully Login!'});
-					this.props.doChangeLoginFlag(true);
-			}
-			else{
-				this.props.doChangeLoginFlag(false);
-				this.setState({errorMessage:'Incorrect username or password!'});
-				return;
-			}
+
+	verifyErrorExists = ()=>{
+		if(this.props.errorMessage.length!=0){
+			return this.props.errorMessage;
+		}
+		else{
+			return this.state.errorMessage;
 		}
 	}
 	render() {
@@ -162,7 +138,7 @@ export default class LoginInputComponent extends Component{
     			</View>
     			<View style={loginInputWrapperStyle.errorSection}>
 					<Text style= {{fontSize:12,fontWeight:'bold',paddingTop:8,paddingLeft: '24%'}}>
-						{this.state.errorMessage}
+						{this.verifyErrorExists()}
 					</Text>
     			</View>
     			<View style={loginInputWrapperStyle.loginButtonSection}>

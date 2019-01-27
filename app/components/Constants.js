@@ -2,14 +2,18 @@ const Constants ={
 	CONSOLE_MESSAGES: {
 	  NO_INTERNET       : "Getting Connection..",
 	  ON_REGISTER_CYCLE : "Getting Registration..",
-	  LOGGING_OUT       : "Logging out,please wait.."
+	  LOGGING_OUT       : "Logging out,please wait..",
+	  LOGGING_IN        : "Logging in,please wait.."
 	},
 	USER_NAME_KEY       : "RENT_IS_REAL_USER_NAME_KEY",
 	PASS_WORD_KEY       : "RENT_IS_REAL_PASS_WORD_KEY",
 	API_KEY             : "RENT_IS_REAL_API_KEY",
-	ACCOUNT_INDEX       : "RENT_IS_REAL_ACC_INDEX",
-	CONTACT_NUMLENGTH   : "11",
+	ACCOUNT_ROLE        : "RENT_IS_REAL_ACCOUNT_ROLE",
 
+	STATUS:{
+		PENDING         : "REQ_PENDING",
+		ACCEPTED        : "REQ_ACCEPTED"
+	},
 
 	OWNER_ACTIONS: {
 		MY_PROPERTY     : 'Property',

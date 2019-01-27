@@ -101,8 +101,7 @@ export default class updateDetailsWrapperStyleails extends Component{
     errorMsg     :''
 	}	
 
-  genderChange = (event) => {
-    event.persist();
+  genderChange = () => {
     this.setState({gender:!this.state.gender});
   }
 
@@ -188,7 +187,7 @@ export default class updateDetailsWrapperStyleails extends Component{
   						  	height:'100%',
   						  	paddingTop:5,
   						  	left:5}}>
-    					Middle Initial:
+    					Middle Name:
 					  </Text>
             <TextInput
               style={updateDetailsWrapperStyle.commonInputElemenStyle}
@@ -265,7 +264,7 @@ export default class updateDetailsWrapperStyleails extends Component{
                 left:110,
                 borderWidth:2}}
                 value={this.state.gender}
-                onChange={ ()=>this.genderChange}/>
+                onChange={ ()=>this.genderChange()}/>
 
             <Text style={{
                   position: 'relative',
@@ -280,7 +279,7 @@ export default class updateDetailsWrapperStyleails extends Component{
                 left:120,
                 borderWidth:2}}
                 value={!this.state.gender}
-                onChange={ ()=>this.genderChange}/>
+                onChange={ ()=>this.genderChange()}/>
             <Text style={{
                   position: 'relative',
                   width:60,

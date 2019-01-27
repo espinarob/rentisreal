@@ -3,7 +3,7 @@ import { Platform, StyleSheet, Text, View, TextInput, CheckBox, TouchableHighlig
 
 const addPropertyWrapperStyle = StyleSheet.create({
 	mainWrapper: {
-		flex: 1,
+		flex: 2,
 		top: 20,
 		color: '#000'
 	},
@@ -59,16 +59,22 @@ const addPropertyWrapperStyle = StyleSheet.create({
 		top: 19,
 		flexDirection: 'row'
 	},
+	furtherDataSection:{
+		position: 'relative',
+		height: 30,
+		top: 22,
+		flexDirection: 'row'
+	},
 	errorSection:{
 		position: 'relative',
 		height: 30,
-		top: 21,
+		top: 25,
 		flexDirection: 'row'	
 	},
 	confirmSection:{
 		position: 'relative',
 		height: 35,
-		top: 27,
+		top: 29,
 		flexDirection: 'row'
 	},
 	propertyNameInputStyle:{
@@ -141,6 +147,17 @@ const addPropertyWrapperStyle = StyleSheet.create({
 		fontSize: 12,
 		borderWidth:1
 	},
+	propertyFurtherDataInputStyle: {
+		width: 150,
+		height: '100%',
+		left: 40,
+		alignItems: 'stretch',
+		padding: 0,
+		position: 'relative',
+		borderRadius: 5,
+		fontSize: 12,
+		borderWidth:1
+	},
 	confirmButtonStyle: {
 		position: 'relative',
 		left: 120,
@@ -164,6 +181,7 @@ export default class AddProperty extends Component{
 		propertyFinalPrice:     '',
 		propertyPhotoSection:   '',
 		propertyDescription:    '',
+		propertyFurtherData:    '',
 		addPropertyError   :    ''
 	}
 
@@ -180,23 +198,18 @@ export default class AddProperty extends Component{
 			return;
 		}
 		else if( Number(this.state.propertyPoolingQty) == 0 ){
-			return this.state.propertyMonthnlyPrice;
-		}
+			let initFinalPrice = this.state.propertyMonthnlyPrice;
+			return initFinalPrice;
+		}	
 		else if( Number(this.state.propertyPoolingQty)<0 ){
 			return;
 		}
 		else if( Number(this.state.propertyPoolingQty)>0 ){
-			return this.state.propertyMonthnlyPrice/this.state.propertyPoolingQty;
+			let initFinalPrice = this.state.propertyMonthnlyPrice/this.state.propertyPoolingQty
+			return initFinalPrice;
 		}	
 	}
 	doAddProperty = () =>{
-		/*let currentProperty = this.props.AccountDetails.property;
-		for(index=0;index<currentProperty.length;index++){
-			let currentName = currentProperty[index];
-			if(currentName == this.state.propertyName){
-				return;
-			}
-		} */
 		if(this.state.propertyName.length==0){
 			this.setState({
 			   	addPropertyError: 'Please input property name!'});
@@ -235,44 +248,63 @@ export default class AddProperty extends Component{
 			   	addPropertyError:'Pooling Quantity Should not be a Negative!'});
 		}
 		else{
-
-
-			this.setState({
-			   	addPropertyError:'Successfully Added!'});
 			setTimeout( ()=>{
 				this.setState({
 			   	addPropertyError:''});
 			},2500);
-			const passData = {
-				propertyName:           this.state.propertyName,
-				propertyLocation:       this.state.propertyLocation,
-				propertyBedroomPooling: this.state.propertyBedroomPooling,
-				propertyPoolingQty:     this.state.propertyPoolingQty,
-				propertyMonthnlyPrice:  this.state.propertyMonthnlyPrice,
-				propertyFinalPrice:     this.state.propertyFinalPrice,
-				propertyPhotoSection:   this.state.propertyPhotoSection,
-				propertyDescription:    this.state.propertyDescription
-			};
-		//	this.props.doAddPropertyOwner(passData);
-			this.setState({
-				propertyName:           '',
-				propertyLocation:       '',
-				propertyBedroomPooling: false,
-				propertyPoolingQty:     '0',
-				propertyMonthnlyPrice:  '0',
-				propertyFinalPrice:     '',
-				propertyPhotoSection:   '',
-				propertyDescription:    ''
-			});
+			if(this.state.propertyBedroomPooling == false){
+				const passData = {
+					propertyName:           this.state.propertyName,
+					propertyLocation:       this.state.propertyLocation,
+					propertyBedroomPooling: this.state.propertyBedroomPooling,
+					propertyPoolingQty:     '1',
+					propertyMonthnlyPrice:  String(Math.ceil(this.state.propertyMonthnlyPrice)),
+					propertyFinalPrice:     this.state.propertyFinalPrice,
+					propertyDescription:    this.state.propertyDescription,
+					propertyFurtherData:    this.state.propertyFurtherData,
+					propertyFinalPrice:     String(Math.ceil(this.state.propertyMonthnlyPrice))
+				};
+				this.props.doAddPropertyOwner(passData);
+			}
+			else{
+				let initFinalPrice = this.state.propertyMonthnlyPrice/this.state.propertyPoolingQty;
+				initFinalPrice     = Math.ceil(initFinalPrice);
+				const passData = {
+					propertyName:           this.state.propertyName,
+					propertyLocation:       this.state.propertyLocation,
+					propertyBedroomPooling: this.state.propertyBedroomPooling,
+					propertyPoolingQty:     this.state.propertyPoolingQty,
+					propertyMonthnlyPrice:  String(Math.ceil(this.state.propertyMonthnlyPrice)),
+					propertyFinalPrice:     this.state.propertyFinalPrice,
+					propertyDescription:    this.state.propertyDescription,
+					propertyFurtherData:    this.state.propertyFurtherData,
+					propertyFinalPrice:     String(initFinalPrice)
+				};
+				this.props.doAddPropertyOwner(passData);
+
+			}
+			
 		}
 	}
+
+	propertyError = ()=>{
+		if(this.props.addPropertyErrMSG.length!=0){
+			return this.props.addPropertyErrMSG;
+		}
+		else{
+			return this.state.addPropertyError;
+		}
+
+	}
+
+
 	render() {
     	return (
     		<View style={addPropertyWrapperStyle.mainWrapper}>
     			<View style={addPropertyWrapperStyle.addPropertyLabel}>
     				<Text 
     					style={{fontSize:15,position:'relative',left:15}}>
-    					Properties Information: </Text>
+    					Create Property Information: </Text>
     			</View>
 
     			<View style={addPropertyWrapperStyle.nameSection}>
@@ -346,13 +378,23 @@ export default class AddProperty extends Component{
     					onChangeText = { (propertyDescription) => this.setState({propertyDescription})}/>
     			</View>
 
+    			<View style={addPropertyWrapperStyle.furtherDataSection}>
+    				<Text
+    					style={{fontSize:15,position:'relative',left:13,paddingTop:5}}>
+    					Add Info:</Text>
+    				<TextInput
+    					placeholder = "Further Information"
+    					style={addPropertyWrapperStyle.propertyFurtherDataInputStyle}
+    					onChangeText = { (propertyFurtherData) => this.setState({propertyFurtherData})}/>
+    			</View>
 
     			<View style={addPropertyWrapperStyle.errorSection}>
     				<Text
     					style={{fontSize:12,position:'relative',left:16,paddingTop:5}}>
-    					{this.state.addPropertyError} </Text>
+    					{this.propertyError()} </Text>
     			</View>
 
+    			
     			<View style={addPropertyWrapperStyle.confirmSection}>
     				<TouchableHighlight style={addPropertyWrapperStyle.confirmButtonStyle}
     					 onPress={ ()=> this.doAddProperty() }

@@ -19,27 +19,7 @@ const headerComponentWrapperStyle = StyleSheet.create({
 
 export default class HeaderComponent extends Component{
 	state = {
-		mainWrapperFlex: 13
-	}
-
-	componentDidMount(){
-		this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow',
-			this._keyboardDidShow);
-		this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide',
-			this._keyboardDidHide);
-	}
-
-	componentWillUnmount(){
-		this.keyboardDidShowListener.remove();
-		this.keyboardDidHideListener.remove();
-	}
-
-	_keyboardDidShow = () =>{
-		this.setState({mainWrapperFlex:20});
-	}
-
-	_keyboardDidHide = () =>{
-		this.setState({mainWrapperFlex:12});
+		mainWrapperFlex: 12
 	}
 
 

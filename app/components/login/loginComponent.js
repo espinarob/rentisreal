@@ -16,10 +16,9 @@ export default class LoginComponent extends Component{
     		<View style={loginWrapperStyle.mainWrapper}> 
     			<LoginLogoComponent/>
     			<LoginInputComponent 
-                    Accounts={this.props.Accounts} 
-                    IDs     ={this.props.IDs}
-                    doChangeLoginFlag={this.props.doChangeLoginFlag}
-                    doChangeRegisterFlag={this.props.doChangeRegisterFlag}/>
+                    doChangeRegisterFlag={this.props.doChangeRegisterFlag}
+                    doProcessLogin      ={this.props.doProcessLogin}
+                    errorMessage        ={this.props.errorMessage}/>
                    
                     
     		</View>

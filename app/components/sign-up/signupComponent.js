@@ -16,9 +16,9 @@ export default class SignUpComponent extends Component{
     		<View style={signUpWrapperStyle.mainWrapper}>
                 <SignUpTitleComponent/>
                 <SignUpInputComponent 
-                    Accounts = {this.props.Accounts}
-                    doChangeRegisterFlag={this.props.doChangeRegisterFlag}
-                    doProcessRegistration={this.props.doProcessRegistration}/>
+                    doProcessRegistration={this.props.doProcessRegistration}
+                    errorMsg  = {this.props.errorMsg}
+                    doChangeRegisterFlag = {this.props.doChangeRegisterFlag}/>
                     
     		</View>
     	);
