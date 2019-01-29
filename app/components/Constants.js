@@ -12,7 +12,8 @@ const Constants ={
 
 	STATUS:{
 		PENDING         : "REQ_PENDING",
-		ACCEPTED        : "REQ_ACCEPTED"
+		ACCEPTED        : "REQ_ACCEPTED",
+		DECLINE         : "REQ_DECLINE"
 	},
 
 	OWNER_ACTIONS: {

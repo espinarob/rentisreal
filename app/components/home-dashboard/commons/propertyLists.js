@@ -16,7 +16,8 @@ export default class PropertyLists extends Component{
     state = {
         searchFlag: false,
         somethingPressed: 'false',
-        pressedPropertyDetails: []
+        pressedPropertyDetails: [],
+        allProperties: []
     }
     getProperties = ()=>{
         if(this.props.Properties.length!=0){
@@ -24,11 +25,13 @@ export default class PropertyLists extends Component{
         }
         else return [];
     }
+    filterSearches = (keyWord)=>{
 
+    }
     renderHeader = ()=>{
         return <View style={{flexDirection:'row',backgroundColor:'#ccd5e5'}}>
                 <View style={{flex:80}}>   
-                    <SearchBar placeholder="Type Here..." lightTheme round />
+                    <SearchBar onChangeText={ (text)=>{this.filterSearches(text)}} placeholder="Type Here..." lightTheme round />
                 </View>
                 <View style={{flex:25}}>
 
@@ -63,6 +66,15 @@ export default class PropertyLists extends Component{
         }
     }
 
+    doDisplayAvailability = (quantity)=>{
+        if(Number(quantity)<=0){
+            return 'Full slot';
+        }
+        else{
+            return String(quantity)+' slot/s available';
+        }
+    }
+
     propertyListsMainDisplay = ()=> {
         if(this.state.somethingPressed=='false'){
             return <FlatList
@@ -79,6 +91,9 @@ export default class PropertyLists extends Component{
                                 }}>
                                 <Text style={{fontSize:11}}>
                                     Address: {item.propertyLocation} 
+                                </Text>
+                                 <Text style={{fontSize:11,fontWeight:'bold'}}>
+                                    Vacant: {this.doDisplayAvailability(item.propertyVacant)}
                                 </Text>
                                 <View style={{flexDirection:'row'}}>
                                     <Text style={{fontSize:11,width:175,height:30}}>

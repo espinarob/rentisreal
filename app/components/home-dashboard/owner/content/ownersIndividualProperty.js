@@ -32,20 +32,23 @@ export default class OwnersIndividualProperty extends Component {
   }
 
   doCreateAlertForDelete = ()=>{
-    if(this.props.pressedPropertyDetails.requests){
-       Alert.alert(
-          'Warning',
-          'Cannot process due to requests are present',
-        [
-          {text: 'OK', onPress: () => console.log('Cannot process due to requests are present')},
-        ]);
-    }
-    else if(this.props.pressedPropertyDetails.accepted){
+    
+
+    if( Number(this.props.pressedPropertyDetails.propertyPoolingQty)
+              >Number(this.props.pressedPropertyDetails.propertyVacant) ){
        Alert.alert(
           'Warning',
           'There are present tenants',
         [
           {text: 'OK', onPress: () => console.log('There are present tenants')},
+        ]);
+    }
+    else if(this.props.pressedPropertyDetails.requests){
+       Alert.alert(
+          'Warning',
+          'Cannot process due to requests are present',
+        [
+          {text: 'OK', onPress: () => console.log('Cannot process due to requests are present')},
         ]);
     }
     else{
@@ -71,7 +74,7 @@ export default class OwnersIndividualProperty extends Component {
 
   doUpdateNow = ()=>{
     if(this.state.propertyFurtherData == ''){
-      this.setState({errorMessage:'Please input further information!'});
+      this.setState({errorMessage:'Please input further information'});
       return;
     }
     else if(this.state.propertyDescription == ''){
@@ -100,6 +103,15 @@ export default class OwnersIndividualProperty extends Component {
     }
   }
 
+
+  displayAvailability = ()=>{
+    if(Number(this.props.pressedPropertyDetails.propertyVacant)<=0){
+      return 'Full'
+    }
+    else{
+      return String(this.props.pressedPropertyDetails.propertyVacant)+' slots available'
+    }
+  }
 
   render() {
 
@@ -251,7 +263,7 @@ export default class OwnersIndividualProperty extends Component {
 
           <View style={{
                   flexDirection: 'row',
-                  height: 25,
+                  height: 21,
                   top:110
           }}>
             <Text style={{
@@ -265,7 +277,7 @@ export default class OwnersIndividualProperty extends Component {
 
           <View style={{
                   flexDirection: 'row',
-                  height: 25,
+                  height: 21,
                   top:111
           }}>
             <Text style={{
@@ -279,7 +291,7 @@ export default class OwnersIndividualProperty extends Component {
 
           <View style={{
                   flexDirection: 'row',
-                  height: 25,
+                  height: 21,
                   top:112
           }}>
             <Text style={{
@@ -293,7 +305,7 @@ export default class OwnersIndividualProperty extends Component {
 
           <View style={{
                   flexDirection: 'row',
-                  height: 25,
+                  height: 21,
                   top:113
           }}>
             <Text style={{
@@ -307,7 +319,7 @@ export default class OwnersIndividualProperty extends Component {
 
           <View style={{
                   flexDirection: 'row',
-                  height: 25,
+                  height: 21,
                   top:114
           }}>
             <Text style={{
@@ -317,6 +329,19 @@ export default class OwnersIndividualProperty extends Component {
               width: '100%',
               paddingTop:2
             }}>Individual Price: {this.props.pressedPropertyDetails.propertyFinalPrice} </Text>
+          </View>
+          <View style={{
+                  flexDirection: 'row',
+                  height: 21,
+                  top:114
+          }}>
+            <Text style={{
+              position:'relative',
+              fontSize:13,
+              left:20,
+              width: '100%',
+              paddingTop:2
+            }}>Vacant: {this.displayAvailability()}</Text>
           </View>
 
       </React.Fragment>

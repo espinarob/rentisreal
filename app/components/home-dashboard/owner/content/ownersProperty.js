@@ -50,9 +50,9 @@ export default class OwnersProperty extends Component{
 		if(this.state.ownerPropertyAction == 'avail-property'){
 			return <React.Fragment>
 					<AvailableProperty
-						doViewMyProperty = {this.props.doViewMyProperty}
-						doDeleteProperty = {this.props.doDeleteProperty}
-						doUpdateProperty = {this.props.doUpdateProperty}/>
+						doViewMyProperty   = {this.props.doViewMyProperty}
+						doDeleteProperty   = {this.props.doDeleteProperty}
+						doUpdateProperty   = {this.props.doUpdateProperty}/>
 				   </React.Fragment>
 
 		}
@@ -67,7 +67,9 @@ export default class OwnersProperty extends Component{
 		else if(this.state.ownerPropertyAction == 'view-requests'){
 			return <React.Fragment>
 					<ViewRequests
-						doViewMyProperty = {this.props.doViewMyProperty} />
+						doViewMyProperty   = {this.props.doViewMyProperty}
+						doAcceptTenantReq  = {this.props.doAcceptTenantReq}
+						doDeclineTenantReq = {this.props.doDeclineTenantReq} />
 				   </React.Fragment>
 		}
 

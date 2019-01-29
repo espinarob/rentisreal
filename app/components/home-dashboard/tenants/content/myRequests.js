@@ -42,14 +42,39 @@ export default class MyRequests extends Component{
 						height:'100%',
 						borderWidth: 2,
 						paddingLeft: 5,
-						borderColor:'#42f46e'
+						borderColor:'#c9060f'
 				    }}>
 				    	Cancel
 				   </Text>
 				  </TouchableWithoutFeedback>
 		}
+		else if(status == Constants.STATUS.ACCEPTED){
+			return <Text style={{
+						position: 'relative',
+						width: 73,
+						left: 45,
+						fontSize:15,
+						height:'100%',
+						borderWidth: 2,
+						paddingLeft: 5,
+						borderColor:'#42f46e'
+				    }}>
+				    	Accepted
+				   </Text>
+		}
 		else{
-			return;
+			return <Text style={{
+						position: 'relative',
+						width: 74,
+						left: 45,
+						fontSize:15,
+						height:'100%',
+						borderWidth: 2,
+						paddingLeft: 5,
+						borderColor:'#c9060f'
+				    }}>
+				    	Declined
+				   </Text>
 		}
 	}
 
@@ -77,14 +102,14 @@ export default class MyRequests extends Component{
 	    					<View style={{
 	    						borderBottomWidth:3,
 	    						borderColor: 
-	    							item.requestStatus == Constants.STATUS.PENDING ? '#c9060f' : '#42f46e' ,
+	    							item.requestStatus == Constants.STATUS.ACCEPTED ? '#42f46e' : '#c9060f',
 	    						height:82,
-	    						top:2
+	    						marginTop:3
 	    					}}>
 	    						<View style={{
 	    								flexDirection: 'row',
 	    								height:22,
-	    								top:2
+	    								top:5
 									  }}>
 		    						<Text style={{
 		    							position: 'relative',

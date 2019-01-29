@@ -68,7 +68,7 @@ export default class HomeTemplate extends Component{
         else if(this.state.role == 'tenant'){
             return  <React.Fragment>
                         <TenantsBody 
-                            performOperation = {this.state.tenantOperation}
+                            performOperation   = {this.state.tenantOperation}
                             doChangeLoginFlag  = {this.props.doChangeLoginFlag}
                             doChangeLogoutFlag = {this.props.doChangeLogoutFlag}
                             doProcessUpdate    = {this.props.doProcessUpdate}
@@ -79,27 +79,30 @@ export default class HomeTemplate extends Component{
                             doDeleteARequest   = {this.props.doDeleteARequest}
                             requestPropertyMSG = {this.props.requestPropertyMSG}/>
                         <TenantsTabs
-                            doOperate= {this.setTenantOperation}/>
+                            doOperate          = {this.setTenantOperation}/>
                     </React.Fragment>;
                     
         }
         else if(this.state.role == 'owner'){            
             return  <React.Fragment>
                         <OwnersBody
-                            performOperation   = {this.state.ownerOperation}
-                            doChangeLoginFlag  = {this.props.doChangeLoginFlag}
-                            doChangeLogoutFlag = {this.props.doChangeLogoutFlag}
-                            doProcessUpdate    = {this.props.doProcessUpdate}
-                            doAddPropertyOwner = {this.props.doAddPropertyOwner}
-                            Properties         = {this.props.Properties}
-                            doGetMyAccount     = {this.props.doGetMyAccount}
-                            doViewMyProperty   = {this.props.doViewMyProperty}
-                            doDeleteProperty   = {this.props.doDeleteProperty}
-                            doUpdateProperty   = {this.props.doUpdateProperty}
-                            addPropertyErrMSG  = {this.props.addPropertyErrMSG}/>
+                            performOperation     = {this.state.ownerOperation}
+                            doChangeLoginFlag    = {this.props.doChangeLoginFlag}
+                            doChangeLogoutFlag   = {this.props.doChangeLogoutFlag}
+                            doProcessUpdate      = {this.props.doProcessUpdate}
+                            doAddPropertyOwner   = {this.props.doAddPropertyOwner}
+                            Properties           = {this.props.Properties}
+                            doGetMyAccount       = {this.props.doGetMyAccount}
+                            doViewMyProperty     = {this.props.doViewMyProperty}
+                            doDeleteProperty     = {this.props.doDeleteProperty}
+                            doUpdateProperty     = {this.props.doUpdateProperty}
+                            doAcceptTenantReq    = {this.props.doAcceptTenantReq}
+                            doViewMyTransactions = {this.props.doViewMyTransactions}
+                            doDeclineTenantReq   = {this.props.doDeclineTenantReq}
+                            addPropertyErrMSG    = {this.props.addPropertyErrMSG}/>
                             
                         <OwnersTabs 
-                            doOperate= {this.setOwnerOperation} />
+                            doOperate            = {this.setOwnerOperation} />
                     </React.Fragment>;
         }
         else{

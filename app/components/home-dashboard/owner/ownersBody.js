@@ -5,6 +5,7 @@ import UpdateDetails  from "../commons/updateDetails.js";
 import Constants from "../../Constants.js";
 import ForMoreBody from "../commons/forMore.js";
 import PropertyLists from "../commons/propertyLists.js"; 
+import MyTransactions from "../owner/content/myTransactions.js";
 
 export default class OwnersBody extends Component{
 
@@ -17,7 +18,9 @@ export default class OwnersBody extends Component{
 				   		doViewMyProperty   = {this.props.doViewMyProperty}
 				   		doDeleteProperty   = {this.props.doDeleteProperty}
 				   		doUpdateProperty   = {this.props.doUpdateProperty}
-				   		addPropertyErrMSG  = {this.props.addPropertyErrMSG}/>
+				   		addPropertyErrMSG  = {this.props.addPropertyErrMSG}
+				   		doAcceptTenantReq  = {this.props.doAcceptTenantReq}
+				   		doDeclineTenantReq = {this.props.doDeclineTenantReq}/>
 				   </React.Fragment>
 		}
 		else if(this.props.performOperation == Constants.OWNER_ACTIONS.MY_ACCOUNT){
@@ -40,6 +43,12 @@ export default class OwnersBody extends Component{
 				   	<PropertyLists
 				   		Properties= {this.props.Properties}
 				   		doGetMyAccount = {this.props.doGetMyAccount}/>
+				   </React.Fragment>
+		}
+		else if( this.props.performOperation == Constants.OWNER_ACTIONS.TRANSACTIONS){
+			return <React.Fragment>
+					<MyTransactions
+						doViewMyTransactions = {this.props.doViewMyTransactions} />
 				   </React.Fragment>
 		}
 	}

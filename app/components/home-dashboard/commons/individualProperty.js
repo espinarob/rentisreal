@@ -108,6 +108,26 @@ export default class IndividualProperty extends Component {
                 }}>Pending</Text>
               </View> 
     }
+    else if(this.state.currentRequest.requestStatus == Constants.STATUS.ACCEPTED ){
+      
+      return  <View style={{
+                borderRadius:2,
+                width: 230,
+                position:'relative',
+                left: 70,
+                borderWidth:2,
+                borderColor: '#42f46e'
+              }}>
+                <Text style={{
+                        position:'relative',
+                        fontSize: 15,
+                        width: 200,
+                        left: 20,
+                        paddingTop:3,
+                        color: "#000"
+                }}>YOU ARE A TENANT HERE</Text>
+              </View> 
+    }
     else{
       return <TouchableWithoutFeedback
               onPress={()=>this.operateRequest()}>

@@ -37,7 +37,8 @@ export default class OwnersTabs extends Component{
             						name="newsletter"
             						type="Entypo" />
             				</Button>
-            				<Button>
+            				<Button
+                                onPress={()=>this.props.doOperate(Constants.OWNER_ACTIONS.TRANSACTIONS)}>
             					<Icon style={ownersTabsWrapperStyle.textStyleCommon} 
             						name="home-currency-usd"
             						type="MaterialCommunityIcons" />

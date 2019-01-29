@@ -22,7 +22,8 @@ export default class ViewRequests extends Component {
   }
   state = {
     propertyIsPress: 'false',
-    pressedPropertyRequests: []
+    pressedPropertyRequests: [],
+    pressedPropertyDetails: []
   }
 
   doRefreshData = ()=>{
@@ -45,8 +46,9 @@ export default class ViewRequests extends Component {
     this.setState({allAccountRequests:initRequests});
   }
 
-  doAdjustRequest = (allRequests)=>{
+  doAdjustRequest = (property,allRequests)=>{
     this.setState({pressedPropertyRequests:allRequests});
+    this.setState({pressedPropertyDetails:property});
     this.setState({propertyIsPress:'true'});
   }
 
@@ -68,7 +70,7 @@ export default class ViewRequests extends Component {
                 data={this.props.doViewMyProperty}
                 renderItem={({item})=>
                   <TouchableWithoutFeedback
-                    onPress={()=>this.doAdjustRequest(item.requests)}>
+                    onPress={()=>this.doAdjustRequest(item,item.requests)}>
                     <View style={{
                             borderWidth:2,
                             height: 50,
@@ -104,8 +106,11 @@ export default class ViewRequests extends Component {
     else{
       return  <View style={viewRequestsWrapperStyle.mainWrapper}>
                 <SeeAllRequests
-                  doGetBack = {this.backPage}
-                  doGetAllRequests = {this.state.pressedPropertyRequests} />
+                  doGetBack              = {this.backPage}
+                  doGetAllRequests       = {this.state.pressedPropertyRequests}
+                  pressedPropertyDetails = {this.state.pressedPropertyDetails} 
+                  doAcceptTenantReq      = {this.props.doAcceptTenantReq}
+                  doDeclineTenantReq     = {this.props.doDeclineTenantReq}/>
               </View>
     }
   }

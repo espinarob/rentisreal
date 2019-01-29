@@ -29,6 +29,7 @@ export default class MainComponent extends Component {
       myProperty              : [],
       Properties              : [],
       myRequests              : [],
+      myTransactions          : [],
       signUpError             : '',
       loginError              : '',
       addPropertyError        : '', 
@@ -114,6 +115,7 @@ export default class MainComponent extends Component {
                   });
               }
               else{
+                this.setState({loginError:'Incorrect Username/Password'});
                 console.log('Incorrect Password!');
                 this.changeLoginFlag(false);
               }
@@ -193,13 +195,14 @@ export default class MainComponent extends Component {
       	.on("value", snapshot => { 
        		const data = snapshot.val();
           if(data){
-    	 		  const initAccounts    = [];
-            const finalProperties = []; 
-            const finalRequests   = [];
-            const initMyProperty  = [];
-            const initMyRequests  = [];
-            let initMyAccount     = [];
-            let index             = 0;
+    	 		  const initAccounts       = [];
+            const finalProperties    = []; 
+            const finalRequests      = [];
+            const initMyProperty     = [];
+            const initMyRequests     = [];
+            const initMyTransactions = [];
+            let initMyAccount        = [];
+            let index                = 0;
            	Object
           		.keys(data)
             	.forEach(account => {
@@ -230,6 +233,18 @@ export default class MainComponent extends Component {
                       });
                   }
                 }
+
+                if(initAccounts[index].transactions){
+                  if(String(account) == String(this.state.onHandKeyReference)){
+                    currentAccountTransaction = JSON.parse(JSON.stringify(initAccounts[index].transactions));
+                    Object
+                      .keys(currentAccountTransaction)
+                      .forEach( (transactionKey)=>{
+                        initMyTransactions.push(currentAccountTransaction[transactionKey]);
+                      });
+                  }
+                }
+
                 index++;
               });
             this.setState({
@@ -237,8 +252,8 @@ export default class MainComponent extends Component {
               myAccountDetails:initMyAccount, 
               Properties: finalProperties,
               myProperty: initMyProperty,
-              myRequests: initMyRequests
-
+              myRequests: initMyRequests,
+              myTransactions: initMyTransactions
             });
             console.log('Success Firebase...');
           }
@@ -486,12 +501,104 @@ export default class MainComponent extends Component {
     });
   }
 
+
+  acceptTenantRequest= (property,request)=>{
+    let data = [];
+    firebase
+      .database()
+      .ref("Accounts/"+
+        String(request.tenantID)+
+        "/requests/"+
+        String(request.requestID))
+      .update({requestStatus:Constants.STATUS.ACCEPTED})
+      .then(()=>{
+        request.requestStatus = Constants.STATUS.ACCEPTED;
+        data = request;
+        data['propertyName']          = property.propertyName;
+        data['propertyLocation']      = property.propertyLocation;
+        data['propertyFinalPrice']    = property.propertyFinalPrice;
+        data['propertyMonthnlyPrice'] = property.propertyMonthnlyPrice;
+        data['propertyDescription']   = property.propertyDescription;
+        data['propertyFurtherData']   = property.propertyFurtherData;
+        data['propertyPoolingQty']    = property.propertyPoolingQty;
+        data = JSON.parse(String(JSON.stringify(data)));
+        let currentVacant = Number(property.propertyVacant);
+        currentVacant-=1;
+        property.propertyVacant = String(currentVacant);
+       })
+      .then(()=>{
+        const accountKey = firebase
+                            .database()
+                            .ref("Accounts/"+
+                              String(request.tenantID)+
+                              "/rentals/"+
+                              String(request.requestID))
+        accountKey.update(data)
+        .then(()=>{
+          firebase
+            .database()
+            .ref("Accounts/"+String(property.Account)+"/property/"+String(property.propertyID))
+            .update({propertyVacant:property.propertyVacant})
+            .then(()=>{
+              firebase
+                .database()
+                .ref("Accounts/"+String(property.Account)+"/transactions/"+String(property.propertyID))
+                .update(data)
+                .then(()=>{
+                  firebase
+                    .database()
+                    .ref("Accounts/"+
+                      String(property.Account)+
+                      "/property/"+
+                      String(property.propertyID)+
+                      "/requests/"+
+                      String(request.requestID))
+                    .remove();
+                });
+            });
+        })
+        .catch( (error) =>{
+          console.log('Accepting Request [OWNER PROPERTY][1]: Check your internet connection!');
+        });
+
+
+      })
+      .catch( (error)=>{
+        console.log('Accepting Request: Check your internet connection!');
+      }); 
+  }
+
+  declineTenantRequest = (property,request)=>{
+   firebase
+      .database()
+      .ref("Accounts/"+
+        String(request.tenantID)+
+        "/requests/"+
+        String(request.requestID))
+      .update({requestStatus:Constants.STATUS.DECLINE})
+      .then(()=>{
+        firebase
+          .database()
+          .ref("Accounts/"+
+            String(property.Account)+
+            "/property/"+
+            String(property.propertyID)+
+            "/requests/"+
+            String(request.requestID))
+          .remove();
+      })
+      .catch((error)=>{
+        console.log('First Step Decline: Error!');
+      })
+  }
+
   verifyAccountsExist = () =>{
     if(this.state.Accounts.length!=0){
       return this.state.Accounts;
     }
     else return [];
   }
+
 
   changeLoginFlag = (success) =>{
     if(success===true){
@@ -564,33 +671,36 @@ export default class MainComponent extends Component {
     else if(this.state.showRegisterPage == 'true'){
       return <SignUpComponent 
               doProcessRegistration = {this.processSignup}
-              errorMsg = {this.state.signUpError}
-              doChangeRegisterFlag= {this.changeRegisterFlag}/>
+              errorMsg              = {this.state.signUpError}
+              doChangeRegisterFlag  = {this.changeRegisterFlag}/>
               
     }
     else if(this.state.successfullyLogin == 'true'){
       return <HomeTemplate
-              Properties={this.state.Properties}
-              doChangeLoginFlag={this.changeLoginFlag}
-              doChangeLogoutFlag={this.changeLoggingOutFlag}
-              doProcessUpdate={this.accountUpdate}
-              doAddPropertyOwner= {this.addProperty}
-              doesDataLoad      = {this.state.loadingData}
-              doViewMyProperty  = {this.state.myProperty}
-              doGetMyAccount    = {this.state.myAccountDetails}
-              doDeleteProperty  = {this.deletOneProperty}
-              doUpdateProperty  = {this.updateOneProperty}
-              doSendARequest    = {this.requestAProperty}
-              doViewMyRequests  = {this.state.myRequests}
-              doDeleteARequest  = {this.deleteARequestProperty}
-              addPropertyErrMSG = {this.state.addPropertyError}
-              requestPropertyMSG = {this.state.requestPropertyError}/>
+              Properties           = {this.state.Properties}
+              doChangeLoginFlag    = {this.changeLoginFlag}
+              doChangeLogoutFlag   = {this.changeLoggingOutFlag}
+              doProcessUpdate      = {this.accountUpdate}
+              doAddPropertyOwner   = {this.addProperty}
+              doesDataLoad         = {this.state.loadingData}
+              doViewMyProperty     = {this.state.myProperty}
+              doGetMyAccount       = {this.state.myAccountDetails}
+              doDeleteProperty     = {this.deletOneProperty}
+              doUpdateProperty     = {this.updateOneProperty}
+              doSendARequest       = {this.requestAProperty}
+              doViewMyRequests     = {this.state.myRequests}
+              doDeleteARequest     = {this.deleteARequestProperty}
+              doAcceptTenantReq    = {this.acceptTenantRequest}
+              doDeclineTenantReq   = {this.declineTenantRequest}
+              doViewMyTransactions = {this.state.myTransactions}
+              addPropertyErrMSG    = {this.state.addPropertyError}
+              requestPropertyMSG   = {this.state.requestPropertyError}/>
     }
     else{
       return <LoginComponent
-              doProcessLogin      = {this.processLogin}
-              doChangeRegisterFlag={this.changeRegisterFlag}
-              errorMessage        ={this.state.loginError}/>
+              doProcessLogin       = {this.processLogin}
+              doChangeRegisterFlag = {this.changeRegisterFlag}
+              errorMessage         = {this.state.loginError}/>
               
     }
   }
