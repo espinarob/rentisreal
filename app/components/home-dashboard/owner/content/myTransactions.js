@@ -2,18 +2,57 @@ import React, {Component} from 'react';
 import { Platform, StyleSheet, Text, View,FlatList,TouchableWithoutFeedback} from "react-native";
 import { List, ListItem, SearchBar } from 'react-native-elements';
 import FontAwesome, { Icons } from "react-native-fontawesome";
+import OwnersIndividualTransaction from './ownersIndividualTransaction.js';
 
 
 export default class MyTransactions extends Component {
 
 
+  state = {
+    transactionIsPressed: 'false',
+    transactionPressedDetails: []
+
+  }
+
+
+  doAdjustTransaction = (transaction)=>{
+    this.setState({transactionPressedDetails:transaction});
+    this.setState({transactionIsPressed:'true'});
+  }
+
+  getBacktoTransactions = ()=>{
+    this.setState({transactionIsPressed:'false'});
+  }
+
   myTransactionMainDisplay = ()=>{
-      if(this.props.doViewMyTransactions.length!=0){
+      if(this.props.doViewMyTransactions.length == 0){
         return <View style={{
                       flex:1
                }}>
                 <View style={{
-                        backgroundColor: '#758caf',
+                        backgroundColor: '#6785db',
+                        height: 42
+                }}>
+                  <Text style={{
+                          position: 'relative',
+                          left:95,
+                          height: '100%',
+                          width: 200,
+                          fontSize:20,
+                          paddingTop:10
+                  }}>
+                    Transactions Made
+                  </Text>
+                </View>
+                <Text style={{position:'relative',top:250,left:115}}>No transactions yet</Text>
+               </View>
+      }
+      else if(this.state.transactionIsPressed == 'false'){
+        return <View style={{
+                      flex:1
+               }}>
+                <View style={{
+                        backgroundColor: '#6785db',
                         height: 42
                 }}>
                   <Text style={{
@@ -32,7 +71,7 @@ export default class MyTransactions extends Component {
                   renderItem={({item})=>
                     <View style={{
                             borderBottomWidth:2,
-                            height: 100
+                            height: 108
                     }}>
                       <Text style={{
                               width: 300,
@@ -73,8 +112,17 @@ export default class MyTransactions extends Component {
                       }}> 
                         Slots: Good For {item.propertyPoolingQty} person/s
                       </Text>
+                      <Text style={{
+                              width: 300,
+                              height: 15,
+                              fontSize: 13,
+                              position:'relative',
+                              left: 10
+                      }}> 
+                        Tenant: {item.firstName} {item.lastName}
+                      </Text>
                       <TouchableWithoutFeedback
-                        onPress={()=>console.log('Pressed!')}>
+                        onPress={()=> this.doAdjustTransaction(item)}>
                         <Text style={{
                                 width: 45,
                                 height: 22,
@@ -95,26 +143,16 @@ export default class MyTransactions extends Component {
                </View>
       }
       else{
-        return <View style={{
-                      flex:1
-               }}>
-                <View style={{
-                        backgroundColor: '#758caf',
-                        height: 42
+        return  <View style={{
+                        flex:1
                 }}>
-                  <Text style={{
-                          position: 'relative',
-                          left:95,
-                          height: '100%',
-                          width: 200,
-                          fontSize:20,
-                          paddingTop:10
-                  }}>
-                    Transactions Made
-                  </Text>
+                  <OwnersIndividualTransaction
+                    doGetTransactionDetails = {this.state.transactionPressedDetails}
+                    doGetBack               = {this.getBacktoTransactions}
+                    doOperateOwnerMail      = {this.props.doOperateOwnerMail} 
+                    doDeleteOwnerSent       = {this.props.doDeleteOwnerSent}
+                    doSendReciept           = {this.props.doSendReciept} />
                 </View>
-                <Text style={{position:'relative',top:250,left:115}}>No transactions yet</Text>
-               </View>
       }
   }
 

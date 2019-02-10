@@ -9,11 +9,20 @@ const Constants ={
 	PASS_WORD_KEY       : "RENT_IS_REAL_PASS_WORD_KEY",
 	API_KEY             : "RENT_IS_REAL_API_KEY",
 	ACCOUNT_ROLE        : "RENT_IS_REAL_ACCOUNT_ROLE",
+	NOTIFICATION_STATUS : {
+		UNREAD          : "NOTIF_UNREAD",
+		MARKED_READ     : "NOTIF_CHECKED"
+	},
 
 	STATUS:{
 		PENDING         : "REQ_PENDING",
 		ACCEPTED        : "REQ_ACCEPTED",
 		DECLINE         : "REQ_DECLINE"
+	},
+
+	MAIL_STATUS:{
+		READ            :  "MAIL_READ",
+		UNREAD          :  "MAIL_UNREAD"
 	},
 
 	OWNER_ACTIONS: {

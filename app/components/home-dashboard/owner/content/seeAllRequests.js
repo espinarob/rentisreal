@@ -87,8 +87,7 @@ export default class SeeAllRequests extends Component {
                   borderTopWidth: 2,
                   height: 41,
                   flexDirection: 'row',
-                  color:'#8b8f96',
-                  borderColor:'#8b8f96',
+                  borderColor:'#5ce24a',
                   marginBottom: 3
                 }}>
                   <TouchableWithoutFeedback
@@ -212,8 +211,7 @@ export default class SeeAllRequests extends Component {
                   borderTopWidth: 2,
                   height: 41,
                   flexDirection: 'row',
-                  color:'#8b8f96',
-                  borderColor:'#8b8f96',
+                  borderColor:'#5ce24a',
                   marginBottom: 3
              }}>
               <TouchableWithoutFeedback

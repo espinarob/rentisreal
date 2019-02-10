@@ -41,14 +41,25 @@ export default class OwnersBody extends Component{
 		else if( this.props.performOperation == Constants.OWNER_ACTIONS.MY_HOME){
 			return <React.Fragment>
 				   	<PropertyLists
-				   		Properties= {this.props.Properties}
-				   		doGetMyAccount = {this.props.doGetMyAccount}/>
+				   		Properties           = {this.props.Properties}
+				   		doGetMyAccount       = {this.props.doGetMyAccount}
+				   		doGetMyNotifications = {this.props.doGetMyNotifications}
+				   		doGetMyNotifAlert    = {this.props.doGetMyNotifAlert}
+				   		doChangeAlertNotif   = {this.props.doChangeAlertNotif}
+				   		doClearAllMyNotif    = {this.props.doClearAllMyNotif}
+				   		doGetMyMails         = {this.props.doGetMyMails}
+	                    doGetMyMailAlert     = {this.props.doGetMyMailAlert}
+	                    doChangeAlertMail    = {this.props.doChangeAlertMail}
+	                    doDeleteAMail        = {this.props.doDeleteAMail} />
 				   </React.Fragment>
 		}
 		else if( this.props.performOperation == Constants.OWNER_ACTIONS.TRANSACTIONS){
 			return <React.Fragment>
 					<MyTransactions
-						doViewMyTransactions = {this.props.doViewMyTransactions} />
+						doViewMyTransactions = {this.props.doViewMyTransactions}
+						doOperateOwnerMail   = {this.props.doOperateOwnerMail}
+						doDeleteOwnerSent    = {this.props.doDeleteOwnerSent}
+						doSendReciept        = {this.props.doSendReciept} />
 				   </React.Fragment>
 		}
 	}

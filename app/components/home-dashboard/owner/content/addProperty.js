@@ -65,16 +65,22 @@ const addPropertyWrapperStyle = StyleSheet.create({
 		top: 22,
 		flexDirection: 'row'
 	},
+	propertyTypeSection:{
+		position: 'relative',
+		height: 35,
+		top: 25,
+		flexDirection: 'row'
+	},
 	errorSection:{
 		position: 'relative',
 		height: 30,
-		top: 25,
+		top: 27,
 		flexDirection: 'row'	
 	},
 	confirmSection:{
 		position: 'relative',
 		height: 35,
-		top: 29,
+		top: 31,
 		flexDirection: 'row'
 	},
 	propertyNameInputStyle:{
@@ -158,13 +164,24 @@ const addPropertyWrapperStyle = StyleSheet.create({
 		fontSize: 12,
 		borderWidth:1
 	},
+	propertyTypeInputStyle: {
+		width: 130,
+		height: '100%',
+		left: 25,
+		alignItems: 'stretch',
+		padding: 0,
+		position: 'relative',
+		borderRadius: 5,
+		fontSize: 12,
+		borderWidth:1
+	},
 	confirmButtonStyle: {
 		position: 'relative',
 		left: 120,
 		width: '30%',
 		height: '100%',
-		backgroundColor:'#5f7391',
-		borderRadius: 5
+		borderColor:'#5ce24a',
+		borderWidth:2
 	}
 
 
@@ -182,7 +199,8 @@ export default class AddProperty extends Component{
 		propertyPhotoSection:   '',
 		propertyDescription:    '',
 		propertyFurtherData:    '',
-		addPropertyError   :    ''
+		addPropertyError   :    '',
+		propertyType       :    ''
 	}
 
 	poolingCheckBox = () => {
@@ -251,6 +269,7 @@ export default class AddProperty extends Component{
 			setTimeout( ()=>{
 				this.setState({
 			   	addPropertyError:''});
+			   	this.props.doChangePropertyAction('avail-property');
 			},2500);
 			if(this.state.propertyBedroomPooling == false){
 				const passData = {
@@ -262,7 +281,8 @@ export default class AddProperty extends Component{
 					propertyFinalPrice:     this.state.propertyFinalPrice,
 					propertyDescription:    this.state.propertyDescription,
 					propertyFurtherData:    this.state.propertyFurtherData,
-					propertyFinalPrice:     String(Math.ceil(this.state.propertyMonthnlyPrice))
+					propertyFinalPrice:     String(Math.ceil(this.state.propertyMonthnlyPrice)),
+					propertyType:           this.state.propertyType
 				};
 				this.props.doAddPropertyOwner(passData);
 			}
@@ -278,12 +298,11 @@ export default class AddProperty extends Component{
 					propertyFinalPrice:     this.state.propertyFinalPrice,
 					propertyDescription:    this.state.propertyDescription,
 					propertyFurtherData:    this.state.propertyFurtherData,
-					propertyFinalPrice:     String(initFinalPrice)
+					propertyFinalPrice:     String(initFinalPrice),
+					propertyType:           this.state.propertyType
 				};
 				this.props.doAddPropertyOwner(passData);
-
 			}
-			
 		}
 	}
 
@@ -388,6 +407,18 @@ export default class AddProperty extends Component{
     					onChangeText = { (propertyFurtherData) => this.setState({propertyFurtherData})}/>
     			</View>
 
+    			<View style={addPropertyWrapperStyle.propertyTypeSection}>
+    				<Text
+    					style={{fontSize:15,position:'relative',left:13,paddingTop:5}}>
+    					Property Type:</Text>
+    				<TextInput
+    					placeholder = "Property Type"
+    					style={addPropertyWrapperStyle.propertyTypeInputStyle}
+    					onChangeText = { (propertyType) => this.setState({propertyType})}/>
+    			</View>
+
+
+
     			<View style={addPropertyWrapperStyle.errorSection}>
     				<Text
     					style={{fontSize:12,position:'relative',left:16,paddingTop:5}}>
@@ -399,7 +430,7 @@ export default class AddProperty extends Component{
     				<TouchableHighlight style={addPropertyWrapperStyle.confirmButtonStyle}
     					 onPress={ ()=> this.doAddProperty() }
     					 underlayColor='#fff'>
-    					<Text style= {{fontSize:16,fontWeight:'bold',paddingTop:5,paddingLeft:25 }}>
+    					<Text style= {{fontSize:16,fontWeight:'bold',paddingTop:5,paddingLeft:23 }}>
     						Confirm
     					</Text>
     				</TouchableHighlight>	

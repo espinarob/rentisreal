@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View, AsyncStorage, NetInfo} from 'react-native';
+import {Platform, StyleSheet, Text, View, AsyncStorage, NetInfo,Alert} from 'react-native';
 import { Container} from 'native-base';
 import Constants from './Constants.js';
 import FontAwesome, { Icons } from "react-native-fontawesome";
@@ -30,6 +30,9 @@ export default class MainComponent extends Component {
       Properties              : [],
       myRequests              : [],
       myTransactions          : [],
+      myNotifications         : [],
+      myMails                 : [],
+      myRentals               : [],
       signUpError             : '',
       loginError              : '',
       addPropertyError        : '', 
@@ -42,7 +45,9 @@ export default class MainComponent extends Component {
       successRegistration     : 'false',
       loggingOut              : 'false',
       loggingIn               : 'false',
-      loadingData             : 'true'
+      loadingData             : 'true',
+      notificationAlertFlag   : 'false',
+      mailingAlertFlag        : 'false'
   }
 
   componentDidMount(){
@@ -195,14 +200,17 @@ export default class MainComponent extends Component {
       	.on("value", snapshot => { 
        		const data = snapshot.val();
           if(data){
-    	 		  const initAccounts       = [];
-            const finalProperties    = []; 
-            const finalRequests      = [];
-            const initMyProperty     = [];
-            const initMyRequests     = [];
-            const initMyTransactions = [];
-            let initMyAccount        = [];
-            let index                = 0;
+    	 		  const initAccounts        = [];
+            const finalProperties     = []; 
+            const finalRequests       = [];
+            const initMyProperty      = [];
+            const initMyRequests      = [];
+            const initMyTransactions  = [];
+            const initMyNotifications = [];
+            const initMyMails         = [];
+            const initMyRentals       = [];
+            let initMyAccount         = [];
+            let index                 = 0;
            	Object
           		.keys(data)
             	.forEach(account => {
@@ -245,20 +253,64 @@ export default class MainComponent extends Component {
                   }
                 }
 
+                if(initAccounts[index].notifications){
+                  if(String(account) == String(this.state.onHandKeyReference)){
+                    currentNotification = JSON.parse(JSON.stringify(initAccounts[index].notifications));
+                    Object
+                      .keys(currentNotification)
+                      .forEach( (notificationKey)=>{
+                        if(currentNotification[notificationKey].notifStatus 
+                            == Constants.NOTIFICATION_STATUS.UNREAD ){
+                          this.setState({notificationAlertFlag:'true'});
+                        }
+                        else;
+                        initMyNotifications.push(currentNotification[notificationKey]);
+                      });
+                  }
+                }
+
+                if(initAccounts[index].mails){
+                  if(String(account) == String(this.state.onHandKeyReference)){
+                    currentMails = JSON.parse(JSON.stringify(initAccounts[index].mails));
+                    Object
+                      .keys(currentMails)
+                      .forEach( (mailKey)=>{
+                        if(currentMails[mailKey].mailStatus == Constants.MAIL_STATUS.UNREAD){
+                          this.setState({mailingAlertFlag:'true'});
+                        }
+                        initMyMails.push(currentMails[mailKey]);
+                      });
+                  }
+                }
+
+                if(initAccounts[index].rentals){
+                  if(String(account) == String(this.state.onHandKeyReference)){
+                    currentRentals = JSON.parse(JSON.stringify(initAccounts[index].rentals));
+                    Object
+                      .keys(currentRentals)
+                      .forEach( (rentalKey)=>{
+                        initMyRentals.push(currentRentals[rentalKey]);
+                      });
+                  }
+                }
+
                 index++;
               });
             this.setState({
-              Accounts: initAccounts,
-              myAccountDetails:initMyAccount, 
-              Properties: finalProperties,
-              myProperty: initMyProperty,
-              myRequests: initMyRequests,
-              myTransactions: initMyTransactions
+              Accounts         : initAccounts,
+              myAccountDetails : initMyAccount, 
+              Properties       : finalProperties,
+              myProperty       : initMyProperty,
+              myRequests       : initMyRequests,
+              myTransactions   : initMyTransactions,
+              myNotifications  : initMyNotifications,
+              myMails          : initMyMails,
+              myRentals        : initMyRentals
             });
             console.log('Success Firebase...');
           }
-          const haveInternetConnection = 'true'; 
-          this.setState({haveInternetConnection});
+          //const haveInternetConnection = 'true'; 
+          //this.setState({haveInternetConnection});
           this.setState({loadingData:'false'});
 
         });
@@ -293,7 +345,7 @@ export default class MainComponent extends Component {
         "age"           : 'null',
         "civilStatus"   : 'null',
         "occupation"    : 'null',
-        "gender"       : 'null'
+        "gender"        : 'null'
       }
       finalData = JSON.stringify(finalData);
       finalData = JSON.parse(finalData);
@@ -317,31 +369,13 @@ export default class MainComponent extends Component {
 
   accountUpdate = (updateDetails)=>{
     console.log('Updating...');
-    let finalGender  = '';
-    if(updateDetails.gender == true){
-      finalGender = 'male';
-    }
-    else{
-      finalGender = 'female';
-    }
-    
     AsyncStorage.getItem(Constants.API_KEY)
       .then((res)=>{
         const currentDetails = updateDetails;
         const keyAccount = firebase
                             .database()
                             .ref("Accounts/"+String(res));  
-        keyAccount.update({
-          firstName    : currentDetails.firstName,
-          lastName     : currentDetails.lastName,
-          middleName   : currentDetails.middleName,
-          contactNumber: currentDetails.contactNumber,
-          email        : currentDetails.email,
-          age          : currentDetails.age,
-          civilStatus  : currentDetails.civilStatus,
-          occupation   : currentDetails.occupation,
-          gender       : finalGender
-        })
+        keyAccount.update(updateDetails)
         .then( ()=>console.log('Successfully Updated!'))
         .catch( (error)=>{
           console.log('Error connecting update with firebase!');
@@ -369,24 +403,32 @@ export default class MainComponent extends Component {
                         .ref("Accounts/"+String(apiKey)+"/property")
                         .push();
     newProperty  = {
-      "propertyID":             keyAccount.key,
-      "Account":                apiKey,
-      "propertyName":           propertyData.propertyName,
-      "propertyLocation":       propertyData.propertyLocation,
-      "propertyBedroomPooling": propertyData.propertyBedroomPooling,
-      "propertyPoolingQty":     propertyData.propertyPoolingQty,
-      "propertyMonthlyPrice":   propertyData.propertyMonthnlyPrice,
-      "propertyFinalPrice":     propertyData.propertyFinalPrice,
-      "propertyDescription":    propertyData.propertyDescription,
-      "propertyFurtherData":    propertyData.propertyFurtherData,
-      "propertyVacant":         propertyData.propertyPoolingQty,
-      "date": firebase.database.ServerValue.TIMESTAMP
+      "propertyID"             : keyAccount.key,
+      "Account"                : apiKey,
+      "propertyName"           : propertyData.propertyName,
+      "propertyLocation"       : propertyData.propertyLocation,
+      "propertyBedroomPooling" : propertyData.propertyBedroomPooling,
+      "propertyPoolingQty"     : propertyData.propertyPoolingQty,
+      "propertyMonthlyPrice"   : propertyData.propertyMonthnlyPrice,
+      "propertyFinalPrice"     : propertyData.propertyFinalPrice,
+      "propertyDescription"    : propertyData.propertyDescription,
+      "propertyFurtherData"    : propertyData.propertyFurtherData,
+      "propertyVacant"         : propertyData.propertyPoolingQty,
+      "propertyType"           : propertyData.propertyType,
+      "contactNumber"          : this.state.myAccountDetails.contactNumber,
+      "firstName"              : this.state.myAccountDetails.firstName,
+      "lastName"               : this.state.myAccountDetails.lastName,
+      "middleName"             : this.state.myAccountDetails.middleName,
+      "email"                  : this.state.myAccountDetails.email,
+      "rating"                 : '0',
+      "ratingCount"            : '0',
+      "date"                   : firebase.database.ServerValue.TIMESTAMP
     }
 
     newProperty = await JSON.parse(String(JSON.stringify(newProperty)));
     keyAccount.update(newProperty)
     .then( ()=>{
-      this.setState({addPropertyError: ''});
+      this.setState({addPropertyError: 'Please Wait..'});
     })
     .catch( (error)=>{
       this.setState({addPropertyError: 'Check your internet connection!'});
@@ -448,6 +490,10 @@ export default class MainComponent extends Component {
                       .database()
                       .ref("Accounts/"+String(accountKey)+"/property/"+String(propertyKey)+"/requests")
                       .push();
+    let notificationMessage = "A new request sent by " + 
+                              String(this.state.myAccountDetails.firstName)+ ' ' +
+                              String(this.state.myAccountDetails.lastName);
+
 
     let newRequest = {
       "Account": String(accountKey),
@@ -458,8 +504,19 @@ export default class MainComponent extends Component {
       "lastName": String(this.state.myAccountDetails.lastName),
       "age": String(this.state.myAccountDetails.age),
       "contactNumber":String(this.state.myAccountDetails.contactNumber),
-      "email":String(this.state.myAccountDetails.email)
+      "email":String(this.state.myAccountDetails.email),
+      "gender": String(this.state.myAccountDetails.gender),
+      "occupation": String(this.state.myAccountDetails.occupation),
+      "civilStatus": String(this.state.myAccountDetails.civilStatus),
+      "ownerContactNumber"     : data.contactNumber,
+      "ownerFirstName"         : data.firstName,
+      "ownerLastName"          : data.lastName,
+      "ownerMiddleName"        : data.middleName,
+      "ownerEmail"             : data.email
     }
+
+    let today = new Date();
+    let notifDate = String(today.getMonth()+1) + '/' + String(today.getDate()) + '/' + String(today.getFullYear());
     newRequest = await JSON.parse(String(JSON.stringify(newRequest)));
     dataKey.update(newRequest)
     .then( ()=>{
@@ -469,12 +526,28 @@ export default class MainComponent extends Component {
         this.processTenantRequest(data,accountKey,propertyKey,dataKey.key);
       },2500);  
     })  
+    .then( ()=>{
+      const pushNotifKey =  firebase
+                              .database()
+                              .ref("Accounts/"+String(accountKey)+"/notifications")
+                              .push();
+     
+      pushNotifKey.update({notifID: pushNotifKey.key, 
+        message:notificationMessage,
+        notifStatus:Constants.NOTIFICATION_STATUS.UNREAD,
+        date:notifDate})
+      .catch((error)=>{
+        console.log('Sending notification failed!');
+      });
+
+    })
     .catch( (error)=>{
       console.log('Error Requests!');
     });
   }
 
   processTenantRequest = async(data,accountKey,propertyKey,ownerRequestID)=>{
+    console.log(data);
     const dataKey = firebase
                       .database()
                       .ref("Accounts/"+String(this.state.onHandKeyReference)+"/requests/"+String(ownerRequestID));
@@ -488,7 +561,12 @@ export default class MainComponent extends Component {
       "propertyName":       data.propertyName,
       "propertyLocation":   data.propertyLocation,
       "propertyFinalPrice": data.propertyFinalPrice,
-      "propertyPoolingQty": data.propertyPoolingQty  
+      "propertyPoolingQty": data.propertyPoolingQty,
+      "ownerContactNumber"     : data.contactNumber,
+      "ownerFirstName"         : data.firstName,
+      "ownerLastName"          : data.lastName,
+      "ownerMiddleName"        : data.middleName,
+      "ownerEmail"             : data.email
     }
 
     myRequest = await JSON.parse(String(JSON.stringify(myRequest)));
@@ -504,6 +582,11 @@ export default class MainComponent extends Component {
 
   acceptTenantRequest= (property,request)=>{
     let data = [];
+
+    let notificationMessage = "One of your request is accepted by " +
+                               String(property.propertyName);
+    let today = new Date();
+    let notifDate = String(today.getMonth()+1) + '/' + String(today.getDate()) + '/' + String(today.getFullYear());
     firebase
       .database()
       .ref("Accounts/"+
@@ -521,6 +604,14 @@ export default class MainComponent extends Component {
         data['propertyDescription']   = property.propertyDescription;
         data['propertyFurtherData']   = property.propertyFurtherData;
         data['propertyPoolingQty']    = property.propertyPoolingQty;
+        data['propertyType']          = property.propertyType;
+        data['date']                  = notifDate;
+        data['ownerFirstName']        = request.ownerFirstName;
+        data['ownerLastName']         = request.ownerLastName;
+        data['ownerMiddleName']       = request.ownerMiddleName;
+        data['ownerEmail']            = request.ownerEmail;
+        data['ownerContactNumber']    = request.ownerContactNumber;
+        data['rated']                 = 'none';
         data = JSON.parse(String(JSON.stringify(data)));
         let currentVacant = Number(property.propertyVacant);
         currentVacant-=1;
@@ -554,6 +645,24 @@ export default class MainComponent extends Component {
                       "/requests/"+
                       String(request.requestID))
                     .remove();
+                })
+                .then(()=>{
+                  const pushNotifKey = firebase
+                                        .database()
+                                        .ref("Accounts/"+
+                                          String(request.tenantID)+
+                                          "/notifications/")
+                                        .push();
+                  pushNotifKey.update({notifID:pushNotifKey.key,
+                    message:notificationMessage,
+                    notifStatus:Constants.NOTIFICATION_STATUS.UNREAD,
+                    date:notifDate})
+                  .catch((error)=>{
+                    console.log('Error in sending accepted notification');
+                  });
+                })
+                .catch((error)=>{
+                  console.log('Error in updating owner transactions!');
                 });
             });
         })
@@ -569,6 +678,9 @@ export default class MainComponent extends Component {
   }
 
   declineTenantRequest = (property,request)=>{
+   let notificationMessage = "A recent request has been declined by " + String(property.propertyName);
+   let today = new Date();
+   let notifDate = String(today.getMonth()+1) + '/' + String(today.getDate()) + '/' + String(today.getFullYear());
    firebase
       .database()
       .ref("Accounts/"+
@@ -586,11 +698,382 @@ export default class MainComponent extends Component {
             "/requests/"+
             String(request.requestID))
           .remove();
+
+      })
+      .then(()=>{
+        const pushNotifKey = firebase
+                              .database()
+                              .ref("Accounts/"+
+                                    String(request.tenantID)+
+                                    "/notifications")
+                              .push();
+        pushNotifKey.update({notifID:pushNotifKey.key,
+          message:notificationMessage,
+          notifStatus:Constants.NOTIFICATION_STATUS.UNREAD,
+          date:notifDate})
+        .catch((error)=>{
+          console.log('Error sending decline notification');
+        })
       })
       .catch((error)=>{
         console.log('First Step Decline: Error!');
       })
   }
+
+  removeMyRequest = (request)=>{
+    firebase
+      .database()
+      .ref("Accounts/"+
+        String(request.Account)+
+        "/requests/"+
+        String(request.myRequestID))
+      .remove()
+      .then(()=>{
+        console.log('Success removing history request!');
+      })
+      .catch( (error)=>{
+        console.log('Error in deleting history request!');
+      });
+  }
+
+
+  changeAlertNotif = (result)=>{
+    let allNotifications = this.state.myNotifications;
+    let finalData        = {};
+    for(index=0;index<allNotifications.length;index++){
+      currentNotification = allNotifications[index];
+      currentNotification.notifStatus = Constants.NOTIFICATION_STATUS.MARKED_READ;
+      finalData[String(currentNotification.notifID)] = currentNotification;
+    }
+    finalData  = JSON.parse(JSON.stringify(finalData));
+    this.submitChangeNotif(finalData);
+    this.setState({notificationAlertFlag:String(result)});
+  }
+
+  submitChangeNotif = (data)=>{
+    firebase
+      .database()
+      .ref("Accounts/"+String(this.state.onHandKeyReference)+"/notifications")
+      .set(data)
+      .catch((error)=>{
+        console.log('Error in updating notifications');
+      });
+  }
+
+  ownerMailing = (propertyName,tenantAccountKey,mail,date,ownerDetails)=>{
+    const mailKey = firebase
+                      .database()
+                      .ref("Accounts/"+String(tenantAccountKey)+"/mails")
+                      .push();
+    mailKey.update({messageID:mailKey.key,
+      sender:String(propertyName),
+      mailSubject: mail.mailSubject,
+      mailContent: mail.mailContent,
+      dateSent: String(date),
+      mailStatus: Constants.MAIL_STATUS.UNREAD})
+    .then(()=>{
+      const transactionMailKey = firebase
+                                  .database()
+                                  .ref("Accounts/"+
+                                        String(ownerDetails.Account)+
+                                        "/transactions/"+
+                                        String(ownerDetails.transactionID)+
+                                        "/mails")
+                                  .push();
+      transactionMailKey.update({messageID:transactionMailKey.key,
+        sender:String(propertyName),
+        mailSubject: mail.mailSubject,
+        mailContent: mail.mailContent,
+        dateSent: String(date)})
+      .catch((error)=>{
+        console.log('Error saving sent mails!');
+      })
+    })
+    .catch((error)=>{
+      console.log('Error in sending message!');
+    });
+
+  }
+
+  tenantMailing = (tenantName,ownerAccountKey,mail,date,tenantDetails)=>{
+    const mailKey = firebase
+                      .database()
+                      .ref("Accounts/"+String(ownerAccountKey)+"/mails")
+                      .push();
+    mailKey.update({messageID:mailKey.key,
+      sender:String(tenantName),
+      mailSubject: mail.mailSubject,
+      mailContent: mail.mailContent,
+      dateSent: String(date),
+      mailStatus: Constants.MAIL_STATUS.UNREAD})
+    .then(()=>{
+      const rentalMailKey = firebase
+                                  .database()
+                                  .ref("Accounts/"+
+                                        String(tenantDetails.Account)+
+                                        "/rentals/"+
+                                        String(tenantDetails.rentalID)+
+                                        "/mails")
+                                  .push();
+      rentalMailKey.update({messageID:rentalMailKey.key,
+        sender:String(tenantName),
+        mailSubject: mail.mailSubject,
+        mailContent: mail.mailContent,
+        dateSent: String(date)})
+      .catch((error)=>{
+        console.log('Error saving sent mails!');
+      })
+    })
+    .catch((error)=>{
+      console.log('Error in sending message!');
+    });
+  }
+
+  changeAlertMails = (result)=>{
+    let allMails = this.state.myMails;
+    let finalData        = {};
+    for(index=0;index<allMails.length;index++){
+      currentMail = allMails[index];
+      currentMail.mailStatus = Constants.MAIL_STATUS.READ;
+      finalData[String(currentMail.messageID)] = currentMail;
+    }
+
+    finalData  = JSON.parse(JSON.stringify(finalData));
+    this.submitChangeMail(finalData);
+    this.setState({mailingAlertFlag:String(result)});
+  }
+
+  submitChangeMail = (data)=>{
+    firebase
+      .database()
+      .ref("Accounts/"+String(this.state.onHandKeyReference)+"/mails")
+      .set(data)
+      .catch((error)=>{
+        console.log('Error in updating notifications');
+      });
+  }
+
+  clearAllNotifications = ()=>{
+    firebase
+      .database()
+      .ref("Accounts/"+String(this.state.onHandKeyReference)+"/notifications")
+      .remove()
+      .catch((error)=>{
+        console.log('Error in clearing all notifications');
+      });
+  }
+
+  submitTenantPayment = (paymentInformation,rentalInformation)=>{
+    let finalPaymentData = paymentInformation;
+    let today = new Date();
+    let paymentDate = String(today.getMonth()+1) + '/' + String(today.getDate()) + '/' + String(today.getFullYear());
+    let notificationMessage = 'A tenant payment was in for your property, '+
+      String(rentalInformation.propertyName);
+    const tenantPaymentKey = firebase
+                        .database()
+                        .ref("Accounts/"+
+                          String(rentalInformation.tenantID)+
+                          "/rentals/"+
+                          String(rentalInformation.requestID)+
+                          "/paymentMade")
+                        .push();
+    finalPaymentData['paymentID'] = tenantPaymentKey.key;
+    finalPaymentData['date']      = paymentDate;
+    tenantPaymentKey.update(finalPaymentData)
+    .then(()=>{
+      const ownerRecieveKey = firebase
+                                .database()
+                                .ref("Accounts/"+
+                                  String(rentalInformation.Account)+
+                                  "/transactions/"+
+                                  String(rentalInformation.propertyID)+
+                                  "/paymentRecieved/"+
+                                  String(tenantPaymentKey.key))
+                                .update(finalPaymentData)
+                                .catch((error)=>{
+                                  console.log('Error submitting payment in owner transcation')
+                                });
+    })
+    .then(()=>{
+      const pushNotifKey =  firebase
+                              .database()
+                              .ref("Accounts/"+
+                                String(rentalInformation.Account)+
+                                "/notifications")
+                              .push();
+
+      pushNotifKey.update({notifID:pushNotifKey.key,
+          message:notificationMessage,
+          notifStatus:Constants.NOTIFICATION_STATUS.UNREAD,
+          date:paymentDate})
+      .then(()=>{
+        console.log('Success sending notification to owner');
+      })
+      .catch((error)=>{
+        console.log('Error in sending notification to owner');
+      });
+
+    })
+    .catch((error)=>{
+      console.log('Error submitting payment in tenant rentals');
+    });
+  }
+
+  deleteTenantSentMails = (accountKey,rentalKey)=>{
+    firebase
+      .database()
+      .ref("Accounts/"+String(accountKey)+"/rentals/"+String(rentalKey)+"/mails")
+      .remove()
+      .then(()=>{
+        console.log('Success deleting tenant mails!');
+      })
+      .catch( (error)=>{
+        console.log('Error in deleting tenant mails!');
+      });
+  } 
+
+  deleteOwnerSentMails = (accountKey,transactionKey)=>{
+    firebase
+      .database()
+      .ref("Accounts/"+String(accountKey)+"/transactions/"+String(transactionKey)+"/mails")
+      .remove()
+      .then(()=>{
+        console.log('Success deleting owner mails!');
+      })
+      .catch( (error)=>{
+        console.log('Error in deleting owner mails!');
+      });
+  }
+
+  
+  deleteAMail = (mailKey)=>{
+    firebase
+      .database()
+      .ref("Accounts/"+String(this.state.onHandKeyReference)+"/mails/"+String(mailKey))
+      .remove()
+      .catch( (error)=>{
+        console.log('Error in deleting one mail!');
+      });
+  }
+
+  submitTenantRating = (ownerKey,propertyKey,rate,minus,tenantKey,rentalKey,rateminus)=>{
+    let propertyDetails    = [];
+
+    let currentRating      = '';
+    let currentCount       = '';
+
+    let presentCount       = '';
+    let presentRating      = '';
+
+    console.log(rateminus);
+
+    const propertyOwnerKey = firebase
+                        .database()
+                        .ref("Accounts/"+String(ownerKey)+"/property/"+String(propertyKey));
+    propertyOwnerKey.once("value",snapshot=>{
+      propertyDetails = snapshot.val();
+      if(propertyDetails){
+        propertyDetails   = JSON.parse(JSON.stringify(propertyDetails));
+        currentRating  = Number(propertyDetails.rating)- Number(rateminus);
+        currentCount   = Number(propertyDetails.ratingCount);
+
+        presentCount   = Number(currentCount)+Number(minus);
+        presentRating  = Number(currentRating)+Number(rate);
+      }
+      else return;
+    })
+    .then(()=>{
+      propertyOwnerKey.update({rating:String(presentRating),ratingCount:String(presentCount)})
+        .then(()=>{
+          firebase
+            .database()
+            .ref("Accounts/"+String(tenantKey)+"/rentals/"+String(rentalKey))
+            .update({rated:rate})
+            .then(()=>{
+              Alert.alert(
+                'Success',
+                'Successfully submitted your rate',
+              [
+                {text: 'OK', onPress: () => console.log('OK')}
+              ]);
+              console.log('Success in updating rate!');
+            })
+            .catch((error)=>{
+              console.log('Error in updating rate in tenant side!');
+            });
+        })
+        .catch((error)=>{
+          Alert.alert(
+            'Error',
+            'Check your internet connection',
+          [
+            {text: 'OK', onPress: () => console.log('OK')}
+          ]);
+        })
+    })
+    .catch((error)=>{
+      Alert.alert(
+          'Error',
+          'Check your internet connection',
+        [
+          {text: 'OK', onPress: () => console.log('OK')}
+        ]);
+      console.log('Error in getting property details!');
+    });
+  }
+
+  sendReciept = (propertyName,accountKey,rentalKey,paymentMadeKey,data)=>{
+    let today               = new Date();
+    let notifDate           = String(today.getMonth()+1) + '/' + String(today.getDate()) + '/' + String(today.getFullYear());
+    let notificationMessage = 'A reciept was sent by property named '+String(propertyName);
+    const sendRecieptKey =  firebase
+                              .database()
+                              .ref("Accounts/"+
+                                String(accountKey)+
+                                "/rentals/"+
+                                String(rentalKey)+
+                                "/paymentMade/"+
+                                String(paymentMadeKey)+
+                                "/reciept/one_reciept");
+    sendRecieptKey.remove()
+    .then(()=>{
+      sendRecieptKey.push()
+      .then(()=>{
+        sendRecieptKey.update({
+          ORNumber    : data.ORNumber,
+          RecieptNote : data.RecieptNote,
+          recieptKey  : sendRecieptKey.key,
+          date        : notifDate
+        })
+          .then(()=>{
+            Alert.alert(
+              'Success',
+              'Successfully submitted payment reciept',
+            [
+              {text: 'OK', onPress: () => console.log('OK')}
+            ]);
+            console.log('Successful sending reciept');
+          })
+          .then(()=>{
+            let notifSendRecieptKey = firebase
+                                        .database()
+                                        .ref("Accounts/"+String(accountKey)+"/notifications")
+                                        .push();            
+            notifSendRecieptKey.update({notifID:notifSendRecieptKey.key, 
+            message:notificationMessage,
+            notifStatus:Constants.NOTIFICATION_STATUS.UNREAD,
+            date:notifDate});
+          })
+          .catch((error)=>{
+            console.log('Failed sending reciept');
+          });
+      });
+    })
+    .catch((error)=>{
+      console.log('Error in removing reciept stack');
+    });
+  }
+
 
   verifyAccountsExist = () =>{
     if(this.state.Accounts.length!=0){
@@ -622,18 +1105,35 @@ export default class MainComponent extends Component {
     }
   }
 
-  checkLoginLoad = async () =>{
+  checkLoginLoad = () =>{
     try{
-      let usernameLocal = await AsyncStorage.getItem(Constants.USER_NAME_KEY);
-      let passwordLocal = await AsyncStorage.getItem(Constants.PASS_WORD_KEY);
-      let apikeyLocal = await AsyncStorage.getItem(Constants.API_KEY);
-
-      if(!(String(usernameLocal) == 'null' || String(passwordLocal) == 'null')){
-        this.setState({onHandKeyReference:apikeyLocal});
-        let successfullyLogin = 'true';
-        this.setState({successfullyLogin});
-        this.firebaseInitialization();
-      }
+      let usernameLocal = '';
+      let passwordLocal = '';
+      let apikeyLocal   = '';
+      AsyncStorage.getItem(Constants.USER_NAME_KEY)
+        .then((username)=>{
+          usernameLocal = username;
+        })
+        .then(()=>{
+          AsyncStorage.getItem(Constants.PASS_WORD_KEY)
+            .then((password)=>{
+              passwordLocal = password;
+            })
+            .then(()=>{
+              AsyncStorage.getItem(Constants.API_KEY)
+                .then((apikey)=>{
+                  apikeyLocal = apikey;
+                })
+                .then(()=>{
+                  if(!(String(usernameLocal) == 'null' || String(passwordLocal) == 'null')){
+                    this.setState({onHandKeyReference:apikeyLocal});
+                    let successfullyLogin = 'true';
+                    this.setState({successfullyLogin});
+                    this.firebaseInitialization();
+                  }
+                });
+            })
+        })
     }
     catch(error){
       console.log('Failed to load data');
@@ -677,30 +1177,47 @@ export default class MainComponent extends Component {
     }
     else if(this.state.successfullyLogin == 'true'){
       return <HomeTemplate
-              Properties           = {this.state.Properties}
-              doChangeLoginFlag    = {this.changeLoginFlag}
-              doChangeLogoutFlag   = {this.changeLoggingOutFlag}
-              doProcessUpdate      = {this.accountUpdate}
-              doAddPropertyOwner   = {this.addProperty}
-              doesDataLoad         = {this.state.loadingData}
-              doViewMyProperty     = {this.state.myProperty}
-              doGetMyAccount       = {this.state.myAccountDetails}
-              doDeleteProperty     = {this.deletOneProperty}
-              doUpdateProperty     = {this.updateOneProperty}
-              doSendARequest       = {this.requestAProperty}
-              doViewMyRequests     = {this.state.myRequests}
-              doDeleteARequest     = {this.deleteARequestProperty}
-              doAcceptTenantReq    = {this.acceptTenantRequest}
-              doDeclineTenantReq   = {this.declineTenantRequest}
-              doViewMyTransactions = {this.state.myTransactions}
-              addPropertyErrMSG    = {this.state.addPropertyError}
-              requestPropertyMSG   = {this.state.requestPropertyError}/>
+              Properties            = {this.state.Properties}
+              doChangeLoginFlag     = {this.changeLoginFlag}
+              doChangeLogoutFlag    = {this.changeLoggingOutFlag}
+              doProcessUpdate       = {this.accountUpdate}
+              doAddPropertyOwner    = {this.addProperty}
+              doesDataLoad          = {this.state.loadingData}
+              doViewMyProperty      = {this.state.myProperty}
+              doGetMyAccount        = {this.state.myAccountDetails}
+              doDeleteProperty      = {this.deletOneProperty}
+              doUpdateProperty      = {this.updateOneProperty}
+              doSendARequest        = {this.requestAProperty}
+              doViewMyRequests      = {this.state.myRequests}
+              doDeleteARequest      = {this.deleteARequestProperty}
+              doAcceptTenantReq     = {this.acceptTenantRequest}
+              doDeclineTenantReq    = {this.declineTenantRequest}
+              doViewMyTransactions  = {this.state.myTransactions}
+              doRemoveMyRequest     = {this.removeMyRequest}
+              doGetMyNotifications  = {this.state.myNotifications}
+              doGetMyNotifAlert     = {this.state.notificationAlertFlag}
+              doChangeAlertNotif    = {this.changeAlertNotif}
+              doClearAllMyNotif     = {this.clearAllNotifications}
+              doOperateOwnerMail    = {this.ownerMailing}
+              doGetMyMails          = {this.state.myMails}
+              doGetMyMailAlert      = {this.state.mailingAlertFlag}
+              doChangeAlertMail     = {this.changeAlertMails}
+              doDeleteAMail         = {this.deleteAMail}
+              doGetMyRentals        = {this.state.myRentals}
+              doOperateTenantMail   = {this.tenantMailing}
+              doSubmitTenantPayment = {this.submitTenantPayment}
+              doDeleteTenantSent    = {this.deleteTenantSentMails}
+              doDeleteOwnerSent     = {this.deleteOwnerSentMails}
+              doSubmitTenantRate    = {this.submitTenantRating}
+              doSendReciept         = {this.sendReciept}
+              addPropertyErrMSG     = {this.state.addPropertyError}
+              requestPropertyMSG    = {this.state.requestPropertyError}/>
     }
     else{
       return <LoginComponent
-              doProcessLogin       = {this.processLogin}
-              doChangeRegisterFlag = {this.changeRegisterFlag}
-              errorMessage         = {this.state.loginError}/>
+              doProcessLogin        = {this.processLogin}
+              doChangeRegisterFlag  = {this.changeRegisterFlag}
+              errorMessage          = {this.state.loginError}/>
               
     }
   }

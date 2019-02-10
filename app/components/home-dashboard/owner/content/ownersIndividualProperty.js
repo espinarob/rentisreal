@@ -123,7 +123,7 @@ export default class OwnersIndividualProperty extends Component {
                   flexDirection: 'row',
                   color:'#8b8f96',
                   top:20,
-                  borderColor:'#8b8f96'
+                  borderColor:'#5ce24a'
               }}>
                   <TouchableWithoutFeedback
                       onPress={()=>this.props.doGetBack()}>
@@ -187,8 +187,8 @@ export default class OwnersIndividualProperty extends Component {
           </View> 
           
           <View style={{
-                  height: 25,
-                  top:50
+                  height: 20,
+                  top:41
           }}>
             <Text style={{
                   position: 'relative',
@@ -196,30 +196,30 @@ export default class OwnersIndividualProperty extends Component {
                   height:'100%',
                   paddingTop:5,
                   left:75,
-                  fontSize:12}}>
+                  fontSize:11}}>
               {this.state.errorMessage}
             </Text>
           </View>
           <View style={{
                   flexDirection: 'row',
-                  height: 40,
-                  top:65
+                  height:35,
+                  top:42
           }}>
             <TouchableWithoutFeedback
               onPress={()=>this.doCreateAlertForUpdate()}>
               <View style={{
-                width: 100,
-                height: '100%',
-                left: 55,
-                borderRadius:5,
-                backgroundColor:'#5f7391'
+                width: 70,
+                height: '90%',
+                left: 100,
+                borderWidth:2,
+                borderColor:'#5ce24a'
               }}>
                 <Text style={{
-                  width: 70,
+                  width: 50,
                   position: 'relative',
                   top:5,
-                  left:16,
-                  fontSize: 20
+                  left:14,
+                  fontSize: 12
                 }}>
                   Update
                 </Text>
@@ -228,18 +228,18 @@ export default class OwnersIndividualProperty extends Component {
             <TouchableWithoutFeedback
               onPress={()=> this.doCreateAlertForDelete() }>
               <View style={{
-                width: 100,
-                height: '100%',
-                left: 90,
-                borderRadius:5,
-                backgroundColor:'#5f7391'
+                width: 70,
+                height: '90%',
+                left: 125,
+                borderWidth:2,
+                borderColor:'#5ce24a'
               }}>
                 <Text style={{
-                  width: 70,
+                  width: 50,
                   position: 'relative',
                   top:5,
-                  left:16,
-                  fontSize: 20
+                  left:14,
+                  fontSize: 12
                 }}>
                   Delete
                 </Text>
@@ -250,98 +250,104 @@ export default class OwnersIndividualProperty extends Component {
           <View style={{
                   flexDirection: 'row',
                   height: 30,
-                  top:105
+                  top:50
           }}>
             <Text style={{
               position:'relative',
               fontSize:15,
               left:20,
-              width: 180,
-              paddingTop:2
+              width: 180
             }}>Property Details</Text>
           </View>
 
           <View style={{
                   flexDirection: 'row',
-                  height: 21,
-                  top:110
+                  height: 20,
+                  top:53
           }}>
             <Text style={{
               position:'relative',
               fontSize:13,
               left:20,
-              width: 180,
-              paddingTop:2
+              width: 180
             }}>Property Address: {this.props.pressedPropertyDetails.propertyLocation}</Text>
           </View>
 
           <View style={{
                   flexDirection: 'row',
-                  height: 21,
-                  top:111
+                  height: 20,
+                  top:54
           }}>
             <Text style={{
               position:'relative',
               fontSize:13,
               left:20,
-              width: 180,
-              paddingTop:2
+              width: 180
             }}>Property Pooling: {this.doesPropertyPool()}</Text>
           </View>
 
           <View style={{
                   flexDirection: 'row',
-                  height: 21,
-                  top:112
+                  height: 20,
+                  top:55
           }}>
             <Text style={{
               position:'relative',
               fontSize:13,
               left:20,
-              width: 180,
-              paddingTop:2
+              width: 180
             }}>Monthly Price: {this.props.pressedPropertyDetails.propertyMonthlyPrice} </Text>
           </View>
 
           <View style={{
                   flexDirection: 'row',
-                  height: 21,
-                  top:113
+                  height: 20,
+                  top:56
           }}>
             <Text style={{
               position:'relative',
               fontSize:13,
               left:20,
-              width: 180,
-              paddingTop:2
+              width: 180
             }}>Pooling to: {this.props.pressedPropertyDetails.propertyPoolingQty} Person/s </Text>
           </View>
 
           <View style={{
                   flexDirection: 'row',
-                  height: 21,
-                  top:114
+                  height: 20,
+                  top:57
           }}>
             <Text style={{
               position:'relative',
               fontSize:13,
               left:20,
-              width: '100%',
-              paddingTop:2
+              width: '100%'
             }}>Individual Price: {this.props.pressedPropertyDetails.propertyFinalPrice} </Text>
           </View>
           <View style={{
                   flexDirection: 'row',
-                  height: 21,
-                  top:114
+                  height: 20,
+                  top:58
+          }}>
+            <Text style={{
+              position:'relative',
+              fontSize:13,
+              left:20,
+              width: '100%'
+            }}>Vacant: {this.displayAvailability()}</Text>
+          </View>
+          <View style={{
+                  flexDirection: 'row',
+                  height: 20,
+                  top:58
           }}>
             <Text style={{
               position:'relative',
               fontSize:13,
               left:20,
               width: '100%',
-              paddingTop:2
-            }}>Vacant: {this.displayAvailability()}</Text>
+              fontWeight: 'bold'
+            }}>Rating: {this.props.pressedPropertyDetails.rating}</Text>
           </View>
 
       </React.Fragment>

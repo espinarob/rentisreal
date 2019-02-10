@@ -21,9 +21,10 @@ export default class HomeTemplate extends Component{
 
     state = {
         AccountDetails : null,
-        role           : '',
-        ownerOperation : Constants.OWNER_ACTIONS.MY_HOME,
-        tenantOperation: Constants.TENANT_ACTIONS.MY_HOME
+        role                 : '',
+        ownerOperation       : Constants.OWNER_ACTIONS.MY_HOME,
+        tenantOperation      : Constants.TENANT_ACTIONS.MY_HOME,
+        applyPropertyReverse : 'false'
     }
 
     componentDidMount(){
@@ -68,18 +69,32 @@ export default class HomeTemplate extends Component{
         else if(this.state.role == 'tenant'){
             return  <React.Fragment>
                         <TenantsBody 
-                            performOperation   = {this.state.tenantOperation}
-                            doChangeLoginFlag  = {this.props.doChangeLoginFlag}
-                            doChangeLogoutFlag = {this.props.doChangeLogoutFlag}
-                            doProcessUpdate    = {this.props.doProcessUpdate}
-                            Properties         = {this.props.Properties}
-                            doGetMyAccount     = {this.props.doGetMyAccount}
-                            doSendARequest     = {this.props.doSendARequest}
-                            doViewMyRequests   = {this.props.doViewMyRequests}
-                            doDeleteARequest   = {this.props.doDeleteARequest}
-                            requestPropertyMSG = {this.props.requestPropertyMSG}/>
+                            performOperation       = {this.state.tenantOperation}
+                            doChangeLoginFlag      = {this.props.doChangeLoginFlag}
+                            doChangeLogoutFlag     = {this.props.doChangeLogoutFlag}
+                            doProcessUpdate        = {this.props.doProcessUpdate}
+                            Properties             = {this.props.Properties}
+                            doGetMyAccount         = {this.props.doGetMyAccount}
+                            doSendARequest         = {this.props.doSendARequest}
+                            doViewMyRequests       = {this.props.doViewMyRequests}
+                            doDeleteARequest       = {this.props.doDeleteARequest}
+                            doRemoveMyRequest      = {this.props.doRemoveMyRequest}
+                            doGetMyNotifications   = {this.props.doGetMyNotifications}
+                            doGetMyNotifAlert      = {this.props.doGetMyNotifAlert}
+                            doChangeAlertNotif     = {this.props.doChangeAlertNotif}
+                            doClearAllMyNotif      = {this.props.doClearAllMyNotif}
+                            doGetMyMails           = {this.props.doGetMyMails}
+                            doGetMyMailAlert       = {this.props.doGetMyMailAlert}
+                            doChangeAlertMail      = {this.props.doChangeAlertMail}
+                            doDeleteAMail          = {this.props.doDeleteAMail}
+                            doGetMyRentals         = {this.props.doGetMyRentals}
+                            doOperateTenantMail    = {this.props.doOperateTenantMail}
+                            doSubmitTenantPayment  = {this.props.doSubmitTenantPayment}
+                            doDeleteTenantSent     = {this.props.doDeleteTenantSent}
+                            doSubmitTenantRate     = {this.props.doSubmitTenantRate}
+                            requestPropertyMSG     = {this.props.requestPropertyMSG} />
                         <TenantsTabs
-                            doOperate          = {this.setTenantOperation}/>
+                            doOperate              = {this.setTenantOperation}/>
                     </React.Fragment>;
                     
         }
@@ -99,6 +114,17 @@ export default class HomeTemplate extends Component{
                             doAcceptTenantReq    = {this.props.doAcceptTenantReq}
                             doViewMyTransactions = {this.props.doViewMyTransactions}
                             doDeclineTenantReq   = {this.props.doDeclineTenantReq}
+                            doGetMyNotifications = {this.props.doGetMyNotifications}
+                            doGetMyNotifAlert    = {this.props.doGetMyNotifAlert}
+                            doChangeAlertNotif   = {this.props.doChangeAlertNotif}
+                            doClearAllMyNotif    = {this.props.doClearAllMyNotif}
+                            doOperateOwnerMail   = {this.props.doOperateOwnerMail}
+                            doGetMyMails         = {this.props.doGetMyMails}
+                            doGetMyMailAlert     = {this.props.doGetMyMailAlert}
+                            doChangeAlertMail    = {this.props.doChangeAlertMail}
+                            doDeleteAMail        = {this.props.doDeleteAMail}
+                            doDeleteOwnerSent    = {this.props.doDeleteOwnerSent}
+                            doSendReciept        = {this.props.doSendReciept}
                             addPropertyErrMSG    = {this.props.addPropertyErrMSG}/>
                             
                         <OwnersTabs 

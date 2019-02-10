@@ -7,7 +7,6 @@ import OwnersIndividualProperty from './ownersIndividualProperty.js';
 const availablePropertyWrapperStyle = StyleSheet.create({
 	mainWrapper: {
 		flex: 90,
-		top: 25,
 		color: '#000'
 	}
 });
@@ -50,7 +49,7 @@ export default class AvailableProperty extends Component{
 
 		else if(this.state.propertyIsPress == 'false'){
 			return <React.Fragment>
-		    		<Text style={{flex:5,top:20,paddingLeft:15,fontSize:19}}>My Properties</Text>
+		    		<Text style={{flex:9,top:10,paddingLeft:15,fontSize:19}}>Available Properties</Text>
 		    		<View style={availablePropertyWrapperStyle.mainWrapper}>
 					     <FlatList
 		                    data={this.props.doViewMyProperty}
@@ -59,10 +58,11 @@ export default class AvailableProperty extends Component{
 		                            onPress={()=>this.doAdjustProperty(item)}>
 	                                <View style={{
 	                                        paddingLeft:12,
-	                                        borderWidth:2,
+	                                        borderBottomWidth:2,
 	                                        width:'100%',
-	                                        height: 85,
-	                                        borderColor:'#6e8fd1'
+	                                        height: 105,
+	                                        borderColor:'#6e8fd1',
+	                                        paddingTop:5
 	                                    }}>
 	                                    <Text style={{fontSize:11}}>
 	                                        Name: {item.propertyName} 
@@ -76,12 +76,12 @@ export default class AvailableProperty extends Component{
                                     		</Text>
 	                                    </View>
 	                                    <View style={{flexDirection:'row'}}>
-	                                        <Text style={{fontSize:11,width:175,height:20}}>
+	                                        <Text style={{fontSize:11,width:175,height:30}}>
 	                                        	{item.propertyDescription}
 	                                        </Text>
 	                                        {this.poolingDisplay(item.propertyBedroomPooling)}
 	                                    </View>
-	                                    <View style={{height:15}}>
+	                                    <View style={{height:17}}>
 	                                    	<Text style={{fontSize:11,width:'100%'}}>
 	                                    		View Now
                                     		</Text>

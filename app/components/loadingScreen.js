@@ -5,7 +5,7 @@ import { Spinner} from "native-base";
 const loadingScreenWrapperStyle = StyleSheet.create({
   mainWrapper: {
     flex: 1,
-    backgroundColor: '#758caf'
+    backgroundColor: '#6785db'
   }
 });
 

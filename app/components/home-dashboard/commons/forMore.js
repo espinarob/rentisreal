@@ -60,11 +60,24 @@ export default class ForMoreBody extends Component{
 		this.setState({flag:'false'});
 	}
 
+	accountSubscriptionDisplay = ()=>{
+		if(this.props.doGetMyAccount.role == 'owner'){
+			return	<View style={forMoreWrapperStyle.blockSectionStyle} >
+						<TouchableWithoutFeedback style={forMoreWrapperStyle.buttonStyle}
+							onPress={() => this.changeOperation('account_subscription')}>
+							<Text style={forMoreWrapperStyle.textContentStyle}>
+			    				Account Subscription
+			    			</Text>
+						</TouchableWithoutFeedback>
+					</View>
+		}
+		else return;
+	}
 	forMoreMainDisplay = ()=>{
 		if(this.state.flag == 'false'){
 			return	<React.Fragment>
 						<View style={{
-							backgroundColor: '#758caf',
+							backgroundColor: '#6785db',
 							height: 42
 						}}>
 
@@ -87,6 +100,7 @@ export default class ForMoreBody extends Component{
 				    			</Text>
 							</TouchableWithoutFeedback>
 						</View>
+						{this.accountSubscriptionDisplay()}
 					</React.Fragment>
 			
 		}

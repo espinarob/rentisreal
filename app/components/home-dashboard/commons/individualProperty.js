@@ -11,7 +11,12 @@ export default class IndividualProperty extends Component {
       propertyName         : this.props.pressedPropertyDetails.propertyName,
       propertyLocation     : this.props.pressedPropertyDetails.propertyLocation,
       propertyFinalPrice   : this.props.pressedPropertyDetails.propertyFinalPrice,
-      propertyPoolingQty   : this.props.pressedPropertyDetails.propertyPoolingQty
+      propertyPoolingQty   : this.props.pressedPropertyDetails.propertyPoolingQty,
+      contactNumber        : this.props.pressedPropertyDetails.contactNumber,
+      firstName            : this.props.pressedPropertyDetails.firstName,
+      lastName             : this.props.pressedPropertyDetails.lastName,
+      middleName           : this.props.pressedPropertyDetails.middleName,
+      email                : this.props.pressedPropertyDetails.email
     }
     this.setState({onProcess:'true'});
     this.props.doSendARequest(data,this.props.pressedPropertyDetails.Account
@@ -31,6 +36,24 @@ export default class IndividualProperty extends Component {
     }
   }
 
+  displayRating = ()=>{
+    if(this.props.pressedPropertyDetails.rating == 0){
+      return 'Not rated yet';
+    }
+    else{
+      let finalRate =  String( Number(this.props.pressedPropertyDetails.rating)/ 
+                              Number(this.props.pressedPropertyDetails.ratingCount) );
+      let appendRateDescription = '';
+      if(Number(this.props.pressedPropertyDetails)>1){
+        appendRateDescription = ' people';  
+      }
+      else appendRateDescription = ' person';
+      
+      finalRate+= ' out of 5 rated by '+String(this.props.pressedPropertyDetails.ratingCount)+String(appendRateDescription);
+      return finalRate;
+    }
+  }
+
   state = {
     operationLoading: 'true',
     currentRequest: [],
@@ -38,6 +61,7 @@ export default class IndividualProperty extends Component {
   }
 
   componentDidMount(){
+    
     for(index=0;index<this.props.doViewMyRequests.length;index++){
       let currentRequest = this.props.doViewMyRequests[index];
       if(String(currentRequest.propertyID) == String(this.props.pressedPropertyDetails.propertyID)){
@@ -47,6 +71,7 @@ export default class IndividualProperty extends Component {
       }
     }
     setTimeout( ()=>this.setState({operationLoading:'false'}),500);
+
   }
 
   validOperation = ()=>{
@@ -121,11 +146,11 @@ export default class IndividualProperty extends Component {
                 <Text style={{
                         position:'relative',
                         fontSize: 15,
-                        width: 200,
-                        left: 20,
+                        width: 219,
+                        left: 19,
                         paddingTop:3,
                         color: "#000"
-                }}>YOU ARE A TENANT HERE</Text>
+                }}>YOU ARE ACCEPTED HERE</Text>
               </View> 
     }
     else{
@@ -133,9 +158,9 @@ export default class IndividualProperty extends Component {
               onPress={()=>this.operateRequest()}>
               <View style={{
                 borderRadius:2,
-                width: 100,
+                width: 84,
                 position:'relative',
-                left: 120,
+                left: 130,
                 borderWidth:2,
                 borderColor: '#42f46e'
               }}>
@@ -143,7 +168,7 @@ export default class IndividualProperty extends Component {
                         position:'relative',
                         fontSize: 15,
                         width: 50,
-                        left: 25,
+                        left: 20,
                         paddingTop:3,
                         color: "#000"
                 }}>Apply</Text>
@@ -165,7 +190,7 @@ export default class IndividualProperty extends Component {
           <View style={{
                   height: 41,
                   flexDirection: 'row',
-                  backgroundColor: '#758caf'
+                  backgroundColor: '#6785db'
               }}>
                   <TouchableWithoutFeedback
                       onPress={()=>this.props.doGetBack()}>
@@ -196,15 +221,7 @@ export default class IndividualProperty extends Component {
                   color:'#8b8f96'
               }}>
               <Text>For Photo</Text>
-          </View>    
-
-          <View style={{
-                  height: 100,
-                  flexDirection: 'row',
-                  color:'#8b8f96'
-              }}>
-              <Text>For Maps</Text>
-          </View>  
+          </View>      
 
           <View style={{
                   height: 30,
@@ -252,6 +269,22 @@ export default class IndividualProperty extends Component {
                 position: 'relative',
                 left: 25
               }}>Property Address: {this.props.pressedPropertyDetails.propertyLocation}</Text>
+          </View> 
+
+          <View style={{
+                  height: 20,
+                  flexDirection: 'row',
+                  color:'#8b8f96',
+                  top:15
+              }}>
+              <Text style={{
+                fontSize:12,
+                width: 200,
+                height: '100%',
+                paddingTop:2,
+                position: 'relative',
+                left: 25
+              }}>Property Type: {this.props.pressedPropertyDetails.propertyType}</Text>
           </View> 
 
           <View style={{
@@ -335,10 +368,10 @@ export default class IndividualProperty extends Component {
           </View>   
 
           <View style={{
-                  height: 30,
+                  height: 35,
                   flexDirection: 'row',
                   color:'#8b8f96',
-                  top:15
+                  top:15,
           }}> 
               <Text style={{
                 fontSize:12,
@@ -353,20 +386,21 @@ export default class IndividualProperty extends Component {
           </View>   
 
           <View style={{
-                  height: 21,
+                  height: 30,
                   flexDirection: 'row',
                   color:'#8b8f96',
-                  top:17
+                  top:16
           }}> 
               <Text style={{
-                fontSize:12,
+                fontSize:13,
                 width: 250,
                 height: '100%',
                 paddingTop:2,
                 position: 'relative',
-                left: 45
+                left: 24,
+                fontWeight: 'bold'
               }}> 
-                
+                Rating: {this.displayRating()}
               </Text>
           </View>   
 
@@ -374,7 +408,7 @@ export default class IndividualProperty extends Component {
                   height: 30,
                   flexDirection: 'row',
                   color:'#8b8f96',
-                  top:21
+                  top:40
           }}>   
             {this.validOperation()}
           </View>

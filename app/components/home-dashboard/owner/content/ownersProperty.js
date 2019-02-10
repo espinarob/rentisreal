@@ -13,25 +13,25 @@ const ownersPropertyWrapperStyle = StyleSheet.create({
 	viewAddSection: {
 		position:'relative',
 		flex: 10,
-		flexDirection: 'row'
+		flexDirection: 'row',
 	},
 	addPropertyStyle:{
 		position: 'relative',
 		left: 50,
 		width: '30%',
 		height: '100%',
-		backgroundColor:'#5f7391',
-		borderRadius: 5,
-		top:5
+		borderColor:'#5ce24a',
+		borderWidth:2,
+		top:3
 	},
 	viewRequestsStyle:{
 		position: 'relative',
 		left: 65,
-		width: '36%',
+		width: '38%',
 		height: '100%',
-		backgroundColor:'#5f7391',
-		borderRadius: 5,
-		top:5
+		borderColor:'#5ce24a',
+		borderWidth:2,
+		top:3
 	},
 	contentSection:{
 		position: 'relative',
@@ -45,23 +45,28 @@ export default class OwnersProperty extends Component{
 		ownerPropertyAction: 'avail-property',
 		viewOrAddFlag      : 'true'
 	}
+
+	changePropertyAction = (action)=>{
+		this.setState({ownerPropertyAction:String(action)});
+	}
 	ownersPropertyBody = () => {
 
 		if(this.state.ownerPropertyAction == 'avail-property'){
 			return <React.Fragment>
 					<AvailableProperty
-						doViewMyProperty   = {this.props.doViewMyProperty}
-						doDeleteProperty   = {this.props.doDeleteProperty}
-						doUpdateProperty   = {this.props.doUpdateProperty}/>
+						doViewMyProperty       = {this.props.doViewMyProperty}
+						doDeleteProperty       = {this.props.doDeleteProperty}
+						doUpdateProperty       = {this.props.doUpdateProperty}/>
 				   </React.Fragment>
 
 		}
 		else if(this.state.ownerPropertyAction == 'add-property'){
 			return <React.Fragment>
 				   	<AddProperty 
-				   		doAddPropertyOwner = {this.props.doAddPropertyOwner}
-				   		AccountDetails     = {this.props.AccountDetails}
-				   		addPropertyErrMSG  = {this.props.addPropertyErrMSG}/>
+				   		doAddPropertyOwner     = {this.props.doAddPropertyOwner}
+				   		AccountDetails         = {this.props.AccountDetails}
+				   		addPropertyErrMSG      = {this.props.addPropertyErrMSG}
+				   		doChangePropertyAction = {this.changePropertyAction}/>
 				   </React.Fragment>
 		}
 		else if(this.state.ownerPropertyAction == 'view-requests'){
@@ -90,12 +95,26 @@ export default class OwnersProperty extends Component{
 	render() {
     	return (
     		<View style={ownersPropertyWrapperStyle.mainWrapper}>
-
+    			<View style={{
+                        backgroundColor: '#6785db',
+                        flex:10
+                }}>
+                  <Text style={{
+                          position: 'relative',
+                          left:95,
+                          height: '100%',
+                          width: 200,
+                          fontSize:20,
+                          paddingTop:10
+                  }}>
+                    Property Operation
+                  </Text>
+                </View>
     			<View style={ownersPropertyWrapperStyle.viewAddSection}>
     				<TouchableWithoutFeedback 
     					 onPress={ ()=> this.operateAddorView()}>
     					<View style={ownersPropertyWrapperStyle.addPropertyStyle}>
-	    					<Text style= {{fontSize:15,fontWeight:'bold',paddingTop:15,paddingLeft: 20}}>
+	    					<Text style= {{fontSize:15,fontWeight:'bold',paddingTop:12,paddingLeft: 20}}>
 	    						Add/View
 	    					</Text>
 	    				</View>
@@ -104,7 +123,7 @@ export default class OwnersProperty extends Component{
     				<TouchableWithoutFeedback
     					 onPress={ ()=> this.setState({ownerPropertyAction:'view-requests'}) }>
     					<View style={ownersPropertyWrapperStyle.viewRequestsStyle}>
-	    					<Text style= {{fontSize:15,fontWeight:'bold',paddingTop:15,paddingLeft: 18}}>
+	    					<Text style= {{fontSize:15,fontWeight:'bold',paddingTop:12,paddingLeft: 18}}>
 	    						View Requests
 	    					</Text>
 	    				</View>

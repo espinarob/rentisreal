@@ -8,7 +8,7 @@ import SeeAllRequests from './seeAllRequests.js';
 const viewRequestsWrapperStyle = StyleSheet.create({
   mainWrapper: {
     flex: 1,
-    top:20
+    top:8
   }
 
 });

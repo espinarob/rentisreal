@@ -5,7 +5,7 @@ import { Spinner} from "native-base";
 const splashScreenWrapperStyle = StyleSheet.create({
   mainWrapper: {
     flex: 1,
-    backgroundColor: '#758caf'
+    backgroundColor: '#6785db'
   }
 });
 

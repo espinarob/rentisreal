@@ -73,7 +73,7 @@ const loginInputWrapperStyle = StyleSheet.create({
 		left: '8%',
 		width: '84%',
 		height: '85%',
-		backgroundColor:'#5f7391',
+		backgroundColor:'#315cb2',
 		borderRadius: 5
 	},
 	registrationLabel:{

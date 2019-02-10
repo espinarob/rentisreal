@@ -29,6 +29,31 @@ export default class MyRequests extends Component{
   		]);
 	}
 
+	doFinalRemove = (request)=>{
+		this.props.doRemoveMyRequest(request);
+	}
+
+	doCreateAlertForRemoveDeclined = (item)=>{
+		Alert.alert(
+  			'Remove',
+  			'Attempting to remove request data (Declined)',
+  		[
+		    {text: 'NO', onPress: () => console.log('Cancelled'), style: 'cancel'},
+		    {text: 'YES', onPress: () => this.doFinalRemove(item)},
+  		]);
+	}
+
+
+	doCreateAlertForRemoveAccepted = (item)=>{
+		Alert.alert(
+  			'Remove',
+  			'Attempting to remove request data (Accepted)',
+  		[
+		    {text: 'NO', onPress: () => console.log('Cancelled'), style: 'cancel'},
+		    {text: 'YES', onPress: () => this.doFinalRemove(item)},
+  		]);
+	}
+
 
 	statusOperate = (status,item)=>{
 		if(status == Constants.STATUS.PENDING){
@@ -36,8 +61,8 @@ export default class MyRequests extends Component{
 					onPress={ ()=>this.doCreateAlertForDelete(item) } >
 					<Text style={{
 						position: 'relative',
-						width: 55,
-						left: 60,
+						width: 56,
+						left: 90,
 						fontSize:15,
 						height:'100%',
 						borderWidth: 2,
@@ -49,32 +74,68 @@ export default class MyRequests extends Component{
 				  </TouchableWithoutFeedback>
 		}
 		else if(status == Constants.STATUS.ACCEPTED){
-			return <Text style={{
-						position: 'relative',
-						width: 73,
-						left: 45,
-						fontSize:15,
-						height:'100%',
-						borderWidth: 2,
-						paddingLeft: 5,
-						borderColor:'#42f46e'
-				    }}>
-				    	Accepted
-				   </Text>
+			return	<React.Fragment>
+						<TouchableWithoutFeedback
+							onPress={()=>this.doCreateAlertForRemoveAccepted(item)}>
+							<Text style={{
+								position: 'relative',
+								width: 68,
+								borderWidth:2,
+								fontSize:15,
+								height:'100%',
+								borderWidth: 2,
+								paddingLeft: 6,
+								left:10,
+								borderColor:'#42f46e'
+							}}>
+								Remove
+							</Text>	
+						</TouchableWithoutFeedback>
+						<Text style={{
+							position: 'relative',
+							width: 74,
+							left: 20,
+							fontSize:15,
+							height:'100%',
+							borderWidth: 2,
+							paddingLeft: 5,
+							borderColor:'#42f46e'
+					    }}>
+					    	Accepted
+					   </Text>
+					</React.Fragment>
 		}
 		else{
-			return <Text style={{
-						position: 'relative',
-						width: 74,
-						left: 45,
-						fontSize:15,
-						height:'100%',
-						borderWidth: 2,
-						paddingLeft: 5,
-						borderColor:'#c9060f'
-				    }}>
-				    	Declined
-				   </Text>
+			return 	<React.Fragment>
+						<TouchableWithoutFeedback
+							onPress={()=>this.doCreateAlertForRemoveDeclined(item)}>
+							<Text style={{
+								position: 'relative',
+								width: 68,
+								borderWidth:2,
+								fontSize:15,
+								height:'100%',
+								borderWidth: 2,
+								paddingLeft: 6,
+								left:10,
+								borderColor:'#c9060f'
+							}}>
+								Remove
+							</Text>	
+						</TouchableWithoutFeedback>
+						<Text style={{
+							position: 'relative',
+							width: 69,
+							left: 20,
+							fontSize:15,
+							height:'100%',
+							borderWidth: 2,
+							paddingLeft: 5,
+							borderColor:'#c9060f'
+					    }}>
+					    	Declined
+					   </Text>
+					</React.Fragment>
 		}
 	}
 
@@ -82,7 +143,7 @@ export default class MyRequests extends Component{
 		if(this.props.doViewMyRequests.length!=0){
 			return 	<React.Fragment>	
 						<View style={{
-							backgroundColor: '#758caf',
+							backgroundColor: '#6785db',
 							height: 42
 						}}>
 							<Text style={{
@@ -113,7 +174,7 @@ export default class MyRequests extends Component{
 									  }}>
 		    						<Text style={{
 		    							position: 'relative',
-		    							width: 220,
+		    							width: 190,
 		    							left: 15,
 		    							fontSize:15,
 		    							height:'100%'
@@ -161,11 +222,21 @@ export default class MyRequests extends Component{
 		else{	
 			return 	<React.Fragment>
 						<View style={{
-								backgroundColor: '#758caf',
+								backgroundColor: '#6785db',
 								height: 42
 						}}>
+							<Text style={{
+								position: 'relative',
+								left:98,
+								height: '100%',
+								width: 150,
+								fontSize:20,
+								paddingTop:10
+							}}>
+								Requests Made
+							</Text>
 						</View>
-						<Text style={{position:'relative',top:250,left:115}}>No current Requests</Text>
+						<Text style={{position:'relative',top:250,left:92}}>No current Requests history</Text>
 					</React.Fragment>
 		}
 	}

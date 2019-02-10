@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Platform, StyleSheet, Text, View,TextInput, CheckBox} from "react-native";
+import { Platform, StyleSheet, Text, View,TextInput, CheckBox,TouchableWithoutFeedback} from "react-native";
 import {Button} from 'native-base';
 import Constants from '../../Constants.js';
 
@@ -9,68 +9,68 @@ const updateDetailsWrapperStyle = StyleSheet.create({
 	},
 	updateLabelSection:{
 		position: 'relative',
-		height: 36,
-		top: 5,
-    flexDirection: 'row'
+		height: 42,
+    flexDirection: 'row',
+    backgroundColor: '#6785db'
 	},
 	firstNameSection:{
 		position: 'relative',
 		height: 36,
-		top: 7,
+		top: 10,
     flexDirection: 'row'
 	},
 	lastNameSection:{
 		position: 'relative',
 		height: 36,
-		top: 9,
+		top: 12,
     flexDirection: 'row'
 	},
 	middleNameSection:{
 		position: 'relative',
 		height: 36,
-		top: 11,
+		top: 14,
     flexDirection: 'row'
 	},
 	contactNumberSection:{
 		position: 'relative',
 		height: 36,
-		top: 13,
+		top: 16,
     flexDirection: 'row'
 	},
 	emailAddSection:{
 		position: 'relative',
 		height: 36,
-		top: 13,
+		top: 18,
     flexDirection: 'row'
 	},
 	ageSection:{
 		position: 'relative',
 		height: 36,
-		top: 15,
+		top: 20,
     flexDirection: 'row'
 	},
 	civilStatusSection:{
 		position: 'relative',
 		height: 36,
-		top: 17,
+		top: 22,
     flexDirection: 'row'
 	},
 	occupationSection:{
 		position: 'relative',
 		height: 36,
-		top: 19,
+		top: 24,
     flexDirection: 'row'
 	},
 	genderSection:{
 		position: 'relative',
 		height: 36,
-		top: 21,
+		top: 26,
     flexDirection: 'row'
 	},
   errorSection:{
     position: 'relative',
     height: 36,
-    top: 21,
+    top: 28,
     flexDirection: 'row'
   },
   commonInputElemenStyle:{
@@ -107,34 +107,58 @@ export default class updateDetailsWrapperStyleails extends Component{
 
 
   doUpdate = () => {
-    console.log('now changed!!!');
+    let toUpdate  = {};
+    let toChangeFlag = false;
     if( Number.isInteger(Number(this.state.contactNumber)) == false 
         && this.state.contactNumber!='null' ){
       this.setState({errorMsg:'Invalid Contact Number!'});
+      return;
     }
     else if(this.state.contactNumber == ''){
       this.setState({errorMsg:'Invalid Contact Number!'});
+      return;
+    }
+
+    if(this.state.firstName!='null'){
+      toUpdate['firstName'] = this.state.firstName;
+    }
+    if(this.state.lastName!='null'){
+      toUpdate['lastName'] = this.state.lastName;
+    }
+    if(this.state.middleName!='null'){
+      toUpdate['middleName'] = this.state.middleName;
+    }
+    if(this.state.age!='null'){
+      toUpdate['age'] = this.state.age;
+    }
+    if(this.state.contactNumber!='null'){
+      toUpdate['contactNumber'] = this.state.contactNumber;
+    }
+    if(this.state.email!='null'){
+      toUpdate['email'] = this.state.email;
+    }
+    if(this.state.civilStatus!='null'){
+      toUpdate['civilStatus'] = this.state.civilStatus;
+    }
+    if(this.state.occupation!='null'){
+      toUpdate['occupation'] = this.state.occupation;
+    }
+    if(this.state.gender == true){
+      toUpdate['gender'] = 'male';
     }
     else{
-      this.setState({errorMsg:'Successfully Edited'});
-      setTimeout(()=>{
-        this.setState({errorMsg:''});
-        let toUpdate = {
-          firstName    : this.state.firstName,
-          lastName     : this.state.lastName,
-          middleName   : this.state.middleName,
-          contactNumber: this.state.contactNumber,
-          email        : this.state.email,
-          age          : this.state.age,
-          civilStatus  : this.state.civilStatus,
-          occupation   : this.state.occupation,
-          gender       : this.state.gender
-        }
-        this.props.doProcessUpdate(toUpdate);
-      },3000);
-
+      toUpdate['gender'] = 'female';
     }
 
+    
+    toChangeFlag = true;
+    if(toChangeFlag == true){
+      this.setState({errorMsg:'Submitting now,Please wait...'});
+      setTimeout(()=>{
+        this.setState({errorMsg:''});
+        this.props.doProcessUpdate(JSON.parse(JSON.stringify(toUpdate)));
+      },2000);
+    }
   }
 
 	render() {
@@ -142,16 +166,15 @@ export default class updateDetailsWrapperStyleails extends Component{
     		<View style={ updateDetailsWrapperStyle.mainWrapper}>
     			<View style={updateDetailsWrapperStyle.updateLabelSection}>
     				<Text style={{
-  						  	position: 'relative',
-  						  	width:170,
-  						  	height:'100%',
-  						  	paddingTop:5,
-  						  	paddingLeft:10,
-  						  	left:95,
-  						  	fontSize:20}}>
-    					Account Update
-					  </Text>
-              
+                    position: 'relative',
+                    left:95,
+                    height: '100%',
+                    width: 200,
+                    fontSize:20,
+                    paddingTop:10
+            }}>
+              Account Update
+            </Text>
     			</View>
     			<View style={updateDetailsWrapperStyle.firstNameSection}>
     				<Text style={{
@@ -304,19 +327,23 @@ export default class updateDetailsWrapperStyleails extends Component{
           <View style={{
             top:32,
             height:40}}>
-            <Button style={{
+            <TouchableWithoutFeedback
+                    onPress={ () =>this.doUpdate() }>
+              <Text style= {{
+                      fontSize:16,
+                      fontWeight:'bold',
+                      paddingTop:8,
+                      paddingLeft: 20,
                       position: 'relative',
                       left: 130,
                       width: 100,
                       height: '100%',
-                      backgroundColor:'#5f7391',
-                      borderRadius: 5}}
-                    underlayColor='#fff'
-                    onPress={ () =>this.doUpdate() }>
-              <Text style= {{fontSize:15,fontWeight:'bold',paddingTop:3,paddingLeft: 20}}>
+                      borderColor: '#5ce24a',
+                      borderWidth:3
+                      }}>
                 Confirm
               </Text>
-            </Button>
+            </TouchableWithoutFeedback>
           </View>
     		</View>
     	);

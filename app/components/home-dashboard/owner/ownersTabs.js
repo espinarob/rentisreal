@@ -19,7 +19,7 @@ export default class OwnersTabs extends Component{
     		<View style={ownersTabsWrapperStyle.mainWrapper}>
 				<Container>
         			<Footer>
-          				<FooterTab style={{backgroundColor:'#758caf'}}>
+          				<FooterTab style={{backgroundColor:'#6785db'}}>
             				<Button
                                 onPress={()=>this.props.doOperate(Constants.OWNER_ACTIONS.MY_HOME) }>
             					<Icon style={ownersTabsWrapperStyle.textStyleCommon} 

@@ -19,7 +19,7 @@ export default class TenantsTabs extends Component{
     		<View style={tenantsTabsWrapperStyle.mainWrapper}>
 				<Container>
         			<Footer>
-          				<FooterTab style={{backgroundColor:'#758caf'}}>
+          				<FooterTab style={{backgroundColor:'#6785db'}}>
             				<Button
                                 onPress={()=>this.props.doOperate(Constants.TENANT_ACTIONS.MY_HOME)}>
             					<Icon style={tenantsTabsWrapperStyle.textStyleCommon} name="ios-home"/>
