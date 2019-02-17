@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import { Platform, StyleSheet, Text, View,FlatList,TouchableWithoutFeedback,TextInput,Alert} from "react-native";
 import { List, ListItem, SearchBar } from 'react-native-elements';
 import {Button, Icon} from 'native-base';
-import FontAwesome, { Icons } from "react-native-fontawesome";
 
 
 export default class TenantMailing extends Component {

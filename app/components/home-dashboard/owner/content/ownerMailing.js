@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import { Platform, StyleSheet, Text, View,FlatList,TouchableWithoutFeedback,TextInput,Alert} from "react-native";
 import { List, ListItem, SearchBar } from 'react-native-elements';
 import {Button, Icon} from 'native-base';
-import FontAwesome, { Icons } from "react-native-fontawesome";
 
 
 export default class OwnerMailing extends Component {
@@ -48,7 +47,7 @@ export default class OwnerMailing extends Component {
 
 			let ownerDetails = {
 				Account: this.props.doGetTransactionDetails.Account,
-				transactionID: this.props.doGetTransactionDetails.propertyID
+				transactionID: this.props.doGetTransactionDetails.requestID
 			}
 			this.props.doOperateOwnerMail(this.props.doGetTransactionDetails.propertyName,
 				this.props.doGetTransactionDetails.tenantID,
@@ -97,13 +96,13 @@ export default class OwnerMailing extends Component {
 	              </TouchableWithoutFeedback>
 	              <Text style={{
 			                position: 'relative',
-			                left:75,
+			                left:60,
 			                height: '100%',
 			                width: 150,
 			                fontSize:20,
 			                paddingTop:10
 	              }}>
-	                Send a Mail
+	                Send a Message
 	              </Text>
 	          </View>
 	          <Text style={{
@@ -185,17 +184,17 @@ export default class OwnerMailing extends Component {
 
               	<Text style={{
               			height:40,
-              			width:90,
+              			width:130,
               			position:'relative',
               			top:60,
               			left: 45,
-              			paddingLeft: 10,
+              			paddingLeft: 15,
               			paddingTop: 10,
               			borderWidth:2,
               			borderColor: '#5ce24a',
               			fontSize:15
               	}}>
-              		Send Mail
+              		Send Message
               	</Text>
 
               </TouchableWithoutFeedback>

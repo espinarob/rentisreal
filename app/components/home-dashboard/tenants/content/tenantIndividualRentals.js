@@ -116,6 +116,7 @@ export default class TenantIndividulRentals extends Component{
 	onRatingValueChange = (itemValue,itemIndex) =>{
 		this.setState({rating:itemValue});
 	}
+	
 	clearSentDisplay = ()=>{
 		if(this.state.sentMails.length!=0){
 			return	<TouchableWithoutFeedback
@@ -419,16 +420,16 @@ export default class TenantIndividulRentals extends Component{
 	                		onPress={ ()=>this.setState({rentalOperation:'mail'})}>
 		                	<Text style={{
 		                		borderWidth:2,
-		                		width: 83,
+		                		width: 105,
 		                		height: '100%',
 		                		position:'relative',
-		                		left: 40,
+		                		left: 70,
 		                		fontSize: 11,
 		                		borderColor: '#5ce24a',
 		                		paddingTop: 13,
 		                		paddingLeft:8
 		                	}}>
-		                		Send Mail {' '}
+		                		Send Message{' '}
 		                		<Icon style={{fontSize:14}}
 		                			name="envelope"
 		                			type="FontAwesome"/>
@@ -437,37 +438,17 @@ export default class TenantIndividulRentals extends Component{
 		                </TouchableWithoutFeedback>
 
 		                <TouchableWithoutFeedback
-	                		onPress={ ()=>console.log('calling')}>
-		                	<Text style={{
-		                		borderWidth:2,
-		                		width: 83,
-		                		height: '100%',
-		                		position:'relative',
-		                		left: 55,
-		                		fontSize: 11,
-		                		borderColor: '#5ce24a',
-		                		paddingTop: 13,
-		                		paddingLeft:8
-		                	}}>
-		                		Video Call {' '}
-		                		<Icon style={{fontSize:14}}
-		                			name="video-camera"
-		                			type="Entypo"/>
-		                	</Text>
-		                </TouchableWithoutFeedback>
-
-		                <TouchableWithoutFeedback
 	                		onPress={ ()=>this.setState({rentalOperation:'cashwall'})}>
 		                	<Text style={{
 		                		borderWidth:2,
-		                		width: 83,
+		                		width: 100,
 		                		height: '100%',
 		                		position:'relative',
-		                		left: 70,
-		                		fontSize: 11,
+		                		left: 80,
+		                		fontSize: 12,
 		                		borderColor: '#5ce24a',
 		                		paddingTop: 13,
-		                		paddingLeft:8
+		                		paddingLeft:11
 		                	}}>
 		                		Cash Wall {' '}
 		                		<Icon style={{fontSize:14}}

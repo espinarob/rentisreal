@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View,TouchableWithoutFeedback} from 'react-native';
+import {Platform, StyleSheet, Text, View,TouchableWithoutFeedback, Image} from 'react-native';
 import {Button,Icon, Spinner} from "native-base";
 import Constants from "../../Constants.js";
 
@@ -72,6 +72,20 @@ export default class IndividualProperty extends Component {
     }
     setTimeout( ()=>this.setState({operationLoading:'false'}),500);
 
+  }
+
+  doFetchPropertyPhoto = (url)=>{
+    /*fetch(url)
+    .then((res)=>{
+      console.log(JSON.parse(JSON.stringify(res)));
+    })*/
+    var xhr = new XMLHttpRequest();
+    xhr.responseType = 'text';
+    xhr.onload = function(event) {
+      var blob = xhr.response;
+    };
+    xhr.open('GET', url);
+    xhr.send();
   }
 
   validOperation = ()=>{
@@ -216,26 +230,28 @@ export default class IndividualProperty extends Component {
                   </View>
           </View>
           <View style={{
-                  height: 100,
+                  height: 170,
                   flexDirection: 'row',
                   color:'#8b8f96'
               }}>
-              <Text>For Photo</Text>
+            <Image
+              source = {{uri:this.props.pressedPropertyDetails.imgDLURL}}
+              style = {{width:'100%',position:'relative',height:'100%',resizeMode:'contain'}}/>
           </View>      
 
           <View style={{
-                  height: 30,
+                  height:25,
                   flexDirection: 'row',
                   color:'#8b8f96',
-                  top:15
+                  top:20
               }}>
               <Text style={{
-                fontSize:15,
+                fontSize:12,
                 width: 200,
                 height: '100%',
-                paddingTop:2,
                 position: 'relative',
-                left: 20
+                left: 20,
+                fontWeight: 'bold'
               }}>Property Information</Text>
           </View>    
 
@@ -244,10 +260,10 @@ export default class IndividualProperty extends Component {
                   height: 20,
                   flexDirection: 'row',
                   color:'#8b8f96',
-                  top:15
+                  top:20
               }}>
               <Text style={{
-                fontSize:12,
+                fontSize:11,
                 width: 200,
                 height: '100%',
                 paddingTop:2,
@@ -259,7 +275,7 @@ export default class IndividualProperty extends Component {
                   height: 20,
                   flexDirection: 'row',
                   color:'#8b8f96',
-                  top:15
+                  top:20
               }}>
               <Text style={{
                 fontSize:12,
@@ -275,7 +291,7 @@ export default class IndividualProperty extends Component {
                   height: 20,
                   flexDirection: 'row',
                   color:'#8b8f96',
-                  top:15
+                  top:20
               }}>
               <Text style={{
                 fontSize:12,
@@ -291,7 +307,7 @@ export default class IndividualProperty extends Component {
                   height: 20,
                   flexDirection: 'row',
                   color:'#8b8f96',
-                  top:15
+                  top:20
               }}>
               <Text style={{
                 fontSize:12,
@@ -306,7 +322,7 @@ export default class IndividualProperty extends Component {
                   height: 20,
                   flexDirection: 'row',
                   color:'#8b8f96',
-                  top:15
+                  top:20
               }}>
               <Text style={{
                 fontSize:12,
@@ -322,7 +338,7 @@ export default class IndividualProperty extends Component {
                   height: 20,
                   flexDirection: 'row',
                   color:'#8b8f96',
-                  top:15
+                  top:20
               }}>
               <Text style={{
                 fontSize:12,
@@ -338,7 +354,7 @@ export default class IndividualProperty extends Component {
                   height: 20,
                   flexDirection: 'row',
                   color:'#8b8f96',
-                  top:15
+                  top:20
               }}>
               <Text style={{
                 fontSize:12,
@@ -353,7 +369,7 @@ export default class IndividualProperty extends Component {
                   height: 20,
                   flexDirection: 'row',
                   color:'#8b8f96',
-                  top:15
+                  top:20
           }}>
               <Text style={{
                 fontSize:12,
@@ -371,7 +387,7 @@ export default class IndividualProperty extends Component {
                   height: 35,
                   flexDirection: 'row',
                   color:'#8b8f96',
-                  top:15,
+                  top:20
           }}> 
               <Text style={{
                 fontSize:12,
@@ -379,14 +395,14 @@ export default class IndividualProperty extends Component {
                 height: '100%',
                 paddingTop:2,
                 position: 'relative',
-                left: 45
+                left: 35
               }}> 
                 {this.props.pressedPropertyDetails.propertyFurtherData}
               </Text>
           </View>   
 
           <View style={{
-                  height: 30,
+                  height: 25,
                   flexDirection: 'row',
                   color:'#8b8f96',
                   top:16
@@ -408,7 +424,7 @@ export default class IndividualProperty extends Component {
                   height: 30,
                   flexDirection: 'row',
                   color:'#8b8f96',
-                  top:40
+                  top:19
           }}>   
             {this.validOperation()}
           </View>

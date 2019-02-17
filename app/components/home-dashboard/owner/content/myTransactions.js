@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import { Platform, StyleSheet, Text, View,FlatList,TouchableWithoutFeedback} from "react-native";
 import { List, ListItem, SearchBar } from 'react-native-elements';
-import FontAwesome, { Icons } from "react-native-fontawesome";
 import OwnersIndividualTransaction from './ownersIndividualTransaction.js';
 
 
@@ -71,7 +70,7 @@ export default class MyTransactions extends Component {
                   renderItem={({item})=>
                     <View style={{
                             borderBottomWidth:2,
-                            height: 108
+                            height: 113
                     }}>
                       <Text style={{
                               width: 300,
@@ -79,10 +78,11 @@ export default class MyTransactions extends Component {
                               fontSize: 14,
                               fontWeight: 'bold',
                               position:'relative',
-                              left: 10,
-                              top: 7
+                              left: 9,
+                              top: 7 ,
+                              marginBottom:3
                       }}> 
-                        Property Name: {item.propertyName}
+                        Tenant: {item.firstName} {item.lastName}
                       </Text>
                       <Text style={{
                               width: 300,
@@ -119,7 +119,7 @@ export default class MyTransactions extends Component {
                               position:'relative',
                               left: 10
                       }}> 
-                        Tenant: {item.firstName} {item.lastName}
+                        Property Name: {item.propertyName}
                       </Text>
                       <TouchableWithoutFeedback
                         onPress={()=> this.doAdjustTransaction(item)}>
@@ -132,7 +132,6 @@ export default class MyTransactions extends Component {
                                 left: 300,
                                 borderWidth:2,
                                 paddingTop: 2
-
                         }}>
                           More
                         </Text>

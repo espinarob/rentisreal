@@ -92,6 +92,7 @@ export default class HomeTemplate extends Component{
                             doSubmitTenantPayment  = {this.props.doSubmitTenantPayment}
                             doDeleteTenantSent     = {this.props.doDeleteTenantSent}
                             doSubmitTenantRate     = {this.props.doSubmitTenantRate}
+                            doChangeMyPassword     = {this.props.doChangeMyPassword}
                             requestPropertyMSG     = {this.props.requestPropertyMSG} />
                         <TenantsTabs
                             doOperate              = {this.setTenantOperation}/>
@@ -101,31 +102,33 @@ export default class HomeTemplate extends Component{
         else if(this.state.role == 'owner'){            
             return  <React.Fragment>
                         <OwnersBody
-                            performOperation     = {this.state.ownerOperation}
-                            doChangeLoginFlag    = {this.props.doChangeLoginFlag}
-                            doChangeLogoutFlag   = {this.props.doChangeLogoutFlag}
-                            doProcessUpdate      = {this.props.doProcessUpdate}
-                            doAddPropertyOwner   = {this.props.doAddPropertyOwner}
-                            Properties           = {this.props.Properties}
-                            doGetMyAccount       = {this.props.doGetMyAccount}
-                            doViewMyProperty     = {this.props.doViewMyProperty}
-                            doDeleteProperty     = {this.props.doDeleteProperty}
-                            doUpdateProperty     = {this.props.doUpdateProperty}
-                            doAcceptTenantReq    = {this.props.doAcceptTenantReq}
-                            doViewMyTransactions = {this.props.doViewMyTransactions}
-                            doDeclineTenantReq   = {this.props.doDeclineTenantReq}
-                            doGetMyNotifications = {this.props.doGetMyNotifications}
-                            doGetMyNotifAlert    = {this.props.doGetMyNotifAlert}
-                            doChangeAlertNotif   = {this.props.doChangeAlertNotif}
-                            doClearAllMyNotif    = {this.props.doClearAllMyNotif}
-                            doOperateOwnerMail   = {this.props.doOperateOwnerMail}
-                            doGetMyMails         = {this.props.doGetMyMails}
-                            doGetMyMailAlert     = {this.props.doGetMyMailAlert}
-                            doChangeAlertMail    = {this.props.doChangeAlertMail}
-                            doDeleteAMail        = {this.props.doDeleteAMail}
-                            doDeleteOwnerSent    = {this.props.doDeleteOwnerSent}
-                            doSendReciept        = {this.props.doSendReciept}
-                            addPropertyErrMSG    = {this.props.addPropertyErrMSG}/>
+                            performOperation      = {this.state.ownerOperation}
+                            doChangeLoginFlag     = {this.props.doChangeLoginFlag}
+                            doChangeLogoutFlag    = {this.props.doChangeLogoutFlag}
+                            doProcessUpdate       = {this.props.doProcessUpdate}
+                            doAddPropertyOwner    = {this.props.doAddPropertyOwner}
+                            Properties            = {this.props.Properties}
+                            doGetMyAccount        = {this.props.doGetMyAccount}
+                            doViewMyProperty      = {this.props.doViewMyProperty}
+                            doDeleteProperty      = {this.props.doDeleteProperty}
+                            doUpdateProperty      = {this.props.doUpdateProperty}
+                            doAcceptTenantReq     = {this.props.doAcceptTenantReq}
+                            doViewMyTransactions  = {this.props.doViewMyTransactions}
+                            doDeclineTenantReq    = {this.props.doDeclineTenantReq}
+                            doGetMyNotifications  = {this.props.doGetMyNotifications}
+                            doGetMyNotifAlert     = {this.props.doGetMyNotifAlert}
+                            doChangeAlertNotif    = {this.props.doChangeAlertNotif}
+                            doClearAllMyNotif     = {this.props.doClearAllMyNotif}
+                            doOperateOwnerMail    = {this.props.doOperateOwnerMail}
+                            doGetMyMails          = {this.props.doGetMyMails}
+                            doGetMyMailAlert      = {this.props.doGetMyMailAlert}
+                            doChangeAlertMail     = {this.props.doChangeAlertMail}
+                            doDeleteAMail         = {this.props.doDeleteAMail}
+                            doDeleteOwnerSent     = {this.props.doDeleteOwnerSent}
+                            doSendReciept         = {this.props.doSendReciept}
+                            doChangeMyPassword    = {this.props.doChangeMyPassword}
+                            doUploadPropertyPhoto = {this.props.doUploadPropertyPhoto}
+                            addPropertyErrMSG     = {this.props.addPropertyErrMSG}/>
                             
                         <OwnersTabs 
                             doOperate            = {this.setOwnerOperation} />

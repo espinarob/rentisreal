@@ -16,6 +16,7 @@ export default class PaymentSection extends Component{
 		inputRecipientName          : '',
 		inputRemittanceCode         : '',
 		inputPaymentNotes           : '',
+		inputAmountSent             : '',
 		paymentMode                 : true,
 		paymentSectionError         : ''
 	}
@@ -44,9 +45,9 @@ export default class PaymentSection extends Component{
 			inputRecipientName          : this.state.inputRecipientName,
 			inputRemittanceCode         : this.state.inputRemittanceCode,
 			inputPaymentNotes           : this.state.inputPaymentNotes,
+			inputAmountSent             : this.state.inputAmountSent,
 			inputPaymentMode            : this.state.paymentMode === true ? 'Full' : 'Partial'
 		}	
-
 		if(this.state.inputNameOfRemittance.length==0){
 			this.setState({paymentSectionError:'Name of remittance must not be blank'});
 			return;
@@ -85,6 +86,10 @@ export default class PaymentSection extends Component{
 		}
 		else if( this.state.inputRecipientContactNumber.length<11 || Number.isInteger(Number(this.state.inputRecipientContactNumber)) == false){
 			this.setState({paymentSectionError:'Invalid recipient contact number'});
+			return;
+		}
+		else if( Number.isInteger(Number(this.state.inputAmountSent)) == false){
+			this.setState({paymentSectionError:'Invalid payment amount input'});
 			return;
 		}
 		else{
@@ -281,34 +286,75 @@ export default class PaymentSection extends Component{
 	                	maxLength   = {11}
 	                	placeholder = "contact number of recipient"
 	                	onChangeText={(inputRecipientContactNumber)=>this.setState({inputRecipientContactNumber:inputRecipientContactNumber})}/>
-           
-	                <Text style={{
-	                	top:37,
-	                	position:'relative',
-	                	height: 20,
-	                	width:170,
-	                	fontSize:13,
-	                	left: 20
-	                }}>
-	                	Recipient Name
-	                </Text>
+           			
+           			<View style={{
+           					flexDirection: 'row',
+           					top:37,
+           					height: 20,
+           					width:'100%',
+           					position: 'relative'
+           			}}>
+		                <Text style={{
+		                	position:'relative',
+		                	height: '98%',
+		                	width:170,
+		                	fontSize:13,
+		                	left: 20
+		                }}>
+		                	Recipient Name
+		                </Text>
+		                <Text style={{
+		                	position:'relative',
+		                	height: '98%',
+		                	width:173,
+		                	fontSize:13,
+		                	left: 20
+		                }}>
+		                	Total Amount
 
-	                <TextInput
-	                	style={{
-	                		width: 160,
-	                		height: 30,
-						    left: 20,
-						    alignItems: 'stretch',
-						    padding: 0,
-						    position: 'relative',
-						    borderRadius: 5,
-						    fontSize: 12,
-						    borderWidth:1,
-						    top:37
-	                	}}
-	                	maxLength   = {30}
-	                	placeholder = "name of recipient"
-	                	onChangeText={(inputRecipientName)=>this.setState({inputRecipientName:inputRecipientName})}/>
+		                </Text>
+		            </View>
+
+		            <View style={{
+		            		width: '100%',
+		            		height: 30,
+		            		position: 'relative',
+		            		flexDirection: 'row',
+		            		top: 37	
+		            }}>
+		                <TextInput
+		                	style={{
+		                		width: 160,
+		                		height: '100%',
+							    left: 20,
+							    alignItems: 'stretch',
+							    padding: 0,
+							    position: 'relative',
+							    borderRadius: 5,
+							    fontSize: 12,
+							    borderWidth:1
+		                	}}
+		                	maxLength   = {30}
+		                	placeholder = "name of recipient"
+		                	onChangeText={(inputRecipientName)=>this.setState({inputRecipientName:inputRecipientName})}/>
+            			<TextInput
+		                	style={{
+		                		width: 150,
+		                		height: '100%',
+							    left: 30,
+							    alignItems: 'stretch',
+							    padding: 0,
+							    position: 'relative',
+							    borderRadius: 5,
+							    fontSize: 12,
+							    borderWidth:1
+		                	}}
+		                	maxLength   = {15}
+		                	placeholder = "amount sent"
+		                	onChangeText={(inputAmountSent)=>this.setState({inputAmountSent:inputAmountSent})}/>
+
+		            </View>
+
             		<Text style={{
 	                	top:42,
 	                	position:'relative',

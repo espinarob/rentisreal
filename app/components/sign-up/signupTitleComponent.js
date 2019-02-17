@@ -3,7 +3,7 @@ import { Platform, StyleSheet, Text, View } from "react-native";
 
 const signupTitleWrapperStyle = StyleSheet.create({
 	mainWrapper: {
-		flex: 6
+		flex: 4
 	},
 	titleStyle:{
 		position: 'relative',

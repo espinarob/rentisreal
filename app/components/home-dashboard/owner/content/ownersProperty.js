@@ -12,26 +12,36 @@ const ownersPropertyWrapperStyle = StyleSheet.create({
 	},
 	viewAddSection: {
 		position:'relative',
-		flex: 10,
+		flex: 9,
 		flexDirection: 'row',
+		marginBottom: 10
 	},
 	addPropertyStyle:{
 		position: 'relative',
-		left: 50,
-		width: '30%',
-		height: '100%',
+		left: 17,
+		width: '27%',
+		height: '96%',
 		borderColor:'#5ce24a',
 		borderWidth:2,
-		top:3
+		top:5
+	},
+	viewPropertyStyle:{
+		position: 'relative',
+		left: 28,
+		width: '31%',
+		height: '96%',
+		borderColor:'#5ce24a',
+		borderWidth:2,
+		top:5
 	},
 	viewRequestsStyle:{
 		position: 'relative',
-		left: 65,
-		width: '38%',
-		height: '100%',
+		left: 40,
+		width: '29%',
+		height: '96%',
 		borderColor:'#5ce24a',
 		borderWidth:2,
-		top:3
+		top:5
 	},
 	contentSection:{
 		position: 'relative',
@@ -56,7 +66,7 @@ export default class OwnersProperty extends Component{
 					<AvailableProperty
 						doViewMyProperty       = {this.props.doViewMyProperty}
 						doDeleteProperty       = {this.props.doDeleteProperty}
-						doUpdateProperty       = {this.props.doUpdateProperty}/>
+						doUpdateProperty       = {this.props.doUpdateProperty} />
 				   </React.Fragment>
 
 		}
@@ -66,7 +76,8 @@ export default class OwnersProperty extends Component{
 				   		doAddPropertyOwner     = {this.props.doAddPropertyOwner}
 				   		AccountDetails         = {this.props.AccountDetails}
 				   		addPropertyErrMSG      = {this.props.addPropertyErrMSG}
-				   		doChangePropertyAction = {this.changePropertyAction}/>
+				   		doChangePropertyAction = {this.changePropertyAction} 
+				   		doUploadPropertyPhoto  = {this.props.doUploadPropertyPhoto} />
 				   </React.Fragment>
 		}
 		else if(this.state.ownerPropertyAction == 'view-requests'){
@@ -78,17 +89,6 @@ export default class OwnersProperty extends Component{
 				   </React.Fragment>
 		}
 
-	}
-
-	operateAddorView = ()=>{
-		if(this.state.viewOrAddFlag == 'true'){
-			this.setState({viewOrAddFlag:'false'});
-			this.setState({ownerPropertyAction:'add-property'});
-		}
-		else{
-			this.setState({viewOrAddFlag:'true'});
-			this.setState({ownerPropertyAction:'avail-property'});
-		}
 	}
 
 
@@ -112,10 +112,19 @@ export default class OwnersProperty extends Component{
                 </View>
     			<View style={ownersPropertyWrapperStyle.viewAddSection}>
     				<TouchableWithoutFeedback 
-    					 onPress={ ()=> this.operateAddorView()}>
+    					onPress={ ()=> this.setState({ownerPropertyAction:'add-property'})}>
     					<View style={ownersPropertyWrapperStyle.addPropertyStyle}>
-	    					<Text style= {{fontSize:15,fontWeight:'bold',paddingTop:12,paddingLeft: 20}}>
-	    						Add/View
+	    					<Text style= {{fontSize:12,fontWeight:'bold',paddingTop:10,paddingLeft:11}}>
+	    						Add Property
+	    					</Text>
+	    				</View>
+    				</TouchableWithoutFeedback>
+
+    				<TouchableWithoutFeedback 
+    					onPress={ ()=> this.setState({ownerPropertyAction:'avail-property'})}>
+    					<View style={ownersPropertyWrapperStyle.viewPropertyStyle}>
+	    					<Text style= {{fontSize:12,fontWeight:'bold',paddingTop:9.5,paddingLeft:10}}>
+	    						View Properties
 	    					</Text>
 	    				</View>
     				</TouchableWithoutFeedback>
@@ -123,11 +132,12 @@ export default class OwnersProperty extends Component{
     				<TouchableWithoutFeedback
     					 onPress={ ()=> this.setState({ownerPropertyAction:'view-requests'}) }>
     					<View style={ownersPropertyWrapperStyle.viewRequestsStyle}>
-	    					<Text style= {{fontSize:15,fontWeight:'bold',paddingTop:12,paddingLeft: 18}}>
+	    					<Text style= {{fontSize:12,fontWeight:'bold',paddingTop:10,paddingLeft:11}}>
 	    						View Requests
 	    					</Text>
 	    				</View>
     				</TouchableWithoutFeedback>
+
     			</View>
 
     			<View style={ownersPropertyWrapperStyle.contentSection}>

@@ -3,16 +3,23 @@ import { Platform, StyleSheet, Text, View, AsyncStorage,FlatList,TouchableWithou
 import {Button, Icon} from 'native-base';
 import { List, ListItem, SearchBar } from 'react-native-elements';
 import PaymentSection from './paymentSection.js';
+import ViewReciept    from './viewReciept.js';
 
 
 export default class PaymentWall extends Component{
 
 	state ={
-		paymentOperation : 'none'
+		paymentOperation      : 'none',
+		pressedPaymentDetails : []
 	}
 
 	getBackFromPaymentWall = ()=>{
 		this.setState({paymentOperation:'none'});
+	}
+
+	viewPressedReciept = (item)=>{
+		this.setState({paymentOperation:'view_reciept'});
+		this.setState({pressedPaymentDetails:item});
 	}
 
 	paymentMadeDisplay = ()=>{
@@ -22,7 +29,7 @@ export default class PaymentWall extends Component{
 							data={this.props.doGetAllPaymentMade}
 							renderItem={({item}) =>
 								<View style={{
-										height: 186,
+										height: 210,
 										width: '100%',
 										borderBottomWidth:2,
 										position: 'relative'
@@ -101,13 +108,24 @@ export default class PaymentWall extends Component{
 											paddingLeft:5,
 											paddingTop:2,
 											height:20,
+											width: 270
+									}}>
+										Amount Sent: {item.inputAmountSent} in pesos
+									</Text>
+									<Text style={{
+											fontSize: 12,
+											position: 'relative',
+											top: 1,
+											paddingLeft:5,
+											paddingTop:2,
+											height:20,
 											width: 270,
 											fontWeight: 'bold'
 									}}>
 										Remittance Code: {item.inputRemittanceCode}
 									</Text>
 									<TouchableWithoutFeedback
-										onPress={()=>console.log('Reciept')}>
+										onPress={()=>this.viewPressedReciept(item)}>
 										<Text style={{
 												borderWidth:2,
 												top:5,
@@ -221,6 +239,11 @@ export default class PaymentWall extends Component{
 						doGetBack             = {this.getBackFromPaymentWall}
 						doSubmitTenantPayment = {this.props.doSubmitTenantPayment}
 						doRefreshBackAfterPay = {this.props.doRefreshBackAfterPay} />
+		}
+		else if(this.state.paymentOperation == 'view_reciept'){
+			return <ViewReciept
+						doGetBack             = {this.getBackFromPaymentWall}
+						doGetPaymentDetails   = {this.state.pressedPaymentDetails} />
 		}
 	}
   	render() {

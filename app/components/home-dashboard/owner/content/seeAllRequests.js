@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import { Platform, StyleSheet, Text, View,FlatList,TouchableWithoutFeedback,Alert} from "react-native";
 import { List, ListItem, SearchBar } from 'react-native-elements';
 import {Button,Icon} from "native-base";
-import FontAwesome, { Icons } from "react-native-fontawesome";
 
 
 const seeAllRequestsWrapperStyle = StyleSheet.create({
@@ -97,7 +96,7 @@ export default class SeeAllRequests extends Component {
                             height: '100%',
                             width: 40}}>
                           <Icon
-                              style={{fontSize:25,paddingTop:6,paddingLeft:4}}
+                              style={{fontSize:25,paddingTop:6,paddingLeft:4,color:'#8b8f96'}}
                               name="arrowleft"
                               type="AntDesign"/>
                         </View>

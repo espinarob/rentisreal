@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import { Platform, StyleSheet, Text, View,TextInput, CheckBox,TouchableWithoutFeedback} from "react-native";
-import {Button} from 'native-base';
+import { Platform, StyleSheet, Text, View,TextInput, CheckBox,TouchableWithoutFeedback, Picker} from "react-native";
+import {Button,Icon} from 'native-base';
 import Constants from '../../Constants.js';
 
 const updateDetailsWrapperStyle = StyleSheet.create({
@@ -9,70 +9,58 @@ const updateDetailsWrapperStyle = StyleSheet.create({
 	},
 	updateLabelSection:{
 		position: 'relative',
-		height: 42,
+		height: 41,
     flexDirection: 'row',
     backgroundColor: '#6785db'
-	},
+	}, 
 	firstNameSection:{
-		position: 'relative',
-		height: 36,
-		top: 10,
-    flexDirection: 'row'
-	},
-	lastNameSection:{
-		position: 'relative',
-		height: 36,
-		top: 12,
-    flexDirection: 'row'
-	},
-	middleNameSection:{
-		position: 'relative',
-		height: 36,
-		top: 14,
-    flexDirection: 'row'
-	},
-	contactNumberSection:{
-		position: 'relative',
-		height: 36,
-		top: 16,
-    flexDirection: 'row'
-	},
-	emailAddSection:{
-		position: 'relative',
-		height: 36,
-		top: 18,
-    flexDirection: 'row'
-	},
-	ageSection:{
 		position: 'relative',
 		height: 36,
 		top: 20,
     flexDirection: 'row'
 	},
-	civilStatusSection:{
+	lastNameSection:{
 		position: 'relative',
 		height: 36,
-		top: 22,
+		top: 23,
     flexDirection: 'row'
 	},
-	occupationSection:{
-		position: 'relative',
-		height: 36,
-		top: 24,
-    flexDirection: 'row'
-	},
-	genderSection:{
+	middleNameSection:{
 		position: 'relative',
 		height: 36,
 		top: 26,
     flexDirection: 'row'
 	},
-  errorSection:{
-    position: 'relative',
-    height: 36,
-    top: 28,
+	contactNumberSection:{
+		position: 'relative',
+		height: 36,
+		top: 29,
     flexDirection: 'row'
-  },
+	},
+	emailAddSection:{
+		position: 'relative',
+		height: 36,
+		top: 32,
+    flexDirection: 'row'
+	},
+	birthdaySection:{
+		position: 'relative',
+		height: 36,
+		top: 35,
+    flexDirection: 'row'
+	},
+	civilStatusSection:{
+		position: 'relative',
+		height: 36,
+		top: 38,
+    flexDirection: 'row'
+	},
+	occupationSection:{
+		position: 'relative',
+		height: 36,
+		top: 41,
+    flexDirection: 'row'
+	},
   commonInputElemenStyle:{
     width: 160,
     height: '100%',
@@ -89,16 +77,16 @@ const updateDetailsWrapperStyle = StyleSheet.create({
 
 export default class updateDetailsWrapperStyleails extends Component{
 	state = {
-		firstName    :'null',
-		lastName     :'null',
-		middleName   :'null',
-		contactNumber:'null',
-		email        :'null',
-		age          :'null',
-		civilStatus  :'null',
-		occupation   :'null',
-		gender       :true, // true defaults to male
-    errorMsg     :''
+		firstName    : 'null',
+		lastName     : 'null',
+		middleName   : 'null',
+		contactNumber: 'null',
+		email        : 'null',
+		civilStatus  : 'Single',
+		occupation   : 'null',
+		gender       : true, // true defaults to male
+    userBirthday : '',
+    errorMsg     : ''
 	}	
 
   genderChange = () => {
@@ -107,8 +95,9 @@ export default class updateDetailsWrapperStyleails extends Component{
 
 
   doUpdate = () => {
-    let toUpdate  = {};
+    let toUpdate     = {};
     let toChangeFlag = false;
+    let getAge       = this.validateBirthday();
     if( Number.isInteger(Number(this.state.contactNumber)) == false 
         && this.state.contactNumber!='null' ){
       this.setState({errorMsg:'Invalid Contact Number!'});
@@ -118,6 +107,10 @@ export default class updateDetailsWrapperStyleails extends Component{
       this.setState({errorMsg:'Invalid Contact Number!'});
       return;
     }
+    else if( getAge == false ){
+      this.setState({errorMsg:'Please fill in your birthday as indicated!'});
+      return;
+    } 
 
     if(this.state.firstName!='null'){
       toUpdate['firstName'] = this.state.firstName;
@@ -128,8 +121,9 @@ export default class updateDetailsWrapperStyleails extends Component{
     if(this.state.middleName!='null'){
       toUpdate['middleName'] = this.state.middleName;
     }
-    if(this.state.age!='null'){
-      toUpdate['age'] = this.state.age;
+    if( getAge!=false && getAge!=true){
+      toUpdate['birthdate'] = this.state.userBirthday;
+      toUpdate['age']       = getAge;
     }
     if(this.state.contactNumber!='null'){
       toUpdate['contactNumber'] = this.state.contactNumber;
@@ -143,14 +137,6 @@ export default class updateDetailsWrapperStyleails extends Component{
     if(this.state.occupation!='null'){
       toUpdate['occupation'] = this.state.occupation;
     }
-    if(this.state.gender == true){
-      toUpdate['gender'] = 'male';
-    }
-    else{
-      toUpdate['gender'] = 'female';
-    }
-
-    
     toChangeFlag = true;
     if(toChangeFlag == true){
       this.setState({errorMsg:'Submitting now,Please wait...'});
@@ -158,23 +144,80 @@ export default class updateDetailsWrapperStyleails extends Component{
         this.setState({errorMsg:''});
         this.props.doProcessUpdate(JSON.parse(JSON.stringify(toUpdate)));
       },2000);
+      setTimeout(()=>{
+        this.props.doGetBack();
+      },3000);
+    }
+
+  }
+
+  onCivilStatusChange = (itemValue,itemIndex)=>{
+    this.setState({civilStatus:itemValue});
+  }
+
+  validateBirthday = ()=>{
+    let currentBirthday = this.state.userBirthday;
+    let today           = new Date();
+    if(currentBirthday == '')return true;
+
+    if(currentBirthday.length<10){
+      console.log('length');
+      return false;
+    }
+    let birthMonth      = currentBirthday[0] + currentBirthday[1];
+    let day       = currentBirthday[3] + currentBirthday[4];
+    let year            = currentBirthday[6] + currentBirthday[7] + currentBirthday[8] + currentBirthday[9];
+    
+    if( Number.isInteger(Number(birthMonth)) == false ||
+      Number.isInteger(Number(day))        == false ||
+      Number.isInteger(Number(year))       == false ){
+      return false;
+    }
+    else if( Number(birthMonth)<=0 || Number(birthMonth)>12){
+      return false;
+    }
+    else if( Number(day)<=0 || Number(day)>31){
+      return false;
+    }
+    else if( Number(year) > Number(today.getFullYear()) ){
+      return false;
+    }
+    else{
+      return Number(today.getFullYear()) - Number(year);
     }
   }
+
+
 
 	render() {
     	return (
     		<View style={ updateDetailsWrapperStyle.mainWrapper}>
     			<View style={updateDetailsWrapperStyle.updateLabelSection}>
-    				<Text style={{
-                    position: 'relative',
-                    left:95,
-                    height: '100%',
-                    width: 200,
-                    fontSize:20,
-                    paddingTop:10
-            }}>
-              Account Update
-            </Text>
+    				<TouchableWithoutFeedback
+                  onPress={()=>this.props.doGetBack()}>
+                  <Text style={{
+                          height: '100%',
+                          width: 45,
+                          position: 'relative',
+                          left: 5,
+                          paddingLeft: 5,
+                          paddingTop:9
+                  }}>
+                    <Icon style={{fontSize:25,paddingTop:6,paddingLeft:4,color:'#3a3a3a'}}
+                      name="arrowleft"
+                      type="AntDesign"/>
+                  </Text>
+                </TouchableWithoutFeedback>
+                <Text style={{
+                  position: 'relative',
+                  left:63,
+                  height: '100%',
+                  width: 150,
+                  fontSize:20,
+                  paddingTop:7
+                }}>
+                  Account Update
+                </Text>
     			</View>
     			<View style={updateDetailsWrapperStyle.firstNameSection}>
     				<Text style={{
@@ -182,7 +225,7 @@ export default class updateDetailsWrapperStyleails extends Component{
   						  	width:100,
   						  	height:'100%',
   						  	paddingTop:5,
-  						  	left:5}}>
+  						  	left:15}}>
     					First Name:
 					  </Text>
             <TextInput
@@ -196,7 +239,7 @@ export default class updateDetailsWrapperStyleails extends Component{
   						  	width:100,
   						  	height:'100%',
   						  	paddingTop:5,
-  						  	left:5}}>
+  						  	left:15}}>
     					Last Name:
 					  </Text>
             <TextInput
@@ -209,7 +252,7 @@ export default class updateDetailsWrapperStyleails extends Component{
   						  	width:100,
   						  	height:'100%',
   						  	paddingTop:5,
-  						  	left:5}}>
+  						  	left:15}}>
     					Middle Name:
 					  </Text>
             <TextInput
@@ -222,7 +265,7 @@ export default class updateDetailsWrapperStyleails extends Component{
   						  	width:100,
   						  	height:'100%',
   						  	paddingTop:5,
-  						  	left:5}}>
+  						  	left:15}}>
     					Contact #:
 					  </Text>
             <TextInput
@@ -235,25 +278,26 @@ export default class updateDetailsWrapperStyleails extends Component{
   						  	width:100,
   						  	height:'100%',
   						  	paddingTop:5,
-  						  	left:5}}>
+  						  	left:15}}>
     					E-mail Address:
 					  </Text>
             <TextInput
               style={updateDetailsWrapperStyle.commonInputElemenStyle}
               onChangeText= { (email)=> this.setState({email:email})}/>
     			</View>
-    			<View style={updateDetailsWrapperStyle.ageSection}>
+    			<View style={updateDetailsWrapperStyle.birthdaySection}>
     				<Text style={{
   						  	position: 'relative',
   						  	width:100,
   						  	height:'100%',
   						  	paddingTop:5,
-  						  	left:5}}>
-    					Age:
+  						  	left:15}}>
+    					Birthday
 					  </Text>
             <TextInput
+              placeholder="mm/dd/yyyy"
               style={updateDetailsWrapperStyle.commonInputElemenStyle}
-              onChangeText= { (age)=> this.setState({age:age})}/>
+              onChangeText= { (userBirthday)=> this.setState({userBirthday:userBirthday})}/>
     			</View>  
     			<View style={updateDetailsWrapperStyle.civilStatusSection}>
     				<Text style={{
@@ -261,12 +305,25 @@ export default class updateDetailsWrapperStyleails extends Component{
   						  	width:100,
   						  	height:'100%',
   						  	paddingTop:5,
-  						  	left:5}}>
+  						  	left:15}}>
     					Civil Status:
 					  </Text>
-            <TextInput
-              style={updateDetailsWrapperStyle.commonInputElemenStyle}
-              onChangeText= { (civilStatus)=> this.setState({civilStatus:civilStatus})}/>
+            <View style={{
+                    position: 'relative',
+                    height: '100%',
+                    width: 140,
+                    left: 35,
+                    borderWidth: 2
+            }}>
+              <Picker
+                selectedValue = {this.state.civilStatus}
+                style={{height:'100%',width:140}}
+                onValueChange = {this.onCivilStatusChange}>
+                <Picker.Item label="Single" value="Single"/>
+                <Picker.Item label="Married" value="Married"/>
+                <Picker.Item label="Widowed" value="Widowed"/>
+              </Picker>
+            </View>
     			</View> 
     			<View style={updateDetailsWrapperStyle.occupationSection}>
     				<Text style={{
@@ -274,58 +331,27 @@ export default class updateDetailsWrapperStyleails extends Component{
   						  	width:100,
   						  	height:'100%',
   						  	paddingTop:5,
-  						  	left:5}}>
+  						  	left:15}}>
     					Occupation:
 					  </Text>
             <TextInput
               style={updateDetailsWrapperStyle.commonInputElemenStyle}
               onChangeText= { (occupation)=> this.setState({occupation:occupation})}/>
     			</View> 
-    			<View style={updateDetailsWrapperStyle.genderSection}>
-            <CheckBox style={{
-                position:'relative',
-                left:110,
-                borderWidth:2}}
-                value={this.state.gender}
-                onChange={ ()=>this.genderChange()}/>
-
-            <Text style={{
-                  position: 'relative',
-                  width:40,
-                  height:'100%',
-                  paddingTop:5,
-                  left:110 }}>
-              Male
-            </Text>
-            <CheckBox style={{
-                position:'relative',
-                left:120,
-                borderWidth:2}}
-                value={!this.state.gender}
-                onChange={ ()=>this.genderChange()}/>
-            <Text style={{
-                  position: 'relative',
-                  width:60,
-                  height:'100%',
-                  paddingTop:5,
-                  left:120}}>
-              Female
-            </Text>
-          </View>
           <View style={{
-            top:27,
-            height:20}}>
+            top:45 ,
+            height:40}}>
             <Text style={{
                   position: 'relative',
-                  width:220,
+                  width:180,
                   height:'100%',
-                  left:110,
+                  left:85,
                   paddingLeft:5}}>
               {this.state.errorMsg }
             </Text>
           </View>
           <View style={{
-            top:32,
+            top:50,
             height:40}}>
             <TouchableWithoutFeedback
                     onPress={ () =>this.doUpdate() }>

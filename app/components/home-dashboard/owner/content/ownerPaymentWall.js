@@ -34,7 +34,7 @@ export default class OwnerPaymentWall extends Component{
 						data={this.props.doGetPaymentRecieved}
 						renderItem={({item}) =>
 							<View style={{
-									height: 260,
+									height: 280,
 									width: '100%',
 									borderBottomWidth:2,
 									position: 'relative'
@@ -148,6 +148,19 @@ export default class OwnerPaymentWall extends Component{
 										fontWeight: 'bold',
 										left: 8
 								}}>
+									Amount: {item.inputAmountSent} in pesos
+								</Text>
+								<Text style={{
+										fontSize: 12,
+										position: 'relative',
+										top: 1,
+										paddingLeft:5,
+										paddingTop:2,
+										height:20,
+										width: 270,
+										fontWeight: 'bold',
+										left: 8
+								}}>
 									Payment Mode: {item.inputPaymentMode} payment
 								</Text>	
 								<Text style={{
@@ -189,7 +202,7 @@ export default class OwnerPaymentWall extends Component{
 						keyExtractor={item => item.paymentID}/>
 
 		}
-		else return <Text style={{position:'relative',top:88,left:112}}>No payment recieved yet</Text>;
+		else return <Text style={{position:'relative',top:115,left:102}}>No payment recieved yet</Text>;
 	}
 
 	ownerCashwallDisplay = ()=>{
@@ -256,7 +269,7 @@ export default class OwnerPaymentWall extends Component{
 			               			height:'100%',
 			               			paddingTop: 10,
 			               			paddingLeft: 9,
-			               			width: 130,
+			               			width: 123,
 			               			left: 58,
 			               			fontSize: 14,
 			               			borderColor:'#5ce24a'

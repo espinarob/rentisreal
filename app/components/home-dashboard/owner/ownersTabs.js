@@ -26,12 +26,6 @@ export default class OwnersTabs extends Component{
                                     name="ios-home"/>
             				</Button>
             				<Button
-                                onPress={()=>this.props.doOperate(Constants.OWNER_ACTIONS.MY_ACCOUNT)}>
-            					<Icon style={ownersTabsWrapperStyle.textStyleCommon} 
-            						name="person-pin-circle"
-            						type="MaterialIcons" />
-            				</Button>
-            				<Button
                                 onPress={()=>this.props.doOperate(Constants.OWNER_ACTIONS.MY_PROPERTY) }>
             					<Icon style={ownersTabsWrapperStyle.textStyleCommon} 
             						name="newsletter"

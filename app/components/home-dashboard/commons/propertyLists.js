@@ -128,7 +128,7 @@ export default class PropertyLists extends Component{
     renderHeader = ()=>{
         return <View style={{flexDirection:'row',backgroundColor:'#ccd5e5'}}>
                 <View style={{flex:80}}>   
-                    <SearchBar onChangeText={ (text)=>{this.filterSearches(text)}} placeholder="Type Here..." lightTheme round />
+                    <SearchBar value={this.state.searchKeyWord} onChangeText={ (text)=>{this.filterSearches(text)}} placeholder="Type Here..." lightTheme round />
                 </View>
                 <View style={{flexDirection:'row',flex:26}}>
                     <TouchableWithoutFeedback
@@ -138,12 +138,12 @@ export default class PropertyLists extends Component{
                                 width:42,
                                 position: 'relative',
                                 paddingLeft:10,
-                                paddingTop:7,
+                                paddingTop:11,
                                 top:7,
                                 fontSize:10
                         }}>
                             <Icon   style={{
-                                        fontSize:23,
+                                        fontSize:25,
                                         color: this.getAlertNotif()
                                     }}
                                 name="bell"
@@ -159,13 +159,13 @@ export default class PropertyLists extends Component{
                                 width:45,
                                 position: 'relative',
                                 paddingLeft:10,
-                                paddingTop:7,
+                                paddingTop:11,
                                 top:7,
                                 left:2,
                                 fontSize:10
                         }}>
                             <Icon   style={{
-                                        fontSize:23,
+                                        fontSize:25,
                                         color: this.getAlertMail()
                                     }}
                                 name="envelope"
@@ -212,6 +212,36 @@ export default class PropertyLists extends Component{
         }
     }
 
+    displayVacantOnly = (vacancy,item)=> {
+        if(vacancy>0){
+            return  <View style={{
+                            paddingLeft:12
+                    }}>
+                        <Text style={{fontSize:11}}>
+                            Address: {item.propertyLocation} 
+                        </Text>
+                        <Text style={{fontSize:11}}>
+                            Type: {item.propertyType} 
+                        </Text>
+                        <Text style={{fontSize:11,fontWeight:'bold'}}>
+                            Vacant: {this.doDisplayAvailability(item.propertyVacant)}
+                        </Text>
+                        <Text style={{fontSize:12,fontWeight:'bold',color:'#8ba823'}}>
+                            Rating: {item.ratingCount == 0 ? 'not rated yet ' : item.rating/item.ratingCount}
+                        </Text>
+                        <View style={{flexDirection:'row'}}>
+                            <Text style={{fontSize:11,width:175,height:30}}>
+                                {item.propertyDescription}
+                            </Text>
+                            {this.poolingDisplay(item.propertyBedroomPooling)}
+                        </View>
+                    </View> 
+        }
+        else{
+            return '';
+        }
+    }
+
     propertyListsMainDisplay = ()=> {
         if(this.state.messageIsPressed == 'true'){
             return <MyMessages
@@ -229,31 +259,13 @@ export default class PropertyLists extends Component{
         else if(this.state.somethingPressed=='false'){
             return <FlatList
                 data={this.getProperties()}
-                renderItem={({item}) => 
+                renderItem={ ({item}) => 
                     <TouchableWithoutFeedback
                         onPress={()=>this.viewPressedProperty(item)}>
                     <ListItem 
                         title={ <Text style={{fontSize:15,paddingLeft:12}}>{item.propertyName}</Text>} 
                         subtitle={
-                            <View style={{
-                                    paddingLeft:12
-                                }}>
-                                <Text style={{fontSize:11}}>
-                                    Address: {item.propertyLocation} 
-                                </Text>
-                                <Text style={{fontSize:11}}>
-                                    Type: {item.propertyType} 
-                                </Text>
-                                 <Text style={{fontSize:11,fontWeight:'bold'}}>
-                                    Vacant: {this.doDisplayAvailability(item.propertyVacant)}
-                                </Text>
-                                <View style={{flexDirection:'row'}}>
-                                    <Text style={{fontSize:11,width:175,height:30}}>
-                                        {item.propertyDescription}
-                                    </Text>
-                                    {this.poolingDisplay(item.propertyBedroomPooling)}
-                                </View>
-                            </View>
+                            this.displayVacantOnly(item.propertyVacant,item)
                         }/>
                     </TouchableWithoutFeedback>
                 }

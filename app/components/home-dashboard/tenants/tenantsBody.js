@@ -30,18 +30,13 @@ export default class TentantsBody extends Component{
 				    	doSubmitTenantRate     = {this.props.doSubmitTenantRate} />
 				   </React.Fragment>
 		}
-		else if(this.props.performOperation == Constants.TENANT_ACTIONS.MY_ACCOUNT){
-			return <React.Fragment>
-				   	<UpdateDetails
-				   		doProcessUpdate = {this.props.doProcessUpdate}
-				   		accountRole     = "tenant"/>
-				   </React.Fragment>
-		}
 		else if( this.props.performOperation == Constants.TENANT_ACTIONS.MORE){
 			return <React.Fragment>
 				   	<ForMoreBody doChangeLoginFlag  = {this.props.doChangeLoginFlag}
 				   				 doChangeLogoutFlag = {this.props.doChangeLogoutFlag}
-				   				 doGetMyAccount     = {this.props.doGetMyAccount}/>
+				   				 doGetMyAccount     = {this.props.doGetMyAccount} 
+				   				 doProcessUpdate    = {this.props.doProcessUpdate} 
+				   				 doChangeMyPassword = {this.props.doChangeMyPassword} />
 				   </React.Fragment>
 		}
 		else if( this.props.performOperation == Constants.TENANT_ACTIONS.MY_HOME){

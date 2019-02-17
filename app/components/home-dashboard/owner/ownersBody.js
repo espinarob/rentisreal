@@ -14,27 +14,23 @@ export default class OwnersBody extends Component{
 		if(this.props.performOperation == Constants.OWNER_ACTIONS.MY_PROPERTY){
 			return <React.Fragment>
 				   	<OwnersProperty
-				   		doAddPropertyOwner = {this.props.doAddPropertyOwner}
-				   		doViewMyProperty   = {this.props.doViewMyProperty}
-				   		doDeleteProperty   = {this.props.doDeleteProperty}
-				   		doUpdateProperty   = {this.props.doUpdateProperty}
-				   		addPropertyErrMSG  = {this.props.addPropertyErrMSG}
-				   		doAcceptTenantReq  = {this.props.doAcceptTenantReq}
-				   		doDeclineTenantReq = {this.props.doDeclineTenantReq}/>
-				   </React.Fragment>
-		}
-		else if(this.props.performOperation == Constants.OWNER_ACTIONS.MY_ACCOUNT){
-			return <React.Fragment>
-				   	<UpdateDetails
-				   		doProcessUpdate={this.props.doProcessUpdate}
-				   		accountRole="owner" />
+				   		doAddPropertyOwner    = {this.props.doAddPropertyOwner}
+				   		doViewMyProperty      = {this.props.doViewMyProperty}
+				   		doDeleteProperty      = {this.props.doDeleteProperty}
+				   		doUpdateProperty      = {this.props.doUpdateProperty}
+				   		addPropertyErrMSG     = {this.props.addPropertyErrMSG}
+				   		doAcceptTenantReq     = {this.props.doAcceptTenantReq}
+				   		doUploadPropertyPhoto = {this.props.doUploadPropertyPhoto} 
+				   		doDeclineTenantReq    = {this.props.doDeclineTenantReq}/>
 				   </React.Fragment>
 		}
 		else if( this.props.performOperation == Constants.OWNER_ACTIONS.MORE){
 			return <React.Fragment>
 				   	<ForMoreBody doChangeLoginFlag  = {this.props.doChangeLoginFlag}
 				   				 doChangeLogoutFlag = {this.props.doChangeLogoutFlag}
-				   				 doGetMyAccount     = {this.props.doGetMyAccount}/>
+				   				 doGetMyAccount     = {this.props.doGetMyAccount} 
+				   				 doProcessUpdate    = {this.props.doProcessUpdate}
+				   				 doChangeMyPassword = {this.props.doChangeMyPassword} />
 				   </React.Fragment>
 
 		}

@@ -177,6 +177,18 @@ export default class SendReciept extends Component{
             </Text>
             <Text style={{
                     height: 17,
+                    width: 320,
+                    fontSize: 12,
+                    fontWeight: 'bold',
+                    position: 'relative',
+                    left: 20,
+                    top: 20
+            }}>
+              Paid Amount: {this.props.doGetCurrentPaymentMade.inputAmountSent} in pesos
+            </Text>
+
+            <Text style={{
+                    height: 17,
                     width: 280,
                     fontSize: 12,
                     fontWeight: 'bold',

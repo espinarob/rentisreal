@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import { Platform, StyleSheet, Text, View,FlatList,TouchableWithoutFeedback} from "react-native";
 import { List, ListItem, SearchBar } from 'react-native-elements';
-import FontAwesome, { Icons } from "react-native-fontawesome";
 import SeeAllRequests from './seeAllRequests.js';
 
 
@@ -75,7 +74,7 @@ export default class ViewRequests extends Component {
                             borderWidth:2,
                             height: 50,
                             width:'100%',
-                            borderColor:'#5ce24a'
+                            borderColor: item.requests ?  '#c9060f' : '#5ce24a'
                     }}>
                       <Text style={{
                               width: 250,

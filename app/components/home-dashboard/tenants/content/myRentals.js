@@ -73,7 +73,7 @@ export default class MyRentals extends Component{
 		            	data= {this.props.doGetMyRentals}
 		            	renderItem={({item}) =>
 		            		<View style={{
-		            			height:110,
+		            			height:130,
 		            			width:'100%',
 		            			borderBottomWidth:2
 		            		}}>
@@ -99,6 +99,17 @@ export default class MyRentals extends Component{
 		            					fontSize:12
 		            			}}>
 		            				{item.propertyLocation}
+		            			</Text>
+		            			<Text style={{
+		            					height: 19,
+		            					position:'relative',
+		            					width: 200,
+		            					top:4,
+		            					paddingLeft:10,
+		            					left: 10,
+		            					fontSize:12
+		            			}}>
+		            				{item.propertyFinalPrice} pesos per person
 		            			</Text>
 		            			<Text style={{
 		            					height: 19,

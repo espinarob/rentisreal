@@ -25,12 +25,6 @@ export default class TenantsTabs extends Component{
             					<Icon style={tenantsTabsWrapperStyle.textStyleCommon} name="ios-home"/>
             				</Button>
             				<Button
-                                onPress={()=>this.props.doOperate(Constants.TENANT_ACTIONS.MY_ACCOUNT)}>
-            					<Icon style={tenantsTabsWrapperStyle.textStyleCommon} 
-            						name="person-pin-circle"
-            						type="MaterialIcons" />
-            				</Button>
-            				<Button
                                 onPress={()=>this.props.doOperate(Constants.TENANT_ACTIONS.MY_REQUESTS)}>
             					<Icon style={tenantsTabsWrapperStyle.textStyleCommon} 
             						name="arrow-with-circle-right"

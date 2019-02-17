@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-import { Platform, StyleSheet, Text, View, TextInput, CheckBox, TouchableHighlight} from "react-native";
+import { Platform, StyleSheet, Text, View, TextInput, CheckBox, TouchableHighlight,Picker, TouchableWithoutFeedback} from "react-native";
+import ImagePicker from 'react-native-image-picker';
 
 const addPropertyWrapperStyle = StyleSheet.create({
 	mainWrapper: {
@@ -84,7 +85,7 @@ const addPropertyWrapperStyle = StyleSheet.create({
 		flexDirection: 'row'
 	},
 	propertyNameInputStyle:{
-		width: 150,
+		width: 160,
 		height: '100%',
 		left: 50,
 		alignItems: 'stretch',
@@ -95,7 +96,7 @@ const addPropertyWrapperStyle = StyleSheet.create({
 		borderWidth:1
 	},
 	propertyLocationStyle:{
-		width: 150,
+		width: 160,
 		height: '100%',
 		left: 35,
 		alignItems: 'stretch',
@@ -143,7 +144,7 @@ const addPropertyWrapperStyle = StyleSheet.create({
 		borderWidth:1
 	},
 	propertyDescriptionInputStyle: {
-		width: 150,
+		width: 170,
 		height: '100%',
 		left: 40,
 		alignItems: 'stretch',
@@ -154,20 +155,9 @@ const addPropertyWrapperStyle = StyleSheet.create({
 		borderWidth:1
 	},
 	propertyFurtherDataInputStyle: {
-		width: 150,
+		width: 170,
 		height: '100%',
 		left: 40,
-		alignItems: 'stretch',
-		padding: 0,
-		position: 'relative',
-		borderRadius: 5,
-		fontSize: 12,
-		borderWidth:1
-	},
-	propertyTypeInputStyle: {
-		width: 130,
-		height: '100%',
-		left: 25,
 		alignItems: 'stretch',
 		padding: 0,
 		position: 'relative',
@@ -187,6 +177,16 @@ const addPropertyWrapperStyle = StyleSheet.create({
 
 });
 
+
+const options = {
+  title: 'Select Avatar',
+  //customButtons: [{ name: 'fb', title: 'Choose Photo from Facebook' }],
+  storageOptions: {
+    skipBackup: true,
+    path: 'images'
+  },
+};
+
 export default class AddProperty extends Component{
 
 	state = {
@@ -200,7 +200,11 @@ export default class AddProperty extends Component{
 		propertyDescription:    '',
 		propertyFurtherData:    '',
 		addPropertyError   :    '',
-		propertyType       :    ''
+		propertyType       :    'Boarding House',
+		imagePath: '',
+    	imageHeight: '',
+    	imageWidth: ''
+
 	}
 
 	poolingCheckBox = () => {
@@ -227,6 +231,37 @@ export default class AddProperty extends Component{
 			return initFinalPrice;
 		}	
 	}
+
+
+	selectPhoto = ()=>{
+		ImagePicker.showImagePicker(options, (response) => {
+		  //console.log('Response = ', response);
+		  if (response.didCancel) {
+		    console.log('User cancelled image picker');
+		  } else if (response.error) {
+		    console.log('ImagePicker Error: ', response.error);
+		  } else if (response.customButton) {
+		    console.log('User tapped custom button: ', response.customButton);
+		  } else {
+		    //const source = { uri: response.uri };
+
+		    // You can also display the image using data:
+		    //const source = { uri: 'data:image/jpeg;base64,' + response.data };
+			//const source =	'data:image/jpeg;base64,'+String(response.data);
+		    //const source = response.data;
+		    this.setState({
+		     	imagePath   : response.uri,
+            	imageHeight : response.height,
+            	imageWidth  : response.width
+		    });
+		  }
+		});
+	}
+
+	onPropertyTypeChange = (itemValue,itemIndex)=>{
+		this.setState({propertyType:itemValue});
+	}
+
 	doAddProperty = () =>{
 		if(this.state.propertyName.length==0){
 			this.setState({
@@ -271,11 +306,11 @@ export default class AddProperty extends Component{
 			   	addPropertyError:''});
 			   	this.props.doChangePropertyAction('avail-property');
 			},2500);
-			if(this.state.propertyBedroomPooling == false){
+			if(this.state.propertyBedroomPooling == false || this.state.propertyPoolingQty == 1 ){
 				const passData = {
 					propertyName:           this.state.propertyName,
 					propertyLocation:       this.state.propertyLocation,
-					propertyBedroomPooling: this.state.propertyBedroomPooling,
+					propertyBedroomPooling: 'false',
 					propertyPoolingQty:     '1',
 					propertyMonthnlyPrice:  String(Math.ceil(this.state.propertyMonthnlyPrice)),
 					propertyFinalPrice:     this.state.propertyFinalPrice,
@@ -284,7 +319,8 @@ export default class AddProperty extends Component{
 					propertyFinalPrice:     String(Math.ceil(this.state.propertyMonthnlyPrice)),
 					propertyType:           this.state.propertyType
 				};
-				this.props.doAddPropertyOwner(passData);
+				this.props.doAddPropertyOwner(passData,this.state.imagePath);
+				return;
 			}
 			else{
 				let initFinalPrice = this.state.propertyMonthnlyPrice/this.state.propertyPoolingQty;
@@ -301,7 +337,8 @@ export default class AddProperty extends Component{
 					propertyFinalPrice:     String(initFinalPrice),
 					propertyType:           this.state.propertyType
 				};
-				this.props.doAddPropertyOwner(passData);
+				this.props.doAddPropertyOwner(passData,this.state.imagePath);
+				return;
 			}
 		}
 	}
@@ -332,6 +369,7 @@ export default class AddProperty extends Component{
     					Name: </Text>
     				<TextInput
     					placeholder = "Input property name"
+    					maxLength   = {25}
     					style={addPropertyWrapperStyle.propertyNameInputStyle}
     					onChangeText = { (propertyName) => this.setState({propertyName})}/>
     			</View>
@@ -341,7 +379,8 @@ export default class AddProperty extends Component{
     					style={{fontSize:15,position:'relative',left:13,paddingTop:5}}>
     					Address: </Text>
     				<TextInput
-    					placeholder = "Input property name"
+    					placeholder = "Input property location"
+    					maxLength   = {40}
     					style={addPropertyWrapperStyle.propertyLocationStyle}
     					onChangeText = { (propertyLocation) => this.setState({propertyLocation})}/>
     			</View>
@@ -349,7 +388,7 @@ export default class AddProperty extends Component{
     			<View style={addPropertyWrapperStyle.bedroomSection}>
     				<Text
     					style={{fontSize:15,position:'relative',left:13,paddingTop:5}}>
-    					Check to Pool: </Text>
+    					Apply to Pool: </Text>
     				<CheckBox value={this.state.propertyBedroomPooling} 
     					onChange={this.poolingCheckBox} 
     					style={addPropertyWrapperStyle.propertyPoolingSwitchStyle} />
@@ -385,6 +424,34 @@ export default class AddProperty extends Component{
     				<Text
     					style={{fontSize:15,position:'relative',left:13,paddingTop:5}}>
     					Upload Photo: </Text>
+    				<TouchableWithoutFeedback
+    					onPress={()=>this.selectPhoto()}>
+	    				<Text style={{
+	    						borderRadius:5,
+	    						borderWidth:1,
+	    						width: 70,
+	    						left: 20,
+	    						position: 'relative',
+	    						height: '100%',
+	    						fontSize: 12,
+	    						fontWeight: 'bold',
+	    						paddingLeft: 10,
+	    						paddingTop: 5
+	    				}}>
+	    					...
+	    				</Text>
+	    			</TouchableWithoutFeedback>
+	    			<Text style={{
+	    					width: 130,
+	    					position: 'relative',
+	    					height: '100%',
+	    					left: 23,
+	    					fontSize: 14,
+	    					fontWeight: 'bold',
+	    					paddingTop: 6
+	    			}}>
+	    				{this.state.imagePath.length == 0 ? 'No selected photo' : 'One photo selected'}
+	    			</Text>
     			</View>
 
     			<View style={addPropertyWrapperStyle.descriptionSection}>
@@ -393,6 +460,7 @@ export default class AddProperty extends Component{
     					Caption: </Text>
     				<TextInput
     					placeholder = "Place Caption [optional]"
+    					maxLength   = {45}
     					style={addPropertyWrapperStyle.propertyDescriptionInputStyle}
     					onChangeText = { (propertyDescription) => this.setState({propertyDescription})}/>
     			</View>
@@ -403,6 +471,7 @@ export default class AddProperty extends Component{
     					Add Info:</Text>
     				<TextInput
     					placeholder = "Further Information"
+    					maxLength= {50}
     					style={addPropertyWrapperStyle.propertyFurtherDataInputStyle}
     					onChangeText = { (propertyFurtherData) => this.setState({propertyFurtherData})}/>
     			</View>
@@ -411,10 +480,22 @@ export default class AddProperty extends Component{
     				<Text
     					style={{fontSize:15,position:'relative',left:13,paddingTop:5}}>
     					Property Type:</Text>
-    				<TextInput
-    					placeholder = "Property Type"
-    					style={addPropertyWrapperStyle.propertyTypeInputStyle}
-    					onChangeText = { (propertyType) => this.setState({propertyType})}/>
+    				<View style={{
+    						width: 150,
+    						left: 25,
+    						position: 'relative',
+    						height: '100%',
+    						borderWidth :2
+    				}}>
+    					<Picker
+	                		selectedValue = {this.state.propertyType}
+	                		style={{height:'100%',width:150}}
+	                		onValueChange={this.onPropertyTypeChange}>
+	                		<Picker.Item label="Boarding House" value="Boarding House"/>
+	                		<Picker.Item label="Dormitory" value="Dormitory"/>
+	                		<Picker.Item label="Studio Type" value="Studio Type"/>
+	                	</Picker>
+    				</View>
     			</View>
 
 

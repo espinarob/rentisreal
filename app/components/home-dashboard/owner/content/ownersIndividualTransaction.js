@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import { Platform, StyleSheet, Text, View,FlatList,TouchableWithoutFeedback,Alert} from "react-native";
 import { List, ListItem, SearchBar } from 'react-native-elements';
 import {Button, Icon} from 'native-base';
-import FontAwesome, { Icons } from "react-native-fontawesome";
 import OwnerMailing from './ownerMailing.js';
 import OwnerPaymentWall from './ownerPaymentWall.js';
 
@@ -63,7 +62,7 @@ export default class OwnersIndividualTransaction extends Component {
 
 	doFinalDelete = ()=>{
 		this.props.doDeleteOwnerSent(this.props.doGetTransactionDetails.Account,
-			this.props.doGetTransactionDetails.propertyID);
+			this.props.doGetTransactionDetails.requestID);
 		Alert.alert(
             'Success',
             'Successfully deleted sent mails',
@@ -290,7 +289,7 @@ export default class OwnersIndividualTransaction extends Component {
 	                			position:'relative',
 	                			left: 22
 	                	}}>
-	                		Tenant Occupation: {this.props.doGetTransactionDetails.occupation}
+	                		Tenant Occupation: {this.props.doGetTransactionDetails.occupation == 'null' ? 'not updated by tenant' : this.props.doGetTransactionDetails.occupation}
 	                	</Text>
 	                </View>
 	                <View style={{
@@ -304,7 +303,7 @@ export default class OwnersIndividualTransaction extends Component {
 	                			position:'relative',
 	                			left: 22
 	                	}}>
-	                		Tenant Contact #: {this.props.doGetTransactionDetails.contactNumber}
+	                		Tenant Contact #: {this.props.doGetTransactionDetails.contactNumber == 'null' ? 'not updated by tenant' : this.props.doGetTransactionDetails.contactNumber}
 	                	</Text>
 	                </View>
 
@@ -318,48 +317,7 @@ export default class OwnersIndividualTransaction extends Component {
 	                		onPress={ ()=>this.setState({transactionOperation:'mail'})}>
 		                	<Text style={{
 		                		borderWidth:2,
-		                		width: 83,
-		                		height: '100%',
-		                		position:'relative',
-		                		left: 10,
-		                		fontSize: 11,
-		                		borderColor: '#5ce24a',
-		                		paddingTop: 13,
-		                		paddingLeft:8
-		                	}}>
-		                		Send Mail {' '}
-		                		<Icon style={{fontSize:14}}
-		                			name="envelope"
-		                			type="FontAwesome"/>
-		                		
-		                	</Text>
-		                </TouchableWithoutFeedback>
-
-		                <TouchableWithoutFeedback
-	                		onPress={ ()=>console.log('calling')}>
-		                	<Text style={{
-		                		borderWidth:2,
-		                		width: 83,
-		                		height: '100%',
-		                		position:'relative',
-		                		left: 15,
-		                		fontSize: 11,
-		                		borderColor: '#5ce24a',
-		                		paddingTop: 13,
-		                		paddingLeft:8
-		                	}}>
-		                		Video Call {' '}
-		                		<Icon style={{fontSize:14}}
-		                			name="video-camera"
-		                			type="Entypo"/>
-		                	</Text>
-		                </TouchableWithoutFeedback>
-
-		                <TouchableWithoutFeedback
-	                		onPress={ ()=>this.setState({transactionOperation:'cashwall'})}>
-		                	<Text style={{
-		                		borderWidth:2,
-		                		width: 83,
+		                		width: 105,
 		                		height: '100%',
 		                		position:'relative',
 		                		left: 20,
@@ -367,6 +325,28 @@ export default class OwnersIndividualTransaction extends Component {
 		                		borderColor: '#5ce24a',
 		                		paddingTop: 13,
 		                		paddingLeft:8
+		                	}}>
+		                		Send Message{' '}
+		                		<Icon style={{fontSize:14}}
+		                			name="envelope"
+		                			type="FontAwesome"/>
+		                		
+		                	</Text>
+		                </TouchableWithoutFeedback>
+
+
+		                <TouchableWithoutFeedback
+	                		onPress={ ()=>this.setState({transactionOperation:'cashwall'})}>
+		                	<Text style={{
+		                		borderWidth:2,
+		                		width: 90,
+		                		height: '100%',
+		                		position:'relative',
+		                		left: 35,
+		                		fontSize: 11,
+		                		borderColor: '#5ce24a',
+		                		paddingTop: 13,
+		                		paddingLeft:9
 		                	}}>
 		                		Cash Wall {' '}
 		                		<Icon style={{fontSize:14}}
@@ -379,14 +359,14 @@ export default class OwnersIndividualTransaction extends Component {
 	                		onPress={ ()=>console.log('cash wall')}>
 		                	<Text style={{
 		                		borderWidth:2,
-		                		width: 80,
+		                		width: 90,
 		                		height: '100%',
 		                		position:'relative',
-		                		left: 25,
+		                		left: 50,
 		                		fontSize: 12,
 		                		borderColor: '#5ce24a',
 		                		paddingTop: 13,
-		                		paddingLeft:8
+		                		paddingLeft:13
 		                	}}>
 		                		Dismiss {' '}
 		                		<Icon style={{fontSize:14}}

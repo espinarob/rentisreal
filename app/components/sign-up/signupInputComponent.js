@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Platform, StyleSheet, Text, View, 
-	TextInput, Switch, TouchableHighlight, CheckBox, TouchableOpacity} from "react-native";
+	TextInput, Switch, TouchableHighlight, CheckBox, TouchableOpacity, Picker} from "react-native";
 
 const signupInputWrapperStyle = StyleSheet.create({
 	mainWrapper: {
@@ -8,8 +8,8 @@ const signupInputWrapperStyle = StyleSheet.create({
 	},
 	userNameSection:{
 		position:'relative',
-		height: 50,
-		top: 25, 
+		height: 35,
+		top: 20, 
 		borderWidth:1,
 		width: '84%',
 		left: '8%',
@@ -17,15 +17,15 @@ const signupInputWrapperStyle = StyleSheet.create({
 	},
 	userNameInput:{
 		position: 'relative',
-		fontSize: 18,
+		fontSize: 11,
 		height: '100%',
 		left: '5%',
 		width: '90%'
 	},
 	passwordSection:{
 		position:'relative',
-		height: 50,
-		top: 30, 
+		height: 35,
+		top: 25, 
 		borderWidth:1,
 		width: '84%',
 		left: '8%',
@@ -33,15 +33,15 @@ const signupInputWrapperStyle = StyleSheet.create({
 	},
 	passwordInput:{
 		position: 'relative',
-		fontSize: 18,
+		fontSize: 11,
 		height: '100%',
 		left: '5%',
 		width: '90%'
 	},
 	confirmPasswordSection:{
 		position:'relative',
-		height: 50,
-		top: 40, 
+		height: 35,
+		top: 30, 
 		borderWidth:1,
 		width: '84%',
 		left: '8%',
@@ -49,14 +49,32 @@ const signupInputWrapperStyle = StyleSheet.create({
 	},
 	confirmPasswordInput:{
 		position: 'relative',
-		fontSize: 18,
+		fontSize: 11,
 		height: '100%',
 		left: '5%',
 		width: '90%'
 	},
 	regEmailSection:{
 		position:'relative',
-		height: 50,
+		height: 35,
+		top: 35, 
+		borderWidth:1,
+		width: '84%',
+		left: '8%',
+		borderRadius: 10
+	},
+	firstNameSection:{
+		position:'relative',
+		height: 35,
+		top: 40, 
+		borderWidth:1,
+		width: '84%',
+		left: '8%',
+		borderRadius: 10
+	},
+	lastNameSection:{
+		position:'relative',
+		height: 35,
 		top: 45, 
 		borderWidth:1,
 		width: '84%',
@@ -65,17 +83,31 @@ const signupInputWrapperStyle = StyleSheet.create({
 	},
 	cancelSection:{
 		position:'relative',
-		height: 30,
-		top: 90
+		height: 27,
+		top: 72
 	},
 	viewTermsSection:{
 		position:'relative',
-		height: 30,
-		top:85
+		height: 25,
+		top:68
 	},
 	regEmailInput:{
 		position: 'relative',
-		fontSize: 18,
+		fontSize: 11,
+		height: '100%',
+		left: '5%',
+		width: '90%'
+	},
+	firstNameInput:{
+		position: 'relative',
+		fontSize: 11,
+		height: '100%',
+		left: '5%',
+		width: '90%'
+	},
+	lastNameInput:{
+		position: 'relative',
+		fontSize: 11,
 		height: '100%',
 		left: '5%',
 		width: '90%'
@@ -83,13 +115,13 @@ const signupInputWrapperStyle = StyleSheet.create({
 	roleSection:{
 		position:'relative',
 		height: 25,
-		top: 55,
+		top: 52,
 		flexDirection: 'row'
 	},
 	errorSection:{
 		position:'relative',
-		height: 25,
-		top: 67
+		height: 23,
+		top: 60
 	},
 	roleSwitchStyle:{
 		position: 'relative',
@@ -99,12 +131,12 @@ const signupInputWrapperStyle = StyleSheet.create({
 		position: 'relative',
 		left: 55,
 		fontSize: 12,
-		paddingTop: 8
+		paddingTop: 7
 	},
 	termServiceSection:{
 		position:'relative',
 		height:25,
-		top: 65,
+		top: 56,
 		flexDirection: 'row'
 	},
 	termServiceSwitchStyle:{
@@ -115,17 +147,17 @@ const signupInputWrapperStyle = StyleSheet.create({
 		position: 'relative',
 		left: 55,
 		fontSize: 12,
-		paddingTop: 8
+		paddingTop: 7
 	},
 	signupButtonSection: {
 		position:'relative',
-		height: 65,
-		top: 70
+		height: 39,
+		top: 63
 	},
 	signupButtonStyle:{
 		position: 'relative',
-		left: '8%',
-		width: '84%',
+		left: '20%',
+		width: '60%',
 		height: '85%',
 		backgroundColor:'#315cb2',
 		borderRadius: 5
@@ -141,15 +173,26 @@ const signupInputWrapperStyle = StyleSheet.create({
 		left: '27%',
 		width: '60%',
 		height: '85%'
+	},
+	genderSection:{
+		position: 'relative',
+		height: 36,
+		top: 48,
+    	flexDirection: 'row'
+	},
+	birthdaySection:{
+		position: 'relative',
+		height: 33,
+		top: 52,
+    	flexDirection: 'row'
 	}
-
-
 });
 
 export default class SignUpInputComponent extends Component{
 
 	onSignup = () =>{
 
+		let getAge = this.validateBirthday();
 		if(this.state.termsFlag == false){
 			this.setState({errorMessage:'Please agree to terms of service!'});
 		}	
@@ -168,14 +211,55 @@ export default class SignUpInputComponent extends Component{
 		else if(this.state.password == 'null' || this.state.username == 'null'){
 			this.setState({errorMessage:'Please get a new username!'});
 		}
+		else if(this.state.firstName == '' || this.state.lastName == ''){
+			this.setState({errorMessage:'Please input first name and last name'});
+		}
+		else if(this.state.userBirthday == '' || getAge == false){
+			this.setState({errorMessage:'Please input your birthday as format indicated'});
+		}
 		else{
 			let toRegisterAccount = {
-				username: this.state.username,
-				password: this.state.password,
-				role: this.state.tenantRole,
-				email: this.state.email
+				username  : this.state.username,
+				password  : this.state.password,
+				role      : this.state.tenantRole,
+				email     : this.state.email,
+				firstName : this.state.firstName,
+				lastName  : this.state.lastName,
+				gender    : this.state.gender ? 'male' : 'female',
+				age       : String(getAge),
+				birthday  : this.state.userBirthday
 			}
 			this.props.doProcessRegistration(toRegisterAccount);
+		}
+	}
+
+	validateBirthday = ()=>{
+		let currentBirthday = this.state.userBirthday;
+		let today           = new Date();
+		if(currentBirthday.length<10){
+			console.log('length');
+			return false;
+		}
+		let birthMonth      = currentBirthday[0] + currentBirthday[1];
+		let day				= currentBirthday[3] + currentBirthday[4];
+		let year            = currentBirthday[6] + currentBirthday[7] + currentBirthday[8] + currentBirthday[9];
+		
+		if( Number.isInteger(Number(birthMonth)) == false ||
+			Number.isInteger(Number(day))        == false ||
+			Number.isInteger(Number(year))       == false ){
+			return false;
+		}
+		else if( Number(birthMonth)<=0 || Number(birthMonth)>12){
+			return false;
+		}
+		else if( Number(day)<=0 || Number(day)>31){
+			return false;
+		}
+		else if( Number(year) > Number(today.getFullYear()) ){
+			return false;
+		}
+		else{
+			return Number(today.getFullYear()) - Number(year);
 		}
 	}
 
@@ -200,16 +284,26 @@ export default class SignUpInputComponent extends Component{
 	}
 
 	state = {
-		tenantRole: false,
-		termsFlag: false,
-		username: '',
-		password: '',
-		confirmPassword: '',
-		email: '',
-		errorMessage: ''
+		tenantRole      : false,
+		termsFlag       : false,
+		username        : '',
+		password        : '',
+		confirmPassword : '',
+		email           : '',
+		firstName       : '',
+		lastName        : '',
+		errorMessage    : '',
+		userBirthday    : '',
+		gender          : true
 	}
 
+	genderChange = () => {
+	    this.setState({gender:!this.state.gender});
+	}
 
+	onMonthChange = (itemValue,itemIndex)=>{
+		this.setState({monthBirthday:itemValue});
+	}
 
 	render() {
     	return (
@@ -226,6 +320,7 @@ export default class SignUpInputComponent extends Component{
     					secureTextEntry={true}
     					placeholder = "Input password"
     					style={signupInputWrapperStyle.passwordInput}
+    					maxLength = {20}
     					onChangeText = { (password) => this.setState({password})}/>
     			</View>
 
@@ -234,6 +329,7 @@ export default class SignUpInputComponent extends Component{
     				<TextInput
     					secureTextEntry={true}
     					placeholder = "Confirm password"
+    					maxLength = {20}
     					style={signupInputWrapperStyle.confirmPasswordInput}
     					onChangeText = { (confirmPassword) => this.setState({confirmPassword})}/>
     			</View>
@@ -244,7 +340,82 @@ export default class SignUpInputComponent extends Component{
     					style={signupInputWrapperStyle.regEmailInput}
     					onChangeText = { (email) => this.setState({email})}/>
     			</View>
+    			<View style={signupInputWrapperStyle.firstNameSection}>
+    				<TextInput
+    					placeholder = "Input first name"
+    					style={signupInputWrapperStyle.firstNameInput}
+    					onChangeText = { (firstName) => this.setState({firstName})}/>
+    			</View>
+    			<View style={signupInputWrapperStyle.lastNameSection}>
+    				<TextInput
+    					placeholder = "Input last name"
+    					style={signupInputWrapperStyle.lastNameInput}
+    					onChangeText = { (lastName) => this.setState({lastName})}/>
+    			</View>
 
+    			<View style={signupInputWrapperStyle.genderSection}>
+	    			<Text style={{
+		                  position: 'relative',
+		                  width:55,
+		                  height:'100%',
+		                  paddingTop:5,
+		                  left:35 }}>
+		                Gender:
+		            </Text>
+    				<CheckBox style={{
+		                position:'relative',
+		                left:50,
+		                borderWidth:2}}
+		                value={this.state.gender}
+		                onChange={ ()=>this.genderChange()}/>
+		            <Text style={{
+		                  position: 'relative',
+		                  width:40,
+		                  height:'100%',
+		                  paddingTop:5,
+		                  left:50 }}>
+		              Male
+		            </Text>
+		            <CheckBox style={{
+		                position:'relative',
+		                left:56,
+		                borderWidth:2}}
+		                value={!this.state.gender}
+		                onChange={ ()=>this.genderChange()}/>
+		            <Text style={{
+		                  position: 'relative',
+		                  width:60,
+		                  height:'100%',
+		                  paddingTop:5,
+		                  left:56}}>
+		              Female
+		            </Text>
+    			</View>
+
+    			<View style={signupInputWrapperStyle.birthdaySection}>
+
+    				<Text style={{
+    						height: '100%',
+    						width: 63,
+    						position: 'relative',
+    						left:34,
+    						paddingTop:5
+    				}}>
+    					Birthday:
+    				</Text>
+    				<TextInput
+    					placeholder = "mm/dd/yyyy"
+    					style={{
+    						width: 86,
+    						fontSize: 11,
+    						borderWidth:1,	
+    						borderRadius:5,
+    						height: '100%',
+    						left: 37,
+    						position: 'relative'
+    					}}
+    					onChangeText = { (userBirthday) => this.setState({userBirthday})}/>
+    			</View>
     			<View style={signupInputWrapperStyle.roleSection}>
     				<CheckBox value={this.state.tenantRole} onChange={this.tenantCheckBox} style={signupInputWrapperStyle.roleSwitchStyle}/>
 				    <Text style={signupInputWrapperStyle.roleLabelStyle}>
@@ -260,7 +431,7 @@ export default class SignUpInputComponent extends Component{
     			</View>
 
     			<View style={signupInputWrapperStyle.errorSection}>
-					<Text style= {{fontSize:12,fontWeight:'bold',paddingTop:5,paddingLeft: '24%'}}>
+					<Text style= {{fontSize:11,fontWeight:'bold',paddingTop:5,paddingLeft: '24%'}}>
 						{this.verifySignUpError()}
 					</Text>
     			</View>
@@ -269,7 +440,7 @@ export default class SignUpInputComponent extends Component{
     				<TouchableHighlight style={signupInputWrapperStyle.signupButtonStyle}
     					 onPress={this.onSignup}
     					 underlayColor='#fff'>
-    					<Text style= {{fontSize:25,fontWeight:'bold',paddingTop:8,paddingLeft: '33%'}}>
+    					<Text style= {{fontSize:17,fontWeight:'bold',paddingTop:5,paddingLeft: '33.6%'}}>
     						Sign-Up
     					</Text>
     				</TouchableHighlight>

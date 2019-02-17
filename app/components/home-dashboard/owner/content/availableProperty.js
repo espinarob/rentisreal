@@ -44,7 +44,7 @@ export default class AvailableProperty extends Component{
 
 	availablePropertyDisplay = ()=>{
 		if(this.props.doViewMyProperty.length == 0){
-			return <Text style={{position:'relative',top:250,left:115}}>No created Property</Text>
+			return <Text style={{position:'relative',top:260,left:115}}>No created Property</Text>
 		}
 
 		else if(this.state.propertyIsPress == 'false'){

@@ -67,12 +67,12 @@ export default class MyNotifications extends Component{
 
                   <Text style={{
                       fontSize: 12,
-                      width:60,
+                      width:72,
                       height:30,
                       position: 'relative',
                       paddingTop:10,
                       paddingLeft:5,
-                      left: 30,
+                      left: 20,
                       top:10
                   }}>
                     {item.date}

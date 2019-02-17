@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View} from 'react-native';
-import FontAwesome, { Icons } from "react-native-fontawesome";
 import MainComponent from './app/components/main.js';
 
 
@@ -18,7 +17,7 @@ export default class Rentisreal extends Component {
   }
   render() {
     return (
-      <MainComponent/>
+        <MainComponent/>
     );
   }
 }

@@ -1,11 +1,12 @@
 import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View, AsyncStorage, NetInfo,Alert} from 'react-native';
 import { Container} from 'native-base';
+import RNFetchBlob from 'react-native-fetch-blob';
 import Constants from './Constants.js';
-import FontAwesome, { Icons } from "react-native-fontawesome";
 import LoginComponent from './login/loginComponent.js';
 import SignUpComponent from './sign-up/signupComponent.js';
 import HomeTemplate from './home-dashboard/commons/homeTemplate.js';
+import Base64       from './home-dashboard/commons/Base64.js';
 import LoadingScreen from './loadingScreen.js';
 import * as firebase from 'firebase';
 import SplashScreen from './splashScreen.js';
@@ -19,6 +20,12 @@ const config = {
 	messagingSenderId: "428728662478"
 };
 firebase.initializeApp(config);
+
+
+const Blob = RNFetchBlob.polyfill.Blob;
+const fs = RNFetchBlob.fs;
+window.XMLHttpRequest = RNFetchBlob.polyfill.XMLHttpRequest;
+window.Blob = Blob;
 
 export default class MainComponent extends Component {
 
@@ -63,13 +70,13 @@ export default class MainComponent extends Component {
     fetch('https://jsonplaceholder.typicode.com/users')
       .then(response =>{
         if(response.json().length!=0){
-          const haveInternetConnection = 'true'; 
-          this.setState({haveInternetConnection});
+          console.log('Success Internet Connection');
+          this.setState({haveInternetConnection: 'true'});
         }
       })
       .catch( (error)=>{
-          const haveInternetConnection = 'false'; 
-          this.setState({haveInternetConnection});
+          console.log('Failed to Connect');
+          this.setState({haveInternetConnection: 'false'});
       });
   }
 
@@ -116,6 +123,11 @@ export default class MainComponent extends Component {
                           this.changeLoginFlag(false);
                         });
                       return;
+                    }
+                    else{
+                      this.setState({loginError:'Incorrect Username/Password'});
+                      console.log('Incorrect Password!');
+                      this.changeLoginFlag(false);
                     }
                   });
               }
@@ -323,13 +335,14 @@ export default class MainComponent extends Component {
 
   accountRegistration = (currentAccount) =>{
     if(currentAccount){
+      let today = new Date();
+      let notifDate = String(today.getMonth()+1) + '/' + String(today.getDate()) + '/' + String(today.getFullYear());
       let onRegisterCycle = 'true';
       let processFlag     = false;
       this.setState({onRegisterCycle});
       const newAccount    = firebase
                               .database()
-                              .ref()
-                              .child("Accounts")
+                              .ref("Accounts")
                               .push();
       if(currentAccount.role) currentAccount.role = 'tenant';
       else currentAccount.role = 'owner';
@@ -338,15 +351,16 @@ export default class MainComponent extends Component {
         "password"      : currentAccount.password,
         "role"          : currentAccount.role,
         "email"         : currentAccount.email,
-        "firstName"     : 'null',
-        "lastName"      : 'null',
+        "firstName"     : currentAccount.firstName,
+        "lastName"      : currentAccount.lastName,
         "middleName"    : 'null',
         "contactNumber" : 'null',
-        "age"           : 'null',
+        "age"           : currentAccount.age,
         "civilStatus"   : 'null',
         "occupation"    : 'null',
-        "gender"        : 'null'
-      }
+        "gender"        : currentAccount.gender,
+        "birthdate"     : currentAccount.birthday
+     }
       finalData = JSON.stringify(finalData);
       finalData = JSON.parse(finalData);
 
@@ -358,6 +372,24 @@ export default class MainComponent extends Component {
             this.changeRegisterFlag(false);
             this.setState({signUpError:''}); 
           },2000);
+        })
+        .then(()=>{
+          const pushNotifKey =  firebase
+                                  .database()
+                                  .ref("Accounts/"+String(newAccount.key)+"/notifications")
+                                  .push();
+          const notificationMessage = 'Welcome user, you may proceed in updating your account details';
+          pushNotifKey.update({notifID:pushNotifKey.key, 
+          message:notificationMessage,
+          notifStatus:Constants.NOTIFICATION_STATUS.UNREAD,
+          date:notifDate})
+          .then(()=>{
+            console.log('Success sending user a notification for register reminder');
+          })
+          .catch((error)=>{
+            console.log('Failed sending user a notification for register reminder');
+          });
+
         })
         .catch( (error) =>{
           console.log(error);
@@ -376,11 +408,31 @@ export default class MainComponent extends Component {
                             .database()
                             .ref("Accounts/"+String(res));  
         keyAccount.update(updateDetails)
-        .then( ()=>console.log('Successfully Updated!'))
+        .then( ()=>{
+          console.log('Successfully Updated!');
+          Alert.alert(
+            'Success',
+            'Successfully updated your account',
+          [
+            {text: 'OK', onPress: () => console.log('OK')}
+          ]);
+        })
         .catch( (error)=>{
+          Alert.alert(
+            'Update failed',
+            'Failed to update, check your internet connection',
+          [
+            {text: 'OK', onPress: () => console.log('OK')}
+          ]);
           console.log('Error connecting update with firebase!');
         });  
       }).catch( (error) =>{
+        Alert.alert(
+          'Update failed',
+          'Failed to update, check your internet connection',
+        [
+          {text: 'OK', onPress: () => console.log('OK')}
+        ]);
         console.log('Failed Update!');
         console.log(error);
       }); 
@@ -388,7 +440,7 @@ export default class MainComponent extends Component {
   }
 
   
-  addProperty = async(propertyData)=>{
+  addProperty = async(propertyData,imageFile)=>{
     console.log('Adding Property!');
     this.setState({addPropertyError: 'Successfully Added! Please Wait..Don\'t Close the tab yet!'});
     if(propertyData.propertyBedroomPooling){
@@ -418,7 +470,6 @@ export default class MainComponent extends Component {
       "contactNumber"          : this.state.myAccountDetails.contactNumber,
       "firstName"              : this.state.myAccountDetails.firstName,
       "lastName"               : this.state.myAccountDetails.lastName,
-      "middleName"             : this.state.myAccountDetails.middleName,
       "email"                  : this.state.myAccountDetails.email,
       "rating"                 : '0',
       "ratingCount"            : '0',
@@ -428,31 +479,83 @@ export default class MainComponent extends Component {
     newProperty = await JSON.parse(String(JSON.stringify(newProperty)));
     keyAccount.update(newProperty)
     .then( ()=>{
+      this.uploadPropertyPhoto(imageFile,keyAccount.key,'image/jpg')
+      .then((response)=>{
+        firebase
+          .database()
+          .ref("Accounts/"+String(apiKey)+"/property/"+String(keyAccount.key))
+          .update({imgDLURL:String(response)})
+          .then(()=>console.log('Success in getting URL'))
+          .catch((error)=>console.log(error));
+      })
+      .catch((error)=>{
+        console.log(error);
+      });
+    })
+    .then( ()=>{
       this.setState({addPropertyError: 'Please Wait..'});
+    })
+    .then( ()=>{
+      this.setState({addPropertyError: 'Successfully added'});
+      setTimeout(()=>{
+        this.setState({addPropertyError:''});
+      },3000);
     })
     .catch( (error)=>{
       this.setState({addPropertyError: 'Check your internet connection!'});
+      console.log(error);
     });
   }
 
-  deletOneProperty = (propertyKey,accountKey)=>{
+  deleteOneProperty = (propertyKey,accountKey,imageName)=>{
     firebase
       .database()
       .ref("Accounts/"+String(accountKey)+"/property/"+String(propertyKey))
       .remove()
-      .then((res)=>console.log('removed!'))
+      .then((res)=>{
+        console.log('Property removed!');
+        Alert.alert(
+          'Success',
+          'Successfully deleted property',
+        [
+          {text: 'OK', onPress: () => console.log('OK')}
+        ]);
+      })
+      .then(()=>{
+        this.deletePropertyPhoto(imageName);
+      })
       .catch((error)=>{
         console.log('Error in deleting, check your internet connection!');
+        Alert.alert(
+          'Error',
+          'Failed in deleting the property',
+        [
+          {text: 'OK', onPress: () => console.log('OK')}
+        ]);
       });
   }
 
-  updateOneProperty =  (data,propertyKey,accountKey)=>{
+  updateOneProperty =  (propertyKey,accountKey,data)=>{
     firebase
       .database()
       .ref("Accounts/"+String(accountKey)+"/property/"+String(propertyKey))
       .update(data)
-      .then((res)=>console.log('updated'))
+      .then((res)=>{
+        console.log('updated');
+        Alert.alert(
+          'Success',
+          'Successfully updated the property',
+        [
+          {text: 'OK', onPress: () => console.log('OK')}
+        ]);
+      })
       .catch((error)=>{
+        Alert.alert(
+          'Error',
+          'Failed in updating your property',
+        [
+          {text: 'OK', onPress: () => console.log('OK')}
+        ]);
         console.log('Error in updating, check your internet connection!');
       });
   }
@@ -633,7 +736,7 @@ export default class MainComponent extends Component {
             .then(()=>{
               firebase
                 .database()
-                .ref("Accounts/"+String(property.Account)+"/transactions/"+String(property.propertyID))
+                .ref("Accounts/"+String(property.Account)+"/transactions/"+String(request.requestID))
                 .update(data)
                 .then(()=>{
                   firebase
@@ -886,7 +989,7 @@ export default class MainComponent extends Component {
                                 .ref("Accounts/"+
                                   String(rentalInformation.Account)+
                                   "/transactions/"+
-                                  String(rentalInformation.propertyID)+
+                                  String(rentalInformation.requestID)+
                                   "/paymentRecieved/"+
                                   String(tenantPaymentKey.key))
                                 .update(finalPaymentData)
@@ -1074,6 +1177,68 @@ export default class MainComponent extends Component {
     });
   }
 
+  changePassword = (newPassword)=>{
+    firebase
+      .database()
+      .ref("Accounts/"+String(this.state.onHandKeyReference))
+      .update({password:newPassword})
+      .then(()=>{
+        console.log('Successfully updated password');
+        Alert.alert(
+          'Success',
+          'Successfully changed your password',
+        [
+          {text: 'OK', onPress: () => console.log('OK')}
+        ]);
+      })
+      .catch(()=>{
+        console.log('Error in updating password');
+        Alert.alert(
+          'Failed',
+          'Failed to update your password',
+        [
+          {text: 'OK', onPress: () => console.log('OK')}
+        ]);
+      });
+  }
+
+  deletePropertyPhoto = (imageName)=>{
+    const imageRef = firebase.storage().ref('properties').child(imageName);
+    imageRef.delete()
+    .then(()=>{
+      console.log('Successfully deleted property photo');
+    })
+    .catch((error)=>{
+      console.log('Error in deleting property photo');
+    });
+  }
+
+  uploadPropertyPhoto = (uri, imageName,mime = 'image/jpg')=>{
+    return new Promise((resolve, reject) => {
+      const uploadUri = Platform.OS === 'ios' ? uri.replace('file://', '') : uri;
+      let uploadBlob = null;
+      const imageRef = firebase.storage().ref('properties').child(imageName);
+      fs.readFile(uploadUri, 'base64')
+      .then((data) => {
+        return Blob.build(data, { type: `${mime};BASE64` })
+      })
+      .then((blob) => {
+        uploadBlob = blob
+        return imageRef.put(blob, { contentType: mime })
+      })
+      .then(() => {
+        uploadBlob.close()
+        return imageRef.getDownloadURL()
+      })
+      .then((url) => {
+        resolve(url)
+      })
+      .catch((error) => {
+        reject(error)
+      })
+    });
+  }
+
 
   verifyAccountsExist = () =>{
     if(this.state.Accounts.length!=0){
@@ -1185,7 +1350,7 @@ export default class MainComponent extends Component {
               doesDataLoad          = {this.state.loadingData}
               doViewMyProperty      = {this.state.myProperty}
               doGetMyAccount        = {this.state.myAccountDetails}
-              doDeleteProperty      = {this.deletOneProperty}
+              doDeleteProperty      = {this.deleteOneProperty}
               doUpdateProperty      = {this.updateOneProperty}
               doSendARequest        = {this.requestAProperty}
               doViewMyRequests      = {this.state.myRequests}
@@ -1210,6 +1375,8 @@ export default class MainComponent extends Component {
               doDeleteOwnerSent     = {this.deleteOwnerSentMails}
               doSubmitTenantRate    = {this.submitTenantRating}
               doSendReciept         = {this.sendReciept}
+              doChangeMyPassword    = {this.changePassword}
+              doUploadPropertyPhoto = {this.uploadPropertyPhoto}
               addPropertyErrMSG     = {this.state.addPropertyError}
               requestPropertyMSG    = {this.state.requestPropertyError}/>
     }
