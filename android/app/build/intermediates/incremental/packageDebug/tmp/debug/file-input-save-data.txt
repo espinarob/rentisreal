@@ -1,5 +1,5 @@
 #Internal package file, do not edit.
-#Sat Feb 16 18:10:15 SGT 2019
+#Sun Feb 17 01:05:24 SGT 2019
 5.base=C\:\\Users\\ACER\\Desktop\\FinalRentisReal\\Rentisreal\\android\\app\\build\\intermediates\\merged_assets\\debug\\mergeDebugAssets\\out
 42.base=C\:\\Users\\ACER\\Desktop\\FinalRentisReal\\Rentisreal\\android\\app\\build\\intermediates\\transforms\\mergeJniLibs\\debug\\0
 22.path=classes.dex
