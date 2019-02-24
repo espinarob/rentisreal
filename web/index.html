@@ -1,0 +1,80 @@
+<html>
+<head>
+	<title>Rent is Real Admin</title>
+	<link rel="stylesheet" type="text/css" href="css/index.css">
+	<link rel="stylesheet" type="text/css" href="css/loginWrapper.css">
+	<link rel="stylesheet" type="text/css" href="css/homeContentWrapper.css">
+</head>
+<body>
+	<div id='mainWrapper'>
+		<div id='contentWrapper'>
+
+
+			<div id='loginPageWrapper'>
+				<p id='pageTitle'>
+					Rent is Real Admin Page
+				</p>
+				<p id='loginPageTitle'>
+					Log-in Page
+				</p>
+				<div id='usernameWrapper'>
+					<p id='usernameTitle'>
+						Username
+					</p>
+					<input type="text" name="usernameAdmin" id='usernameForAdmin'>
+				</div>
+				
+
+				<div id='passwordWrapper'>
+					<p id='passwordTitle'>
+						Password
+					</p>
+					<input type="password" name="passwordAdmin" id='passwordForAdmin'>
+				</div>
+
+				<div id='loginButtonWrapper'>
+					Login &rarr;
+				</div>
+
+				<div id='loginErrorWrapper'>
+				</div>
+			</div>	
+
+			
+			<div id='homeContentWrapper'>
+				<div id='homeContentHeader'>
+					<div id='forMoreWrapper'>
+						&#9776;
+					</div>
+
+					<div id='forMoreContentWrapper'>
+						<div id='forMoreContentSelect'>
+							<div id='forLogoutWrapper'>
+								Logout &#9932;
+							</div>
+							<div id='forAccountWrapper'>
+								Account &#9733;
+							</div>
+						</div>
+					</div>
+				</div>
+				<div id='homeContentBody'>
+					
+				</div>
+			</div>
+		</div>
+
+		<!-- for loading screen  -->
+		<div id='loadingScreenWrapper'>
+		</div>
+		<p id='loadingMessage'>
+			Performing Process... Please Wait...
+		</p>
+
+
+	</div>
+	<script src='js/jquery.min.js' type="text/javascript"></script>
+	<script src="https://www.gstatic.com/firebasejs/5.8.3/firebase.js"></script>
+	<script src="js/index.js" type="text/javascript"></script>
+</body>
+</html>

@@ -93,6 +93,7 @@ export default class HomeTemplate extends Component{
                             doDeleteTenantSent     = {this.props.doDeleteTenantSent}
                             doSubmitTenantRate     = {this.props.doSubmitTenantRate}
                             doChangeMyPassword     = {this.props.doChangeMyPassword}
+                            doUpdateAge            = {this.props.doUpdateAge}
                             requestPropertyMSG     = {this.props.requestPropertyMSG} />
                         <TenantsTabs
                             doOperate              = {this.setTenantOperation}/>
@@ -128,6 +129,12 @@ export default class HomeTemplate extends Component{
                             doSendReciept         = {this.props.doSendReciept}
                             doChangeMyPassword    = {this.props.doChangeMyPassword}
                             doUploadPropertyPhoto = {this.props.doUploadPropertyPhoto}
+                            doGetAdminDetails     = {this.props.doGetAdminDetails}
+                            doSubmitFixPay        = {this.props.doSubmitFixPay}
+                            doSubmitFreeSub       = {this.props.doSubmitFreeSub}
+                            doUpdateAge           = {this.props.doUpdateAge}
+                            doDismissTenant       = {this.props.doDismissTenant}
+                            doUpdateMaxPost       = {this.props.doUpdateMaxPost}
                             addPropertyErrMSG     = {this.props.addPropertyErrMSG}/>
                             
                         <OwnersTabs 

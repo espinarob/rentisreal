@@ -7,6 +7,20 @@ import { List, ListItem, SearchBar } from 'react-native-elements';
 
 export default class MyMessages extends Component{
 
+  state = {
+    allMyMessages: []
+  }
+
+  componentDidMount(){
+    const currentAllMessages = this.props.doGetMyMails;
+    const initAllMyMessages  = [];
+    for(index=(currentAllMessages.length-1);index>=0;index--){
+      const currentMessage = currentAllMessages[index];
+      initAllMyMessages.push(currentMessage);
+    }
+    this.setState({allMyMessages:initAllMyMessages});
+  }
+
   render() {
     if(this.props.doGetMyMails.length!=0){
       return (
@@ -15,7 +29,7 @@ export default class MyMessages extends Component{
         }}>
           <View style={{
               backgroundColor: '#6785db',
-              height: 45,
+              height: 41,
               flexDirection: 'row'
             }}>
 
@@ -47,7 +61,7 @@ export default class MyMessages extends Component{
           </View>
 
           <FlatList
-            data={this.props.doGetMyMails}
+            data={this.state.allMyMessages}
             renderItem={({item}) => 
               <View style={{
                 position:'relative',

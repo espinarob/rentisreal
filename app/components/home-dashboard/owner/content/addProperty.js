@@ -203,7 +203,8 @@ export default class AddProperty extends Component{
 		propertyType       :    'Boarding House',
 		imagePath: '',
     	imageHeight: '',
-    	imageWidth: ''
+    	imageWidth: '',
+    	imageType: 'invalid'
 
 	}
 
@@ -252,8 +253,26 @@ export default class AddProperty extends Component{
 		    this.setState({
 		     	imagePath   : response.uri,
             	imageHeight : response.height,
-            	imageWidth  : response.width
+            	imageWidth  : response.width,
 		    });
+		    if(response.type){
+		    	if(response.type == 'image/jpeg' || response.type == 'jpeg' ||  
+		    		response.type == 'image/jpg'){
+		    		this.setState({
+			    		imageType: response.type
+			    	});
+		    	}
+		    	else{
+			    	this.setState({
+			    		imageType: 'invalid'
+			    	});
+			    }
+		    }
+		    else{
+		    	this.setState({
+		    		imageType: 'invalid'
+		    	});
+		    }
 		  }
 		});
 	}
@@ -263,7 +282,11 @@ export default class AddProperty extends Component{
 	}
 
 	doAddProperty = () =>{
-		if(this.state.propertyName.length==0){
+		if(this.props.doViewMyProperty.length>=3 && this.props.doGetMyAccount.paid == 'free' ){
+			this.setState({
+			   	addPropertyError: 'Number of properties limit reached, Pay subscription now!'});
+		}
+		else if(this.state.propertyName.length==0){
 			this.setState({
 			   	addPropertyError: 'Please input property name!'});
 		}
@@ -301,11 +324,6 @@ export default class AddProperty extends Component{
 			   	addPropertyError:'Pooling Quantity Should not be a Negative!'});
 		}
 		else{
-			setTimeout( ()=>{
-				this.setState({
-			   	addPropertyError:''});
-			   	this.props.doChangePropertyAction('avail-property');
-			},2500);
 			if(this.state.propertyBedroomPooling == false || this.state.propertyPoolingQty == 1 ){
 				const passData = {
 					propertyName:           this.state.propertyName,
@@ -320,6 +338,7 @@ export default class AddProperty extends Component{
 					propertyType:           this.state.propertyType
 				};
 				this.props.doAddPropertyOwner(passData,this.state.imagePath);
+				this.clearData();
 				return;
 			}
 			else{
@@ -328,7 +347,7 @@ export default class AddProperty extends Component{
 				const passData = {
 					propertyName:           this.state.propertyName,
 					propertyLocation:       this.state.propertyLocation,
-					propertyBedroomPooling: this.state.propertyBedroomPooling,
+					propertyBedroomPooling: 'true',
 					propertyPoolingQty:     this.state.propertyPoolingQty,
 					propertyMonthnlyPrice:  String(Math.ceil(this.state.propertyMonthnlyPrice)),
 					propertyFinalPrice:     this.state.propertyFinalPrice,
@@ -338,9 +357,30 @@ export default class AddProperty extends Component{
 					propertyType:           this.state.propertyType
 				};
 				this.props.doAddPropertyOwner(passData,this.state.imagePath);
+				this.clearData();
 				return;
 			}
 		}
+	}
+
+	clearData  = ()=>{
+		this.setState({
+			propertyName:           '',
+			propertyLocation:       '',
+			propertyBedroomPooling: false,
+			propertyPoolingQty:     '0',
+			propertyMonthnlyPrice:  '0',
+			propertyFinalPrice:     '',
+			propertyPhotoSection:   '',
+			propertyDescription:    '',
+			propertyFurtherData:    '',
+			addPropertyError   :    '',
+			propertyType       :    'Boarding House',
+			imagePath: '',
+	    	imageHeight: '',
+	    	imageWidth: '',
+	    	imageType: 'invalid'
+    	});
 	}
 
 	propertyError = ()=>{
@@ -369,6 +409,7 @@ export default class AddProperty extends Component{
     					Name: </Text>
     				<TextInput
     					placeholder = "Input property name"
+    					value       = {this.state.propertyName}
     					maxLength   = {25}
     					style={addPropertyWrapperStyle.propertyNameInputStyle}
     					onChangeText = { (propertyName) => this.setState({propertyName})}/>
@@ -381,6 +422,7 @@ export default class AddProperty extends Component{
     				<TextInput
     					placeholder = "Input property location"
     					maxLength   = {40}
+    					value       = {this.state.propertyLocation}
     					style={addPropertyWrapperStyle.propertyLocationStyle}
     					onChangeText = { (propertyLocation) => this.setState({propertyLocation})}/>
     			</View>
@@ -398,6 +440,7 @@ export default class AddProperty extends Component{
     				<TextInput
     					placeholder = "Good for [#]"
     					style={addPropertyWrapperStyle.propertyPoolingInputStyle}
+    					value       = {this.state.propertyPoolingQty}
     					onChangeText = { (propertyPoolingQty) => this.setState({propertyPoolingQty})}/>	
     			</View>
 
@@ -408,6 +451,7 @@ export default class AddProperty extends Component{
     				<TextInput
     					placeholder = "Price in Ph Peso"
     					style={addPropertyWrapperStyle.propertyMonthlyPriceStyle}
+    					value       = {this.state.propertyMonthnlyPrice}
     					onChangeText = { (propertyMonthnlyPrice) => this.setState({propertyMonthnlyPrice})}/>	
     			</View>
 
@@ -450,7 +494,7 @@ export default class AddProperty extends Component{
 	    					fontWeight: 'bold',
 	    					paddingTop: 6
 	    			}}>
-	    				{this.state.imagePath.length == 0 ? 'No selected photo' : 'One photo selected'}
+	    				{this.state.imagePath.length == 0 ? 'No selected photo' : (this.state.imageType == 'invalid' ? 'Invalid Photo' : 'One photo selected') }
 	    			</Text>
     			</View>
 
@@ -462,6 +506,7 @@ export default class AddProperty extends Component{
     					placeholder = "Place Caption [optional]"
     					maxLength   = {45}
     					style={addPropertyWrapperStyle.propertyDescriptionInputStyle}
+    					value       = {this.state.propertyDescription}
     					onChangeText = { (propertyDescription) => this.setState({propertyDescription})}/>
     			</View>
 
@@ -472,6 +517,7 @@ export default class AddProperty extends Component{
     				<TextInput
     					placeholder = "Further Information"
     					maxLength= {50}
+    					value       = {this.state.propertyFurtherData}
     					style={addPropertyWrapperStyle.propertyFurtherDataInputStyle}
     					onChangeText = { (propertyFurtherData) => this.setState({propertyFurtherData})}/>
     			</View>
@@ -494,6 +540,7 @@ export default class AddProperty extends Component{
 	                		<Picker.Item label="Boarding House" value="Boarding House"/>
 	                		<Picker.Item label="Dormitory" value="Dormitory"/>
 	                		<Picker.Item label="Studio Type" value="Studio Type"/>
+	                		<Picker.Item label="Lodge House" value="Lodge House"/>
 	                	</Picker>
     				</View>
     			</View>

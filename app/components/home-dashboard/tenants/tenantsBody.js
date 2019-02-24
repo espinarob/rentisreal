@@ -36,6 +36,7 @@ export default class TentantsBody extends Component{
 				   				 doChangeLogoutFlag = {this.props.doChangeLogoutFlag}
 				   				 doGetMyAccount     = {this.props.doGetMyAccount} 
 				   				 doProcessUpdate    = {this.props.doProcessUpdate} 
+				   				 doUpdateAge        = {this.props.doUpdateAge}
 				   				 doChangeMyPassword = {this.props.doChangeMyPassword} />
 				   </React.Fragment>
 		}

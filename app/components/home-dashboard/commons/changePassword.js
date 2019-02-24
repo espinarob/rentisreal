@@ -106,6 +106,7 @@ export default class ChangePassword extends Component{
                 			borderRadius: 5
                 		}}
                 		maxLength    = {20}
+                        secureTextEntry={true}
                 		onChangeText = {(currentPassword)=> this.setState({currentPassword:currentPassword})}/>
                 </View>
 
@@ -138,6 +139,7 @@ export default class ChangePassword extends Component{
                 			borderRadius: 5
                 		}}
                 		maxLength    = {20}
+                        secureTextEntry={true}
                 		onChangeText = {(newPassword)=> this.setState({newPassword:newPassword})}/>
                 </View>
 
@@ -170,6 +172,7 @@ export default class ChangePassword extends Component{
                 			borderRadius: 5
                 		}}
                 		maxLength    = {20}
+                        secureTextEntry={true}
                 		onChangeText = {(confirmNewPassword)=> this.setState({confirmNewPassword:confirmNewPassword})}/>
                 </View>
 

@@ -101,6 +101,9 @@ export default class LoginInputComponent extends Component{
 		if(this.state.username == '' || this.state.password == '' ){
 			this.setState({errorMessage:'Please input password or username!'});
 		}
+		else if(String(this.state.username).toLowerCase() == 'admin'  && this.state.password!=''){
+			this.setState({errorMessage:'Please input valid password or username!'});
+		}
 		else this.props.doProcessLogin(this.state.username,this.state.password);
 	}
 

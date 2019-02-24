@@ -196,11 +196,11 @@ export default class PropertyLists extends Component{
 
 
     viewPressedProperty = (property)=>{
-        if(this.props.doGetMyAccount.role == 'owner')return;
-        else{
-            this.setState({pressedPropertyDetails:property});
-            this.setState({somethingPressed:'true'});
-        }
+        //if(this.props.doGetMyAccount.role == 'owner')return;
+        //else{
+        this.setState({pressedPropertyDetails:property});
+        this.setState({somethingPressed:'true'});
+        //}
     }
 
     doDisplayAvailability = (quantity)=>{
@@ -214,31 +214,38 @@ export default class PropertyLists extends Component{
 
     displayVacantOnly = (vacancy,item)=> {
         if(vacancy>0){
-            return  <View style={{
-                            paddingLeft:12
-                    }}>
-                        <Text style={{fontSize:11}}>
-                            Address: {item.propertyLocation} 
-                        </Text>
-                        <Text style={{fontSize:11}}>
-                            Type: {item.propertyType} 
-                        </Text>
-                        <Text style={{fontSize:11,fontWeight:'bold'}}>
-                            Vacant: {this.doDisplayAvailability(item.propertyVacant)}
-                        </Text>
-                        <Text style={{fontSize:12,fontWeight:'bold',color:'#8ba823'}}>
-                            Rating: {item.ratingCount == 0 ? 'not rated yet ' : item.rating/item.ratingCount}
-                        </Text>
-                        <View style={{flexDirection:'row'}}>
-                            <Text style={{fontSize:11,width:175,height:30}}>
-                                {item.propertyDescription}
-                            </Text>
-                            {this.poolingDisplay(item.propertyBedroomPooling)}
-                        </View>
-                    </View> 
+            return  <TouchableWithoutFeedback
+                        onPress={()=>this.viewPressedProperty(item)}>    
+                        <ListItem 
+                            title={ <Text style={{fontSize:15,paddingLeft:12}}>{item.propertyName}</Text>}
+                            subtitle={
+                                <View style={{
+                                    paddingLeft:12
+                                }}>
+                                    <Text style={{fontSize:11}}>
+                                        Address: {item.propertyLocation} 
+                                    </Text>
+                                    <Text style={{fontSize:11}}>
+                                        Type: {item.propertyType} 
+                                    </Text>
+                                    <Text style={{fontSize:11,fontWeight:'bold'}}>
+                                        Vacant: {this.doDisplayAvailability(item.propertyVacant)}
+                                    </Text>
+                                    <Text style={{fontSize:12,fontWeight:'bold',color:'#8ba823'}}>
+                                        Rating: {item.ratingCount == 0 ? 'not rated yet ' : item.rating/item.ratingCount}
+                                    </Text>
+                                    <View style={{flexDirection:'row'}}>
+                                        <Text style={{fontSize:11,width:175,height:30}}>
+                                            {item.propertyDescription}
+                                        </Text>
+                                        {this.poolingDisplay(item.propertyBedroomPooling)}
+                                    </View>
+                                </View> 
+                            }/>
+                    </TouchableWithoutFeedback>
         }
         else{
-            return '';
+            return;
         }
     }
 
@@ -259,15 +266,8 @@ export default class PropertyLists extends Component{
         else if(this.state.somethingPressed=='false'){
             return <FlatList
                 data={this.getProperties()}
-                renderItem={ ({item}) => 
-                    <TouchableWithoutFeedback
-                        onPress={()=>this.viewPressedProperty(item)}>
-                    <ListItem 
-                        title={ <Text style={{fontSize:15,paddingLeft:12}}>{item.propertyName}</Text>} 
-                        subtitle={
-                            this.displayVacantOnly(item.propertyVacant,item)
-                        }/>
-                    </TouchableWithoutFeedback>
+                renderItem={ ({item}) =>     
+                    this.displayVacantOnly(item.propertyVacant,item)                      
                 }
                 keyExtractor={item => item.propertyID}
                 ListHeaderComponent={this.renderHeader}/> 
@@ -278,7 +278,8 @@ export default class PropertyLists extends Component{
                         doGetBack              = {this.backPage}
                         doSendARequest         = {this.props.doSendARequest}
                         requestPropertyMSG     = {this.props.requestPropertyMSG}
-                        doViewMyRequests       = {this.props.doViewMyRequests}/>
+                        doViewMyRequests       = {this.props.doViewMyRequests}
+                        doGetUserRole          = {this.props.doGetMyAccount.role} />
 
         }
     }

@@ -6,6 +6,21 @@ import { List, ListItem, SearchBar } from 'react-native-elements';
 
 
 export default class MyNotifications extends Component{
+
+  componentDidMount(){
+    const currentNotifications   = this.props.doGetMyNotifications;
+    const initAllMyNotifications = [];
+    for(index=(currentNotifications.length-1);index>=0;index--){
+      let currentNotif = currentNotifications[index];
+      initAllMyNotifications.push(currentNotif);
+    }
+    this.setState({allMyNotifications:initAllMyNotifications});
+  }
+
+  state = {
+    allMyNotifications: []
+  }
+
   render() {
     if(this.props.doGetMyNotifications.length!=0){
     	return (
@@ -14,7 +29,7 @@ export default class MyNotifications extends Component{
           }}>
             <View style={{
                 backgroundColor: '#6785db',
-                height: 45,
+                height: 41,
                 flexDirection: 'row'
               }}>
 
@@ -46,11 +61,11 @@ export default class MyNotifications extends Component{
 
             </View>
             <FlatList
-            	data= {this.props.doGetMyNotifications}
+            	data= {this.state.allMyNotifications}
             	renderItem={({item}) =>	
             		<View style={{
             				position:'relative',
-            				height: 45,
+            				height: 55,
             				borderBottomWidth:2,
             				borderColor:'#6e8fd1',
                     flexDirection:'row'
@@ -73,7 +88,7 @@ export default class MyNotifications extends Component{
                       paddingTop:10,
                       paddingLeft:5,
                       left: 20,
-                      top:10
+                      top:17
                   }}>
                     {item.date}
                   </Text>

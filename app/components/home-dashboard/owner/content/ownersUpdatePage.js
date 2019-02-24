@@ -81,12 +81,12 @@ export default class AvailableProperty extends Component{
             return;
         }
 
-        updateData['propertyBedroomPooling'] = false;
+        updateData['propertyBedroomPooling'] = 'false';
         updateData['propertyPoolingQty']     = '1';
         updateData['propertyVacant']         = '1';
         
         if(this.state.newPropertyBedroomPooling == true && this.state.newPropertyVacant!=1){
-            updateData['propertyBedroomPooling'] = true;
+            updateData['propertyBedroomPooling'] = 'true';
             updateData['propertyPoolingQty']     = this.state.newPropertyVacant;
             updateData['propertyVacant']         = this.state.newPropertyVacant;
         }
@@ -122,17 +122,19 @@ export default class AvailableProperty extends Component{
     			<View style={{
     					top: 20,
     					height: 30,
-    					width:'100%'
+    					width:'100%',
+                        flexDirection: 'row'
     			}}>
     				<Text style={{
     						height: '100%',
     						position : 'relative',
     						width: 150,
-    						left: 126,
+    						left: 125,
     						fontSize: 15
     				}}>
     					Property Update
     				</Text>
+
     			</View>
 
     			<View style={{
@@ -219,13 +221,13 @@ export default class AvailableProperty extends Component{
     					Apply to Pool:
     				</Text>
 
-    				<CheckBox value={this.state.newPropertyBedroomPooling} 
+    				<CheckBox 
+                        value={this.state.newPropertyBedroomPooling} 
     					onChange={this.changePropertyPooling} 
     					style={{
     						position: 'relative',
     						left:15
     					}} />
-
 
     				<Text style={{
     						width: 70,

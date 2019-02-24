@@ -59,6 +59,18 @@ export default class OwnersIndividualTransaction extends Component {
         ]);
 	}
 
+	doAlertForDismissingTenant = ()=>{
+		Alert.alert(
+      		'Warning',
+      		'Are you sure to dismiss this transaction? All information will be deleted',
+        [
+          	{text: 'NO', onPress: () => console.log('Cancelled'), style: 'cancel'},
+          	{text: 'YES', onPress: () => this.props.doDismissTenant(this.props.doGetTransactionDetails.tenantID,
+          		this.props.doGetTransactionDetails.requestID,this.props.doGetTransactionDetails.Account,
+          		this.props.doGetTransactionDetails.requestID)},
+        ]);
+	}
+
 
 	doFinalDelete = ()=>{
 		this.props.doDeleteOwnerSent(this.props.doGetTransactionDetails.Account,
@@ -356,7 +368,7 @@ export default class OwnersIndividualTransaction extends Component {
 		                </TouchableWithoutFeedback>
 
 		                <TouchableWithoutFeedback
-	                		onPress={ ()=>console.log('cash wall')}>
+	                		onPress={ ()=>this.doAlertForDismissingTenant()}>
 		                	<Text style={{
 		                		borderWidth:2,
 		                		width: 90,

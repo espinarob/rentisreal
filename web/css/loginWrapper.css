@@ -1,0 +1,139 @@
+#loginPageWrapper{
+	height: 90%;
+	top: 5%;
+	border-radius: 10px;
+	width: 50%;
+	position: relative;
+	left: 24.6%;
+	-webkit-box-shadow: 0px 2px 21px -1px rgba(0,0,0,0.75);
+	-moz-box-shadow: 0px 2px 21px -1px rgba(0,0,0,0.75);
+	box-shadow: 0px 2px 21px -1px rgba(0,0,0,0.75);
+	background-color: #fff;
+}
+
+#pageTitle{
+	font-family: 'Nunito-Regular';
+	font-size:  30px;
+	padding-left: 53px;
+	padding-top: 10px;
+	position:relative;
+	height: 10%;
+	width: 78%;
+	left: 5%;
+	top: 15px;
+}
+
+#loginPageTitle{
+	font-family: 'Nunito-Regular';
+	font-size:  30px;
+	padding-left: 130px;
+	padding-top: 10px;
+	position:relative;
+	height: 10%;
+	width: 62.5%;
+	left: 5%;
+	top: 15px;
+}
+
+#usernameWrapper{
+	position: relative;
+	top: 50px;
+	border-radius: 11px;
+	width: 70%;
+	left: 15%;
+	height: 10%;
+	vertical-align: top;	
+	-webkit-box-shadow: 0px 2px 14px -2px rgba(0,0,0,0.75);
+	-moz-box-shadow: 0px 2px 14px -2px rgba(0,0,0,0.75);
+	box-shadow: 0px 2px 14px -2px rgba(0,0,0,0.75);
+}
+
+#usernameTitle{
+	display:inline-block;
+	position: relative;
+	left: 15px;
+	font-family: 'Nunito-Regular';
+	top:8px;
+	font-size: 20px;
+}
+
+input[name='usernameAdmin']{
+	position: relative;
+	display:inline-block;
+	width:  200px;
+	height: 85%;
+	border: 0px;
+	top:7.5%;
+	border-bottom: solid;
+	border-width: 2px;
+	left: 35px;
+	outline:none;
+}
+
+
+
+#passwordWrapper{
+	position: relative;
+	top: 65px;
+	border-radius: 11px;
+	width: 70%;
+	left: 15%;
+	height: 10%;
+	vertical-align: top;	
+	-webkit-box-shadow: 0px 2px 14px -2px rgba(0,0,0,0.75);
+	-moz-box-shadow: 0px 2px 14px -2px rgba(0,0,0,0.75);
+	box-shadow: 0px 2px 14px -2px rgba(0,0,0,0.75);
+}
+
+#passwordTitle{
+	display:inline-block;
+	position: relative;
+	left: 15px;
+	font-family: 'Nunito-Regular';
+	top:8px;
+	font-size: 20px;
+}
+
+input[name='passwordAdmin']{
+	position: relative;
+	display:inline-block;
+	width:  200px;
+	height: 85%;
+	border: 0px;
+	top:7.5%;
+	border-bottom: solid;
+	border-width: 2px;
+	left: 35px;
+	outline:none;
+}
+
+
+#loginButtonWrapper{
+	position: relative;
+	cursor: pointer;
+	top: 90px;
+	width: 19%;
+	left: 40%;
+	border-width: 3px;
+	background-color: #6785db;
+	height:30px;
+	border-radius: 10px;
+	font-family: 'Nunito-Regular';
+	padding-top: 5px;
+	padding-left: 30px;
+	font-size: 20px;
+	border-width: 3px;
+}
+
+
+#loginErrorWrapper{
+	position: relative;
+	width: 26%;
+	left: 36%;
+	top: 15px;
+	top: 92px;
+	height: 13%;
+	font-size: 14px;
+	font-family: 'Nunito-Regular';
+	padding-left: 30px;
+}

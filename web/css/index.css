@@ -1,0 +1,74 @@
+@font-face{
+	font-family: 'LibreBarcode39Text';
+	src: url('./fonts/LibreBarcode39Text-Regular.ttf');
+}
+
+@font-face{
+	font-family: 'MajorMonoDisplay';
+	src: url('./fonts/MajorMonoDisplay-Regular.ttf');
+}
+
+@font-face{
+	font-family: 'RobotoSlab';
+	src: url('./fonts/RobotoSlab-Bold.ttf');
+}
+
+@font-face{
+	font-family: 'Nunito-Regular';
+	src: url('./fonts/Nunito-Regular.ttf');
+}
+
+@font-face{
+	font-family: 'Staatliches';
+	src: url('./fonts/Staatliches-Regular.ttf');
+}
+
+
+@font-face{
+	font-family: 'HanaleiFill-Regular';
+	src: url('./fonts/HanaleiFill-Regular.ttf');
+}
+
+*{
+	padding:0;
+	margin:0;
+	font-family: 'Nunito-Regular';
+}
+
+#mainWrapper{
+	position: fixed;
+	height: 99.5%;
+	background-color: #6785db;
+	width: 99.5%;
+}
+
+#contentWrapper{
+	height: 520px;
+	width: 1000px;
+	position: fixed;
+	left: 188px;
+	top: 50px;
+}
+
+
+#loadingScreenWrapper{
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	background-color: #fff;
+	opacity: 0.5;
+	display: none;
+}
+
+
+#loadingMessage{
+	position: absolute;
+	top: 450px;
+	left: 565px;
+	font-family: 'Nunito-Regular';
+	font-size: 20px;
+	height: 100px;
+	width: 254px;
+	opacity: 1;
+	display: none;
+}

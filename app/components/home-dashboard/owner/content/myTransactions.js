@@ -138,7 +138,7 @@ export default class MyTransactions extends Component {
                       </TouchableWithoutFeedback>
                     </View>
                   }
-                  keyExtractor={item => item.propertyID}/>
+                  keyExtractor={item => item.requestID}/>
                </View>
       }
       else{
@@ -150,7 +150,8 @@ export default class MyTransactions extends Component {
                     doGetBack               = {this.getBacktoTransactions}
                     doOperateOwnerMail      = {this.props.doOperateOwnerMail} 
                     doDeleteOwnerSent       = {this.props.doDeleteOwnerSent}
-                    doSendReciept           = {this.props.doSendReciept} />
+                    doSendReciept           = {this.props.doSendReciept}
+                    doDismissTenant         = {this.props.doDismissTenant} />
                 </View>
       }
   }

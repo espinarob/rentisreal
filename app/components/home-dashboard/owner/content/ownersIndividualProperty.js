@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View,TouchableWithoutFeedback,TextInput,Alert} from 'react-native';
 import {Button,Icon} from "native-base";
 import OwnerUpdatePage from './ownersUpdatePage.js';
+import ViewPhotoPage   from './viewPhotoPage.js';
 
 const ownersIndividualPropertyWrapperStyle = StyleSheet.create({
   commonInputElemenStyle:{
@@ -88,10 +89,18 @@ export default class OwnersIndividualProperty extends Component {
   }
 
   showUpdatePage = ()=>{
-    this.setState({updateIsPressed:'true'});
+    this.setState({updateIsPressed:'update'});
+  }
+
+  showPhotoPage  = ()=>{
+    this.setState({updateIsPressed:'photo'});
   }
 
   cancelUpdate = ()=>{
+    this.setState({updateIsPressed:'false'});
+  }
+
+  getBackFromPhotoView = ()=>{
     this.setState({updateIsPressed:'false'});
   }
 
@@ -107,14 +116,34 @@ export default class OwnersIndividualProperty extends Component {
                     }}>
                         <View style={{
                             position:'relative',
-                            left: 78,
-                            width: 200,
+                            left: 10,
+                            width: 210,
                             height: '100%',
                         }}>
-                            <Text style={{fontSize:20,paddingTop:5}}>
+                            <Text style={{fontSize:19,paddingTop:5}}>
                                 {this.props.pressedPropertyDetails.propertyName}
                             </Text>
                         </View>
+
+                        <TouchableWithoutFeedback
+                          onPress={()=>this.showPhotoPage()}>
+                          <Text style={{
+                              height: '100%',
+                              position: 'relative',
+                              width: 105,
+                              fontWeight: 'bold',
+                              fontSize: 15,
+                              borderWidth:2,
+                              paddingTop:10,
+                              paddingLeft:10,
+                              left: 35,
+                              borderColor:'#5ce24a'
+                          }}>
+                              View Photo{' '}<Icon style={{fontSize:15,color:'#8b8f96'}}
+                                name="ios-arrow-forward"
+                                type="Ionicons"/>
+                          </Text>
+                        </TouchableWithoutFeedback>
                 </View>
 
                 <View style={{
@@ -321,12 +350,17 @@ export default class OwnersIndividualProperty extends Component {
                 </View>
             </React.Fragment>
     }
-    else{
+    else if(this.state.updateIsPressed == 'update'){
       return  <OwnerUpdatePage
                 pressedPropertyDetails = {this.props.pressedPropertyDetails} 
                 doCancelUpdate         = {this.cancelUpdate}
                 doUpdateProperty       = {this.props.doUpdateProperty}
                 doGetBackAfterUpdate   = {this.getBackAfterUpdate} />
+    }
+    else if(this.state.updateIsPressed == 'photo'){
+      return  <ViewPhotoPage 
+                pressedPropertyDetails = {this.props.pressedPropertyDetails}
+                doGetBack              = {this.getBackFromPhotoView} />
     }
   }
 

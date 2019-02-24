@@ -9,32 +9,13 @@ import MyTransactions from "../owner/content/myTransactions.js";
 
 export default class OwnersBody extends Component{
 
+	componentDidMount(){
+		this.props.doUpdateMaxPost();
+	}
 
 	viewBodyDisplay = ()=> {
-		if(this.props.performOperation == Constants.OWNER_ACTIONS.MY_PROPERTY){
-			return <React.Fragment>
-				   	<OwnersProperty
-				   		doAddPropertyOwner    = {this.props.doAddPropertyOwner}
-				   		doViewMyProperty      = {this.props.doViewMyProperty}
-				   		doDeleteProperty      = {this.props.doDeleteProperty}
-				   		doUpdateProperty      = {this.props.doUpdateProperty}
-				   		addPropertyErrMSG     = {this.props.addPropertyErrMSG}
-				   		doAcceptTenantReq     = {this.props.doAcceptTenantReq}
-				   		doUploadPropertyPhoto = {this.props.doUploadPropertyPhoto} 
-				   		doDeclineTenantReq    = {this.props.doDeclineTenantReq}/>
-				   </React.Fragment>
-		}
-		else if( this.props.performOperation == Constants.OWNER_ACTIONS.MORE){
-			return <React.Fragment>
-				   	<ForMoreBody doChangeLoginFlag  = {this.props.doChangeLoginFlag}
-				   				 doChangeLogoutFlag = {this.props.doChangeLogoutFlag}
-				   				 doGetMyAccount     = {this.props.doGetMyAccount} 
-				   				 doProcessUpdate    = {this.props.doProcessUpdate}
-				   				 doChangeMyPassword = {this.props.doChangeMyPassword} />
-				   </React.Fragment>
 
-		}
-		else if( this.props.performOperation == Constants.OWNER_ACTIONS.MY_HOME){
+		if( this.props.performOperation == Constants.OWNER_ACTIONS.MY_HOME ){
 			return <React.Fragment>
 				   	<PropertyLists
 				   		Properties           = {this.props.Properties}
@@ -49,13 +30,42 @@ export default class OwnersBody extends Component{
 	                    doDeleteAMail        = {this.props.doDeleteAMail} />
 				   </React.Fragment>
 		}
+		else if(this.props.performOperation == Constants.OWNER_ACTIONS.MY_PROPERTY){
+			return <React.Fragment>
+				   	<OwnersProperty
+				   		doAddPropertyOwner    = {this.props.doAddPropertyOwner}
+				   		doViewMyProperty      = {this.props.doViewMyProperty}
+				   		doDeleteProperty      = {this.props.doDeleteProperty}
+				   		doUpdateProperty      = {this.props.doUpdateProperty}
+				   		addPropertyErrMSG     = {this.props.addPropertyErrMSG}
+				   		doAcceptTenantReq     = {this.props.doAcceptTenantReq}
+				   		doUploadPropertyPhoto = {this.props.doUploadPropertyPhoto} 
+				   		doDeclineTenantReq    = {this.props.doDeclineTenantReq}
+				   		doGetMyAccount        = {this.props.doGetMyAccount} />
+				   </React.Fragment>
+		}
+		else if( this.props.performOperation == Constants.OWNER_ACTIONS.MORE){
+			return <React.Fragment>
+				   	<ForMoreBody doChangeLoginFlag  = {this.props.doChangeLoginFlag}
+				   				 doChangeLogoutFlag = {this.props.doChangeLogoutFlag}
+				   				 doGetMyAccount     = {this.props.doGetMyAccount} 
+				   				 doProcessUpdate    = {this.props.doProcessUpdate}
+				   				 doChangeMyPassword = {this.props.doChangeMyPassword}
+				   				 doGetAdminDetails  = {this.props.doGetAdminDetails}
+				   				 doSubmitFixPay     = {this.props.doSubmitFixPay}
+				   				 doUpdateAge        = {this.props.doUpdateAge}
+				   				 doSubmitFreeSub    = {this.props.doSubmitFreeSub} />
+				   </React.Fragment>
+
+		}
 		else if( this.props.performOperation == Constants.OWNER_ACTIONS.TRANSACTIONS){
 			return <React.Fragment>
 					<MyTransactions
 						doViewMyTransactions = {this.props.doViewMyTransactions}
 						doOperateOwnerMail   = {this.props.doOperateOwnerMail}
 						doDeleteOwnerSent    = {this.props.doDeleteOwnerSent}
-						doSendReciept        = {this.props.doSendReciept} />
+						doSendReciept        = {this.props.doSendReciept} 
+						doDismissTenant      = {this.props.doDismissTenant} />
 				   </React.Fragment>
 		}
 	}

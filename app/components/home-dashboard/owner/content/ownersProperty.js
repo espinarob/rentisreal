@@ -74,7 +74,8 @@ export default class OwnersProperty extends Component{
 			return <React.Fragment>
 				   	<AddProperty 
 				   		doAddPropertyOwner     = {this.props.doAddPropertyOwner}
-				   		AccountDetails         = {this.props.AccountDetails}
+				   		doViewMyProperty       = {this.props.doViewMyProperty}
+				   		doGetMyAccount         = {this.props.doGetMyAccount}
 				   		addPropertyErrMSG      = {this.props.addPropertyErrMSG}
 				   		doChangePropertyAction = {this.changePropertyAction} 
 				   		doUploadPropertyPhoto  = {this.props.doUploadPropertyPhoto} />

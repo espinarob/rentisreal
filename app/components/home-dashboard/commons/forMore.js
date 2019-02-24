@@ -5,6 +5,7 @@ import Constants from '../../Constants.js';
 import LoadingScreen from '../../loadingScreen.js';
 import UpdateDetails from './updateDetails.js';
 import ChangePassword from './changePassword.js';
+import AccountSubscription from './accountSubscription.js';
 
 
 const forMoreWrapperStyle = StyleSheet.create({
@@ -34,7 +35,7 @@ const forMoreWrapperStyle = StyleSheet.create({
 
 export default class ForMoreBody extends Component{
 	componentDidMount(){
-
+		this.props.doUpdateAge();
 	}
 	state = {
 		flag: 'false',
@@ -81,7 +82,7 @@ export default class ForMoreBody extends Component{
 			return	<React.Fragment>
 						<View style={{
 							backgroundColor: '#6785db',
-							height: 42
+							height: 41
 						}}>
 
 						</View>
@@ -130,10 +131,18 @@ export default class ForMoreBody extends Component{
 						doChangeMyPassword = {this.props.doChangeMyPassword} />
 		}
 		else if(this.state.forMoreOperation == 'account_update'){
-			return <UpdateDetails 
+			return 	<UpdateDetails 
 						accountRole     = {this.props.doGetMyAccount.role}
 						doProcessUpdate = {this.props.doProcessUpdate}
 						doGetBack       = {this.backPage} />
+		}
+		else if(this.state.forMoreOperation == 'account_subscription'){
+			return	<AccountSubscription
+				  		doGetBack         = {this.backPage}
+				  		doGetAdminDetails = {this.props.doGetAdminDetails}
+				  		doSubmitFixPay    = {this.props.doSubmitFixPay} 
+				  		doGetMyAccount    = {this.props.doGetMyAccount}
+				  		doSubmitFreeSub   = {this.props.doSubmitFreeSub} />
 		}
 		else if(this.state.forMoreOperation == 'account_details'){
 			return	<React.Fragment>
@@ -308,6 +317,24 @@ export default class ForMoreBody extends Component{
 								left: 15,
 								width:200}}>
 								E-mail: {this.props.doGetMyAccount.email}
+							</Text>
+						</View>
+						<View style={{
+							height:33,
+							flexDirection: 'row',
+							top:20,
+							position: 'relative'
+						}}>
+
+							<Text style={{fontSize:14,
+								paddingTop:5,
+								position:'relative',
+								fontWeight: 'bold',
+								left: 15,
+								width:300}}>
+								Account Subscription: {this.props.doGetMyAccount.role == 'tenant' ? 
+									 'Not Applicable to tenant' : (this.props.doGetMyAccount.paid == 'free' ?
+									 	'Free pricing plan' : 'Paid pricing plan') }
 							</Text>
 						</View>
 

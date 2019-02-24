@@ -54,7 +54,8 @@ export default class MainComponent extends Component {
       loggingIn               : 'false',
       loadingData             : 'true',
       notificationAlertFlag   : 'false',
-      mailingAlertFlag        : 'false'
+      mailingAlertFlag        : 'false',
+      getAdminDetails         : []
   }
 
   componentDidMount(){
@@ -75,8 +76,8 @@ export default class MainComponent extends Component {
         }
       })
       .catch( (error)=>{
-          console.log('Failed to Connect');
-          this.setState({haveInternetConnection: 'false'});
+        console.log('Failed to Connect');
+        this.setState({haveInternetConnection: 'false'});
       });
   }
 
@@ -117,16 +118,18 @@ export default class MainComponent extends Component {
                             },2500);
                             this.firebaseInitialization();
                             this.setState({loginError:''});
+                            return;
                           }
                         }).
                         catch( (error)=>{
+                          this.setState({loginError:'An error occured..Try Again'});
                           this.changeLoginFlag(false);
+                          return;
                         });
                       return;
                     }
                     else{
                       this.setState({loginError:'Incorrect Username/Password'});
-                      console.log('Incorrect Password!');
                       this.changeLoginFlag(false);
                     }
                   });
@@ -223,12 +226,20 @@ export default class MainComponent extends Component {
             const initMyRentals       = [];
             let initMyAccount         = [];
             let index                 = 0;
+            let adminDetails = [];
            	Object
           		.keys(data)
             	.forEach(account => {
                 initAccounts.push(JSON.parse(String(JSON.stringify(data[account]))));
+
+
                 if(String(this.state.onHandKeyReference) == String(account)){
                   initMyAccount = JSON.parse(String(JSON.stringify(data[account])));
+                }
+
+                if(initAccounts[index].role == 'admin'){
+                  adminDetails['bank']  = initAccounts[index].bank;
+                  adminDetails['email'] = initAccounts[index].email;
                 }
 
                 if(initAccounts[index].property){
@@ -317,7 +328,8 @@ export default class MainComponent extends Component {
               myTransactions   : initMyTransactions,
               myNotifications  : initMyNotifications,
               myMails          : initMyMails,
-              myRentals        : initMyRentals
+              myRentals        : initMyRentals,
+              getAdminDetails  : adminDetails
             });
             console.log('Success Firebase...');
           }
@@ -359,6 +371,9 @@ export default class MainComponent extends Component {
         "civilStatus"   : 'null',
         "occupation"    : 'null',
         "gender"        : currentAccount.gender,
+        "paid"          : currentAccount.role == 'owner' ? 'free' : 'tenant',
+        "expiration"    : currentAccount.role == 'owner' ? 'free' : 'tenant',
+        "max_post"      : currentAccount.role == 'owner' ? '4'    : 'tenant',
         "birthdate"     : currentAccount.birthday
      }
       finalData = JSON.stringify(finalData);
@@ -378,7 +393,8 @@ export default class MainComponent extends Component {
                                   .database()
                                   .ref("Accounts/"+String(newAccount.key)+"/notifications")
                                   .push();
-          const notificationMessage = 'Welcome user, you may proceed in updating your account details';
+          let notificationMessage = 'Welcome user, you may proceed in updating your account details. ';
+          if(currentAccount.role == 'owner')notificationMessage+='Please avail for account Subscription';
           pushNotifKey.update({notifID:pushNotifKey.key, 
           message:notificationMessage,
           notifStatus:Constants.NOTIFICATION_STATUS.UNREAD,
@@ -443,12 +459,6 @@ export default class MainComponent extends Component {
   addProperty = async(propertyData,imageFile)=>{
     console.log('Adding Property!');
     this.setState({addPropertyError: 'Successfully Added! Please Wait..Don\'t Close the tab yet!'});
-    if(propertyData.propertyBedroomPooling){
-      propertyData.propertyBedroomPooling = 'true';
-    }
-    else{
-      propertyData.propertyBedroomPooling = 'false';
-    }
     let apiKey        = await AsyncStorage.getItem(Constants.API_KEY);
     const keyAccount = firebase
                         .database()
@@ -481,28 +491,54 @@ export default class MainComponent extends Component {
     .then( ()=>{
       this.uploadPropertyPhoto(imageFile,keyAccount.key,'image/jpg')
       .then((response)=>{
+        this.setState({addPropertyError: 'Please Wait..'});
         firebase
           .database()
           .ref("Accounts/"+String(apiKey)+"/property/"+String(keyAccount.key))
           .update({imgDLURL:String(response)})
-          .then(()=>console.log('Success in getting URL'))
-          .catch((error)=>console.log(error));
+          .then(()=>{
+            Alert.alert(
+              'Success',
+              'Successfully added property',
+            [
+              {text: 'OK', onPress: () => console.log('OK')}
+            ]);
+            this.setState({addPropertyError: 'Successfully added'});
+            setTimeout(()=>{
+              this.setState({addPropertyError:''});
+            },3000);
+            console.log('Success in getting URL');
+          })
+          .catch((error)=>{
+            Alert.alert(
+              'Error',
+              'Failed to submit property information, check your internet connection',
+            [
+              {text: 'OK', onPress: () => console.log('OK')}
+            ]);
+            this.setState({addPropertyError: 'Failed to submit property photo, check your internet connection'});
+            console.log(error);
+          });
       })
       .catch((error)=>{
+        Alert.alert(
+          'Error',
+          'Failed to submit property photo, check your internet connection',
+        [
+          {text: 'OK', onPress: () => console.log('OK')}
+        ]);
+        this.setState({addPropertyError: 'Failed to submit property photo, check your internet connection'});
         console.log(error);
       });
     })
-    .then( ()=>{
-      this.setState({addPropertyError: 'Please Wait..'});
-    })
-    .then( ()=>{
-      this.setState({addPropertyError: 'Successfully added'});
-      setTimeout(()=>{
-        this.setState({addPropertyError:''});
-      },3000);
-    })
     .catch( (error)=>{
-      this.setState({addPropertyError: 'Check your internet connection!'});
+      Alert.alert(
+        'Error',
+        'Failed to submit property information, check your internet connection',
+      [
+        {text: 'OK', onPress: () => console.log('OK')}
+      ]);
+      this.setState({addPropertyError: 'Failed to submit property photo, check your internet connection'});
       console.log(error);
     });
   }
@@ -772,8 +808,6 @@ export default class MainComponent extends Component {
         .catch( (error) =>{
           console.log('Accepting Request [OWNER PROPERTY][1]: Check your internet connection!');
         });
-
-
       })
       .catch( (error)=>{
         console.log('Accepting Request: Check your internet connection!');
@@ -1239,6 +1273,170 @@ export default class MainComponent extends Component {
     });
   }
 
+  uploadSubscriptionPhoto = (uri,imageName,mime = 'image/jpg')=>{
+    return new Promise((resolve, reject) => {
+      const uploadUri = Platform.OS === 'ios' ? uri.replace('file://', '') : uri;
+      let uploadBlob = null;
+      const imageRef = firebase.storage().ref('subscription').child(imageName);
+      fs.readFile(uploadUri, 'base64')
+      .then((data) => {
+        return Blob.build(data, { type: `${mime};BASE64` })
+      })
+      .then((blob) => {
+        uploadBlob = blob
+        return imageRef.put(blob, { contentType: mime })
+      })
+      .then(() => {
+        uploadBlob.close()
+        return imageRef.getDownloadURL()
+      })
+      .then((url) => {
+        resolve(url)
+      })
+      .catch((error) => {
+        reject(error)
+      })
+    });
+  }
+
+  submitFixSubscription = (data,imageFile)=>{
+    console.log('Submitting Subscription.. Please Wait...');
+    this.uploadSubscriptionPhoto(imageFile,this.state.onHandKeyReference,'image/jpg')
+    .then((response)=>{
+        data['imgDLURL']   = String(response);
+        const subscribeKey =  firebase
+                                .database()
+                                .ref("Accounts/"+String(this.state.onHandKeyReference)+
+                                  "/subscription/")
+                                .push();
+        data['subKey']     = String(subscribeKey.key);
+        data['Account']    = String(this.state.onHandKeyReference);
+        data['status']     = 'pending';
+        subscribeKey.update(data)
+        .then(()=>{
+          Alert.alert(
+            'Success',
+            'Successfully sent subscription details',
+          [
+            {text: 'OK', onPress: () => console.log('OK')}
+          ]);
+          console.log('Successfully paid subscription');
+        })
+        .catch((error)=>{
+          Alert.alert(
+            'Error',
+            'Please check your internet connection',
+          [
+            {text: 'OK', onPress: () => console.log('OK')}
+          ]);
+          console.log('Error in submitting subscription details');
+        });
+    })
+    .catch((error)=>{
+      Alert.alert(
+        'Error',
+        'Please check your internet connection',
+      [
+        {text: 'OK', onPress: () => console.log('OK')}
+      ]);
+      console.log('Error in submitting subscription photo remittance');
+    });
+  }
+
+
+  updateAge = ()=>{
+    let today = new Date();
+    const ageKey =  firebase
+                      .database()
+                      .ref("Accounts/"+String(this.state.onHandKeyReference));
+    let currentMonth = this.state.myAccountDetails.birthdate[0] + this.state.myAccountDetails.birthdate[1];
+    let currentDay   = this.state.myAccountDetails.birthdate[3] + this.state.myAccountDetails.birthdate[4];
+    let currentYear   = this.state.myAccountDetails.birthdate[6] + this.state.myAccountDetails.birthdate[7] + 
+      this.state.myAccountDetails.birthdate[8] + this.state.myAccountDetails.birthdate[9];
+
+    if( Number(today.getMonth()+1) == Number(currentMonth) 
+      && Number(today.getDate()) == Number(currentDay) 
+      && Number(today.getFullYear()) == Number(Number(currentYear)+1) ){
+      ageKey.update({age:String(Number(this.state.myAccountDetails.age)+1)})
+      .then(()=>{
+        console.log('Success updating age');
+      })
+      .catch((error)=>{
+        console.log('Age Update Error: '+error);
+      });
+    }
+    else{
+      console.log(currentMonth+'/'+currentDay+'/'+currentYear);
+      console.log('Not past birthday yet');
+    }
+
+  }
+
+  dismissTenantFromTransaction = (tenantKey,rentalKey,ownerKey,transactionKey)=>{
+    firebase 
+      .database()
+      .ref("Accounts/"+String(tenantKey)+"/rentals/"+String(rentalKey))
+      .remove()
+      .then(()=>{
+        firebase
+          .database()
+          .ref("Accounts/"+String(ownerKey)+"/transactions/"+String(transactionKey))
+          .remove()
+          .then(()=>{
+            console.log('Successfully removed transaction');
+            Alert.alert(
+              'Success',
+              'Successfully removed transcation',
+            [
+              {text: 'OK', onPress: () => console.log('OK')}
+            ]);
+          })
+          .catch((error)=>{
+            console.log('Error in dismissing transaction');
+          });
+      })
+      .catch((error)=>{
+        console.log('Error in dismissing transaction');
+      });
+  }
+
+  updateOwnerMaxPost = ()=>{
+    let today    = new Date();
+
+    let getMonth = String(today.getMonth()+1);
+    let getDay   = String(today.getDate());
+    let getYear  = String(today.getFullYear());
+
+    const subKey =  firebase
+                      .database()
+                      .ref("Accounts/"+String(this.state.onHandKeyReference));
+
+    if( Number(getMonth) == Number(this.state.myAccountDetails.expiration[0]+
+      this.state.myAccountDetails.expiration[1]) &&
+      Number(getDay) == Number(this.state.myAccountDetails.expiration[3]+
+        this.state.myAccountDetails.expiration[4]) &&
+      Number(getYear) == Number(this.state.myAccountDetails.expiration[6]+
+        this.state.myAccountDetails.expiration[7]+
+        this.state.myAccountDetails.expiration[8]+
+        this.state.myAccountDetails.expiration[9]) ){
+      subKey
+        .update({
+          max_post: '3',
+          paid: 'free',
+          expiration:'free'
+        })
+        .then(()=>{
+          console.log('Updated subscription');
+        })
+        .catch((error)=>{
+          console.log('Error in updating subscription: '+error);
+        });
+    }
+    else{
+      console.log('Not past due for subscription');
+    }
+
+  }
 
   verifyAccountsExist = () =>{
     if(this.state.Accounts.length!=0){
@@ -1377,6 +1575,12 @@ export default class MainComponent extends Component {
               doSendReciept         = {this.sendReciept}
               doChangeMyPassword    = {this.changePassword}
               doUploadPropertyPhoto = {this.uploadPropertyPhoto}
+              doGetAdminDetails     = {this.state.getAdminDetails}
+              doSubmitFixPay        = {this.submitFixSubscription}
+              doSubmitFreeSub       = {this.submitFreeSubscription}
+              doUpdateAge           = {this.updateAge}
+              doDismissTenant       = {this.dismissTenantFromTransaction}
+              doUpdateMaxPost       = {this.updateOwnerMaxPost}
               addPropertyErrMSG     = {this.state.addPropertyError}
               requestPropertyMSG    = {this.state.requestPropertyError}/>
     }

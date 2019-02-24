@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Platform, StyleSheet, Text, View, 
 	TextInput, Switch, TouchableHighlight, CheckBox, TouchableOpacity, Picker} from "react-native";
+import ServiceAgreement from '../home-dashboard/commons/serviceAgreement.js';
 
 const signupInputWrapperStyle = StyleSheet.create({
 	mainWrapper: {
@@ -193,6 +194,7 @@ export default class SignUpInputComponent extends Component{
 	onSignup = () =>{
 
 		let getAge = this.validateBirthday();
+		this.setState({errorMessage:''});
 		if(this.state.termsFlag == false){
 			this.setState({errorMessage:'Please agree to terms of service!'});
 		}	
@@ -216,6 +218,9 @@ export default class SignUpInputComponent extends Component{
 		}
 		else if(this.state.userBirthday == '' || getAge == false){
 			this.setState({errorMessage:'Please input your birthday as format indicated'});
+		}
+		else if(String(this.state.username).toLowerCase() == 'admin'){
+			this.setState({errorMessage:'Invalid username'});
 		}
 		else{
 			let toRegisterAccount = {
@@ -294,7 +299,9 @@ export default class SignUpInputComponent extends Component{
 		lastName        : '',
 		errorMessage    : '',
 		userBirthday    : '',
-		gender          : true
+		gender          : true,
+		signUpOperation : 'none',
+
 	}
 
 	genderChange = () => {
@@ -305,165 +312,180 @@ export default class SignUpInputComponent extends Component{
 		this.setState({monthBirthday:itemValue});
 	}
 
+	getBackFromSignUp = ()=>{
+		this.setState({signUpOperation:'none'});
+	}
+
+	signUpInputComponentMainDisplay = ()=>{
+		if(this.state.signUpOperation == 'none'){
+			return	<View style={signupInputWrapperStyle.mainWrapper}>
+	    			<View style={signupInputWrapperStyle.userNameSection}>
+	    				<TextInput
+	    					placeholder = "Input username"
+	    					style={signupInputWrapperStyle.userNameInput}
+	    					onChangeText = { (username) => this.setState({username})}/>
+	    			</View>
+
+	    			<View style={signupInputWrapperStyle.passwordSection}>
+	    				<TextInput
+	    					secureTextEntry={true}
+	    					placeholder = "Input password"
+	    					style={signupInputWrapperStyle.passwordInput}
+	    					maxLength = {20}
+	    					onChangeText = { (password) => this.setState({password})}/>
+	    			</View>
+
+
+	    			<View style={signupInputWrapperStyle.confirmPasswordSection}>
+	    				<TextInput
+	    					secureTextEntry={true}
+	    					placeholder = "Confirm password"
+	    					maxLength = {20}
+	    					style={signupInputWrapperStyle.confirmPasswordInput}
+	    					onChangeText = { (confirmPassword) => this.setState({confirmPassword})}/>
+	    			</View>
+
+	    			<View style={signupInputWrapperStyle.regEmailSection}>
+	    				<TextInput
+	    					placeholder = "Input E-mail"
+	    					style={signupInputWrapperStyle.regEmailInput}
+	    					onChangeText = { (email) => this.setState({email})}/>
+	    			</View>
+	    			<View style={signupInputWrapperStyle.firstNameSection}>
+	    				<TextInput
+	    					placeholder = "Input first name"
+	    					style={signupInputWrapperStyle.firstNameInput}
+	    					onChangeText = { (firstName) => this.setState({firstName})}/>
+	    			</View>
+	    			<View style={signupInputWrapperStyle.lastNameSection}>
+	    				<TextInput
+	    					placeholder = "Input last name"
+	    					style={signupInputWrapperStyle.lastNameInput}
+	    					onChangeText = { (lastName) => this.setState({lastName})}/>
+	    			</View>
+
+	    			<View style={signupInputWrapperStyle.genderSection}>
+		    			<Text style={{
+			                  position: 'relative',
+			                  width:55,
+			                  height:'100%',
+			                  paddingTop:5,
+			                  left:35 }}>
+			                Gender:
+			            </Text>
+	    				<CheckBox style={{
+			                position:'relative',
+			                left:50,
+			                borderWidth:2}}
+			                value={this.state.gender}
+			                onChange={ ()=>this.genderChange()}/>
+			            <Text style={{
+			                  position: 'relative',
+			                  width:40,
+			                  height:'100%',
+			                  paddingTop:5,
+			                  left:50 }}>
+			              Male
+			            </Text>
+			            <CheckBox style={{
+			                position:'relative',
+			                left:56,
+			                borderWidth:2}}
+			                value={!this.state.gender}
+			                onChange={ ()=>this.genderChange()}/>
+			            <Text style={{
+			                  position: 'relative',
+			                  width:60,
+			                  height:'100%',
+			                  paddingTop:5,
+			                  left:56}}>
+			              Female
+			            </Text>
+	    			</View>
+
+	    			<View style={signupInputWrapperStyle.birthdaySection}>
+
+	    				<Text style={{
+	    						height: '100%',
+	    						width: 63,
+	    						position: 'relative',
+	    						left:34,
+	    						paddingTop:5
+	    				}}>
+	    					Birthday:
+	    				</Text>
+	    				<TextInput
+	    					placeholder = "mm/dd/yyyy"
+	    					style={{
+	    						width: 86,
+	    						fontSize: 11,
+	    						borderWidth:1,	
+	    						borderRadius:5,
+	    						height: '100%',
+	    						left: 37,
+	    						position: 'relative'
+	    					}}
+	    					onChangeText = { (userBirthday) => this.setState({userBirthday})}/>
+	    			</View>
+	    			<View style={signupInputWrapperStyle.roleSection}>
+	    				<CheckBox value={this.state.tenantRole} onChange={this.tenantCheckBox} style={signupInputWrapperStyle.roleSwitchStyle}/>
+					    <Text style={signupInputWrapperStyle.roleLabelStyle}>
+	    					Register as Tenant (Default to Owner)
+	    				</Text>
+	    			</View>
+
+	    			<View style={signupInputWrapperStyle.termServiceSection}>
+	    				<CheckBox value={this.state.termsFlag} onChange={this.termsCheckBox} style={signupInputWrapperStyle.termServiceSwitchStyle} />
+	    				<Text style={signupInputWrapperStyle.termServiceLabelStyle}>
+	    					Agree to Terms of Service
+	    				</Text>
+	    			</View>
+
+	    			<View style={signupInputWrapperStyle.errorSection}>
+						<Text style= {{fontSize:11,fontWeight:'bold',paddingTop:5,paddingLeft: '24%'}}>
+							{this.verifySignUpError()}
+						</Text>
+	    			</View>
+
+	    			<View style={signupInputWrapperStyle.signupButtonSection}>
+	    				<TouchableHighlight style={signupInputWrapperStyle.signupButtonStyle}
+	    					 onPress={this.onSignup}
+	    					 underlayColor='#fff'>
+	    					<Text style= {{fontSize:17,fontWeight:'bold',paddingTop:5,paddingLeft: '33.6%'}}>
+	    						Sign-Up
+	    					</Text>
+	    				</TouchableHighlight>
+	    			</View>
+
+
+	    			<View style={signupInputWrapperStyle.viewTermsSection}>
+	    				<TouchableOpacity style={signupInputWrapperStyle.viewTermsLabel}
+	    					 onPress={() => this.setState({signUpOperation:'view_terms'}) }>
+	    					<Text style= {{fontSize:13,fontWeight:'bold',paddingTop:3,paddingLeft:15}}>
+	    						View Terms of Service
+	    					</Text>
+	    				</TouchableOpacity >
+	    			</View>
+	    			<View style={signupInputWrapperStyle.cancelSection}>
+	    				<TouchableOpacity style={signupInputWrapperStyle.cancelLabel}
+	    					 onPress={() => this.props.doChangeRegisterFlag(false) }>
+	    					<Text style= {{fontSize:13,fontWeight:'bold',paddingTop:3,paddingLeft:15}}>
+	    						Cancel Registration
+	    					</Text>
+	    				</TouchableOpacity >
+	    			</View>
+	    		</View>
+		}
+		else if(this.state.signUpOperation == 'view_terms' ){
+			return <ServiceAgreement 
+						doGetBack = {this.getBackFromSignUp} />
+		}
+	}
 	render() {
     	return (
-    		<View style={signupInputWrapperStyle.mainWrapper}>
-    			<View style={signupInputWrapperStyle.userNameSection}>
-    				<TextInput
-    					placeholder = "Input username"
-    					style={signupInputWrapperStyle.userNameInput}
-    					onChangeText = { (username) => this.setState({username})}/>
-    			</View>
-
-    			<View style={signupInputWrapperStyle.passwordSection}>
-    				<TextInput
-    					secureTextEntry={true}
-    					placeholder = "Input password"
-    					style={signupInputWrapperStyle.passwordInput}
-    					maxLength = {20}
-    					onChangeText = { (password) => this.setState({password})}/>
-    			</View>
-
-
-    			<View style={signupInputWrapperStyle.confirmPasswordSection}>
-    				<TextInput
-    					secureTextEntry={true}
-    					placeholder = "Confirm password"
-    					maxLength = {20}
-    					style={signupInputWrapperStyle.confirmPasswordInput}
-    					onChangeText = { (confirmPassword) => this.setState({confirmPassword})}/>
-    			</View>
-
-    			<View style={signupInputWrapperStyle.regEmailSection}>
-    				<TextInput
-    					placeholder = "Input E-mail"
-    					style={signupInputWrapperStyle.regEmailInput}
-    					onChangeText = { (email) => this.setState({email})}/>
-    			</View>
-    			<View style={signupInputWrapperStyle.firstNameSection}>
-    				<TextInput
-    					placeholder = "Input first name"
-    					style={signupInputWrapperStyle.firstNameInput}
-    					onChangeText = { (firstName) => this.setState({firstName})}/>
-    			</View>
-    			<View style={signupInputWrapperStyle.lastNameSection}>
-    				<TextInput
-    					placeholder = "Input last name"
-    					style={signupInputWrapperStyle.lastNameInput}
-    					onChangeText = { (lastName) => this.setState({lastName})}/>
-    			</View>
-
-    			<View style={signupInputWrapperStyle.genderSection}>
-	    			<Text style={{
-		                  position: 'relative',
-		                  width:55,
-		                  height:'100%',
-		                  paddingTop:5,
-		                  left:35 }}>
-		                Gender:
-		            </Text>
-    				<CheckBox style={{
-		                position:'relative',
-		                left:50,
-		                borderWidth:2}}
-		                value={this.state.gender}
-		                onChange={ ()=>this.genderChange()}/>
-		            <Text style={{
-		                  position: 'relative',
-		                  width:40,
-		                  height:'100%',
-		                  paddingTop:5,
-		                  left:50 }}>
-		              Male
-		            </Text>
-		            <CheckBox style={{
-		                position:'relative',
-		                left:56,
-		                borderWidth:2}}
-		                value={!this.state.gender}
-		                onChange={ ()=>this.genderChange()}/>
-		            <Text style={{
-		                  position: 'relative',
-		                  width:60,
-		                  height:'100%',
-		                  paddingTop:5,
-		                  left:56}}>
-		              Female
-		            </Text>
-    			</View>
-
-    			<View style={signupInputWrapperStyle.birthdaySection}>
-
-    				<Text style={{
-    						height: '100%',
-    						width: 63,
-    						position: 'relative',
-    						left:34,
-    						paddingTop:5
-    				}}>
-    					Birthday:
-    				</Text>
-    				<TextInput
-    					placeholder = "mm/dd/yyyy"
-    					style={{
-    						width: 86,
-    						fontSize: 11,
-    						borderWidth:1,	
-    						borderRadius:5,
-    						height: '100%',
-    						left: 37,
-    						position: 'relative'
-    					}}
-    					onChangeText = { (userBirthday) => this.setState({userBirthday})}/>
-    			</View>
-    			<View style={signupInputWrapperStyle.roleSection}>
-    				<CheckBox value={this.state.tenantRole} onChange={this.tenantCheckBox} style={signupInputWrapperStyle.roleSwitchStyle}/>
-				    <Text style={signupInputWrapperStyle.roleLabelStyle}>
-    					Register as Tenant (Default to Owner)
-    				</Text>
-    			</View>
-
-    			<View style={signupInputWrapperStyle.termServiceSection}>
-    				<CheckBox value={this.state.termsFlag} onChange={this.termsCheckBox} style={signupInputWrapperStyle.termServiceSwitchStyle} />
-    				<Text style={signupInputWrapperStyle.termServiceLabelStyle}>
-    					Agree to Terms of Service
-    				</Text>
-    			</View>
-
-    			<View style={signupInputWrapperStyle.errorSection}>
-					<Text style= {{fontSize:11,fontWeight:'bold',paddingTop:5,paddingLeft: '24%'}}>
-						{this.verifySignUpError()}
-					</Text>
-    			</View>
-
-    			<View style={signupInputWrapperStyle.signupButtonSection}>
-    				<TouchableHighlight style={signupInputWrapperStyle.signupButtonStyle}
-    					 onPress={this.onSignup}
-    					 underlayColor='#fff'>
-    					<Text style= {{fontSize:17,fontWeight:'bold',paddingTop:5,paddingLeft: '33.6%'}}>
-    						Sign-Up
-    					</Text>
-    				</TouchableHighlight>
-    			</View>
-
-
-    			<View style={signupInputWrapperStyle.viewTermsSection}>
-    				<TouchableOpacity style={signupInputWrapperStyle.viewTermsLabel}
-    					 onPress={() => console.log('Viewed') }>
-    					<Text style= {{fontSize:13,fontWeight:'bold',paddingTop:3,paddingLeft:15}}>
-    						View Terms of Service
-    					</Text>
-    				</TouchableOpacity >
-    			</View>
-    			<View style={signupInputWrapperStyle.cancelSection}>
-    				<TouchableOpacity style={signupInputWrapperStyle.cancelLabel}
-    					 onPress={() => this.props.doChangeRegisterFlag(false) }>
-    					<Text style= {{fontSize:13,fontWeight:'bold',paddingTop:3,paddingLeft:15}}>
-    						Cancel Registration
-    					</Text>
-    				</TouchableOpacity >
-    			</View>
-    		</View>
+    		<React.Fragment>
+    			{this.signUpInputComponentMainDisplay()}
+    		</React.Fragment>
     	);
 	}
 }

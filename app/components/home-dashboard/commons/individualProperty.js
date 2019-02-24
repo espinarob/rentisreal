@@ -62,15 +62,20 @@ export default class IndividualProperty extends Component {
 
   componentDidMount(){
     
-    for(index=0;index<this.props.doViewMyRequests.length;index++){
-      let currentRequest = this.props.doViewMyRequests[index];
-      if(String(currentRequest.propertyID) == String(this.props.pressedPropertyDetails.propertyID)){
-        this.setState({currentRequest:currentRequest});
-        setTimeout( ()=>this.setState({operationLoading:'false'}),500);
-        return;
+    if(this.props.doGetUserRole == 'tenant'){
+      for(index=0;index<this.props.doViewMyRequests.length;index++){
+        let currentRequest = this.props.doViewMyRequests[index];
+        if(String(currentRequest.propertyID) == String(this.props.pressedPropertyDetails.propertyID)){
+          this.setState({currentRequest:currentRequest});
+          setTimeout( ()=>this.setState({operationLoading:'false'}),500);
+          return;
+        }
       }
+      setTimeout( ()=>this.setState({operationLoading:'false'}),500);
     }
-    setTimeout( ()=>this.setState({operationLoading:'false'}),500);
+    else{
+      this.setState({operationLoading:'false'});
+    }
 
   }
 
@@ -88,8 +93,28 @@ export default class IndividualProperty extends Component {
     xhr.send();
   }
 
-  validOperation = ()=>{
-    if( Number(this.props.pressedPropertyDetails.propertyVacant)<=0){
+  validOperation = ()=>{  
+    if(this.props.doGetUserRole == 'owner'){
+      return  <View style={{
+                borderRadius:2,
+                width: 100,
+                position:'relative',
+                left: 120,
+                borderWidth:2,
+                borderColor: '#42f46e'
+              }}>
+                <Text style={{
+                        position:'relative',
+                        fontSize: 13,
+                        width: 80,
+                        left: 11,
+                        paddingTop:3,
+                        paddingLeft: 8,
+                        color: "#000"
+                }}>View Only</Text>
+              </View>
+    }
+    else if( Number(this.props.pressedPropertyDetails.propertyVacant)<=0){
       return  <View style={{
                 borderRadius:2,
                 width: 100,
@@ -213,7 +238,7 @@ export default class IndividualProperty extends Component {
                               height: '100%',
                               width: 40}}>
                           <Icon
-                              style={{fontSize:25,paddingTop:6,paddingLeft:4}}
+                              style={{fontSize:25,paddingTop:6,paddingLeft:4,color:'#4d4d4f',}}
                               name="arrowleft"
                               type="AntDesign"/>
                       </View>
@@ -230,13 +255,15 @@ export default class IndividualProperty extends Component {
                   </View>
           </View>
           <View style={{
-                  height: 170,
+                  height: 180,
                   flexDirection: 'row',
-                  color:'#8b8f96'
+                  color:'#8b8f96',
+                  width: '100%'
               }}>
             <Image
               source = {{uri:this.props.pressedPropertyDetails.imgDLURL}}
-              style = {{width:'100%',position:'relative',height:'100%',resizeMode:'contain'}}/>
+              placeholder='Loading Image...'
+              style = {{width:'100%',position:'relative',height:'100%',resizeMode:'contain',backgroundColor:'#babbbc'}}/>
           </View>      
 
           <View style={{
