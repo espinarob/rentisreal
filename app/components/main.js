@@ -1372,7 +1372,7 @@ export default class MainComponent extends Component {
 
   }
 
-  dismissTenantFromTransaction = (tenantKey,rentalKey,ownerKey,transactionKey)=>{
+  dismissTenantFromTransaction = (tenantKey,rentalKey,ownerKey,transactionKey,propertyKey)=>{
     firebase 
       .database()
       .ref("Accounts/"+String(tenantKey)+"/rentals/"+String(rentalKey))
@@ -1380,19 +1380,35 @@ export default class MainComponent extends Component {
       .then(()=>{
         firebase
           .database()
-          .ref("Accounts/"+String(ownerKey)+"/transactions/"+String(transactionKey))
-          .remove()
-          .then(()=>{
-            console.log('Successfully removed transaction');
-            Alert.alert(
-              'Success',
-              'Successfully removed transcation',
-            [
-              {text: 'OK', onPress: () => console.log('OK')}
-            ]);
+          .ref("Accounts/"+String(ownerKey)+"/property/"+String(propertyKey)+"/propertyVacant")
+          .once("value",snapshot =>{
+            let propertyVacant = snapshot.val();
+            console.log('Vacant: '+propertyVacant);
+            firebase
+              .database()
+              .ref("Accounts/"+String(ownerKey)+"/property/"+String(propertyKey))
+              .update({propertyVacant:String(Number(propertyVacant)+1)})
+              .then(()=>{
+                firebase
+                  .database()
+                  .ref("Accounts/"+String(ownerKey)+"/transactions/"+String(transactionKey))
+                  .remove()
+                  .then(()=>{
+                    console.log('Successfully removed transaction');
+                    Alert.alert(
+                      'Success',
+                      'Successfully removed transcation',
+                    [
+                      {text: 'OK', onPress: () => console.log('OK')}
+                    ]);
+                  })
+                  .catch((error)=>{
+                    console.log('Error in dismissing transaction');
+                  });
+              })
           })
           .catch((error)=>{
-            console.log('Error in dismissing transaction');
+            console.log('Error in getting property vacant: '+error);
           });
       })
       .catch((error)=>{

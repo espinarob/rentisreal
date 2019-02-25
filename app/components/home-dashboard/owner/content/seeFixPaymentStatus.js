@@ -5,9 +5,7 @@ import { List, ListItem, SearchBar } from 'react-native-elements';
 
 export default class SeeFixPaymentStatus extends Component{
 
-	componentDidMount(){
-		console.log(this.props.doGetMySubscription);
-	}
+
 
 	seeFixStatusMainDisplay = ()=>{
 		if(this.props.doGetMySubscription.length!=0){
@@ -50,7 +48,7 @@ export default class SeeFixPaymentStatus extends Component{
 			          		data={this.props.doGetMySubscription}
 			                renderItem={ ({item}) =>     
 			                     <View style={{
-			                     		height: 150,
+			                     		height: 180,
 			                     		width: '100%',
 			                     		position: 'relative',
 			                     		borderBottomWidth: 2
@@ -116,6 +114,17 @@ export default class SeeFixPaymentStatus extends Component{
 			                     			top: 7
 			                     	}}>
 			                     		Sent to Bank Account: {item.bank}
+			                     	</Text>
+			                     	<Text style={{
+			                     			width: 280,
+			                     			height:23,
+			                     			fontSize: 14,
+			                     			fontWeight: 'bold',
+			                     			position: 'relative',
+			                     			left: 10,
+			                     			top: 7
+			                     	}}>
+			                     		Status: {item.status}
 			                     	</Text>
 			                     </View>
 			                }

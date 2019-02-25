@@ -98,7 +98,7 @@ export default class AccountSubscription extends Component{
 		          			</Text>
 			          	</View>
 			          	<View style={{
-			          			height: 135,
+			          			height: 150,
 			          			width: '100%',
 			          			position: 'relative',
 			          			top: 10,
@@ -118,14 +118,15 @@ export default class AccountSubscription extends Component{
 			          		<Text style={{
 			          				fontWeight: 'bold',
 			          				fontSize: 13,
-			          				height: 53,
+			          				height: 65,
 			          				width:260,
 			          				position: 'relative',
 			          				left:10,
 			          				top:10
 			          		}}>
 			          			The fix price plan module offers owner users to create property 
-			          			with no limitation in advertising their available properties.
+			          			with no limitation in advertising their available properties. Starts at
+			          			100 pesos per month.
 			          		</Text>
 			          		<TouchableWithoutFeedback
 			          			onPress={()=>this.setState({accountSubscriptionOperation:'fix_price'})}>
@@ -137,7 +138,7 @@ export default class AccountSubscription extends Component{
 			          					paddingLeft: 18,
 			          					paddingTop: 8,
 			          					fontSize: 15,
-			          					top: 13,
+			          					top: 18	,
 			          					left: 245,
 			          					fontWeight: 'bold',
 			          					borderColor: '#5ce24a'

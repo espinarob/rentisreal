@@ -67,7 +67,8 @@ export default class OwnersIndividualTransaction extends Component {
           	{text: 'NO', onPress: () => console.log('Cancelled'), style: 'cancel'},
           	{text: 'YES', onPress: () => this.props.doDismissTenant(this.props.doGetTransactionDetails.tenantID,
           		this.props.doGetTransactionDetails.requestID,this.props.doGetTransactionDetails.Account,
-          		this.props.doGetTransactionDetails.requestID)},
+          		this.props.doGetTransactionDetails.requestID,
+          		this.props.doGetTransactionDetails.propertyID)},
         ]);
 	}
 

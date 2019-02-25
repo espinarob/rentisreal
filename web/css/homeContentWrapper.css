@@ -122,3 +122,13 @@
 	margin-bottom: 10px;
 	cursor: pointer;
 }
+
+
+#accountUpdateWrapper{
+	height: 310px;
+	width: 400px;
+	position: relative;
+	top: 20px;
+	left: 100px;
+	border: solid;
+}

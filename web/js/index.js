@@ -144,18 +144,18 @@ var generateForAllUserDisplay = function(){
 		});
 }
 
-var getBackFromViewingSubscription = ()=>{
+var getBackFromViewingSubscription = function(){
 	generateForAllUserDisplay();
 } 
 
-var generateSubscriptionDisplay = (allSubscriptions)=>{
+var generateSubscriptionDisplay = function(allSubscriptions){
 
 	document.getElementById('homeContentBody').innerHTML =	'<div id=\'forReturnWrapper\'>' +
 																'<p onClick=\'getBackFromViewingSubscription();\' id=\'forBackButton\'> ' +
 																	'&#8592;Return' + 
 																'</p>' +
 															'</div>';
-	var generateDisplay = allSubscriptions.map((currentSubscription,index)=>{
+	var generateDisplay = allSubscriptions.map(function(currentSubscription,index){
 		return 	'<div id=\'index-'+ String(index) + '\'>' +
 				'<p style=\'position:relative;font-size:17px;font-weight:bold;'+
 						'top:5px;padding-left:15px;\'>' +
@@ -237,6 +237,8 @@ var approveOwnerSubscription = function(index){
 	var forNextMonth   = new Date(getFullYear,getMonth,getDay);
 	var finalNextMonth = new Date(forNextMonth.setMonth(forNextMonth.getMonth()+1));
 
+	var today = new Date();
+  	var notifDate = String(today.getMonth()+1) + '/' + String(today.getDate()) + '/' + String(today.getFullYear());
 
 	const subKey =	firebase
 						.database()
@@ -256,14 +258,26 @@ var approveOwnerSubscription = function(index){
 					String(globalCurrentSubscriptions[index].subKey))
 				.update({status:'accepted'})
 				.then(function(){
-					alert('Successfully approved user');
+					const pushNotifKey =  firebase
+			                                  .database()
+			                                  .ref("Accounts/"+String(globalCurrentSubscriptions[index].Account)+"/notifications")
+			                                  .push();
+			        const notificationMessage = 'One of your subscription payment has been approved';
+			        pushNotifKey.update({notifID:pushNotifKey.key, 
+		          	message:notificationMessage,
+		          	notifStatus:'NOTIF_UNREAD',
+		          	date:notifDate})
+		          	.then(function(){    
+		          		console.log('Successfully approved user');
+						alert('Successfully approved user');
+					});
+				})
+				.then(function(){
+					//window.location.reload();
 				})
 				.catch(function(error){
 					alert('Error in approving user');
 				});	
-		})
-		.then(function(){
-			window.location.reload();
 		})
 		.catch(function(error){
 			console.log('Error:'+error);
@@ -350,6 +364,10 @@ var saveCredentialData = function(username,password,accountKey,role){
 	}
 }
 
+$('#forAccountWrapper').click(function(){
+
+
+});
 
 
 $('#forMoreWrapper').mouseenter(function(){
